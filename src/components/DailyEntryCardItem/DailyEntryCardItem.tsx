@@ -4,7 +4,7 @@ import MonitorWeightOutlinedIcon from '@mui/icons-material/MonitorWeightOutlined
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun'
 import EditIcon from '@mui/icons-material/Edit'
 
-type CardFieldType = 'Weight' | 'Activity'
+type CardFieldType = 'weight' | 'activity'
 
 interface Props {
   fieldType: CardFieldType
@@ -18,8 +18,8 @@ export const DailyEntryCardItem: React.FC<Props> = ({
   fieldValue,
 }) => {
   const primaryIcon = {
-    Weight: <MonitorWeightOutlinedIcon fontSize="large" />,
-    Activity: <DirectionsRunIcon fontSize="large" />,
+    weight: <MonitorWeightOutlinedIcon fontSize="large" />,
+    activity: <DirectionsRunIcon fontSize="large" />,
   }
 
   return (

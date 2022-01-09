@@ -50,13 +50,13 @@ export const DailyEntriesPage: React.FC = () => {
       <Grid item xs={8}>
         <Card variant="outlined">
           <DailyEntryCardItem
-            fieldType="Weight"
+            fieldType="weight"
             fieldLabel="Weight"
             fieldValue="225 lbs"
           />
           <Divider light />
           <DailyEntryCardItem
-            fieldType="Activity"
+            fieldType="activity"
             fieldLabel="Activity Level"
             fieldValue="Lightly Active"
           />

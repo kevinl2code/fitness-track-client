@@ -8,10 +8,11 @@ import {
   ListItemText,
   Toolbar,
 } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Mail as MailIcon, Inbox as InboxIcon } from '@mui/icons-material'
 import React from 'react'
 import { ROUTES } from '../../navigation'
+import { MainDrawerItem } from './MainDrawerItem'
 
 const drawerWidth = 240
 
@@ -30,24 +31,21 @@ export const MainDrawer: React.FC = () => {
       <Toolbar />
       <Box sx={{ overflow: 'auto' }}>
         <List>
-          <ListItem button onClick={() => navigate(ROUTES.dashboard)}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Dashboard'} />
-          </ListItem>
-          <ListItem button onClick={() => navigate(ROUTES.dailyEntries)}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Daily Entries'} />
-          </ListItem>
-          <ListItem button onClick={() => navigate(ROUTES.register)}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Registration'} />
-          </ListItem>
+          <MainDrawerItem
+            itemType="dashboard"
+            label="Dashboard"
+            route={ROUTES.dashboard}
+          />
+          <MainDrawerItem
+            itemType="dailyEntries"
+            label="Daily Entries"
+            route={ROUTES.dailyEntries}
+          />
+          <MainDrawerItem
+            itemType="register"
+            label="Registration"
+            route={ROUTES.register}
+          />
         </List>
         <Divider />
         <List>
