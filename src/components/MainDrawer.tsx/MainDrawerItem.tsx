@@ -1,13 +1,4 @@
-import {
-  Box,
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-} from '@mui/material'
+import { ListItem, ListItemIcon, ListItemText } from '@mui/material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Mail as MailIcon, Inbox as InboxIcon } from '@mui/icons-material'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
