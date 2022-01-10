@@ -1,38 +1,45 @@
-import { Card, Divider, Grid, Typography } from '@mui/material'
+import {
+  Card,
+  CircularProgress,
+  Divider,
+  Grid,
+  LinearProgress,
+  Skeleton,
+  Typography,
+} from '@mui/material'
 import TextField from '@mui/material/TextField'
 import DateAdapter from '@mui/lab/AdapterLuxon'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import DatePicker from '@mui/lab/DatePicker'
 import { DailyEntryCardItem } from '../../components/DailyEntryCardItem'
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { DataService } from '../../services/DataService'
 import { DailyEntry } from '../../model/Model'
 import { DailyEntryMealsTable } from '../../components/DailyEntryMealsTable'
 import { DailyEntryCreateNew } from '../../components/DailyEntryCreateNew'
 
-const today = DateTime.now().toJSDate()
+const today = DateTime.now().toLocaleString()
+const testDate = new Date(today)
 
 export const DailyEntriesPage: React.FC = () => {
-  const [pickerDate, setPickerDate] = React.useState<Date | null>(today)
-  const [entry, setEntry] = React.useState<DailyEntry[] | []>([])
+  const [pickerDate, setPickerDate] = useState<Date | null>(testDate)
+  const [entry, setEntry] = useState<DailyEntry[] | []>([])
+  const [loading, setLoading] = useState(true)
 
-  const currentDate = pickerDate?.toLocaleString()
-  const getData = useCallback(async () => {
-    // const currentDate = pickerDate?.toLocaleString()
-    if (currentDate) {
-      const dataservice = new DataService()
-      const data = await dataservice.getDailyEntryByDate(currentDate)
-      setEntry(data)
-    }
-  }, [currentDate])
+  const currentDate = pickerDate?.toLocaleString().split(',')[0]
 
   useEffect(() => {
+    const getData = async () => {
+      if (currentDate) {
+        const dataservice = new DataService()
+        const data = await dataservice.getDailyEntryByDate(currentDate)
+        setLoading(false)
+        setEntry(data)
+      }
+    }
     getData()
-  }, [getData, pickerDate])
-  if (entry) {
-    console.log(entry[0]?.weight)
-  }
+  }, [currentDate])
 
   const haveEntry = entry.length > 0
 
@@ -44,6 +51,27 @@ export const DailyEntriesPage: React.FC = () => {
         return meal
       })
     : []
+
+  const mainContent = haveEntry ? (
+    <>
+      <Card variant="outlined" sx={{ marginBottom: '2rem' }}>
+        <DailyEntryCardItem
+          fieldType="weight"
+          fieldLabel="Weight"
+          fieldValue={`${weight} lbs`}
+        />
+        <Divider light />
+        <DailyEntryCardItem
+          fieldType="activity"
+          fieldLabel="Activity Level"
+          fieldValue={activityLevel}
+        />
+      </Card>
+      <DailyEntryMealsTable rows={mealRows} />{' '}
+    </>
+  ) : (
+    <DailyEntryCreateNew date={currentDate!} />
+  )
 
   return (
     <Grid container>
@@ -59,26 +87,7 @@ export const DailyEntriesPage: React.FC = () => {
         </LocalizationProvider>
       </Grid>
       <Grid item xs={8}>
-        {haveEntry ? (
-          <>
-            <Card variant="outlined" sx={{ marginBottom: '2rem' }}>
-              <DailyEntryCardItem
-                fieldType="weight"
-                fieldLabel="Weight"
-                fieldValue={`${weight} lbs`}
-              />
-              <Divider light />
-              <DailyEntryCardItem
-                fieldType="activity"
-                fieldLabel="Activity Level"
-                fieldValue={activityLevel}
-              />
-            </Card>
-            <DailyEntryMealsTable rows={mealRows} />{' '}
-          </>
-        ) : (
-          <DailyEntryCreateNew date={currentDate!} />
-        )}
+        {loading ? <LinearProgress /> : mainContent}
       </Grid>
     </Grid>
   )
