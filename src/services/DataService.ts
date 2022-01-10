@@ -1,4 +1,5 @@
 import { config } from 'aws-sdk'
+import { ICreateDailyEntry } from '../components/DailyEntryCreateNew/DailyEntryCreateNew'
 import { DailyEntry } from '../model/Model'
 
 config.update({
@@ -6,6 +7,18 @@ config.update({
 })
 
 export class DataService {
+  public async createDailyEntry(iCreateDailyEntry: ICreateDailyEntry) {
+    const requestUrl = process.env.REACT_APP_API_DAILY_ENTRIES!
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      body: JSON.stringify(iCreateDailyEntry),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+    const resultJSON = await result.json()
+
+    return JSON.stringify(resultJSON.id)
+  }
+
   public async getDailyEntries(): Promise<DailyEntry[]> {
     // if (this.user) {
     //     console.log(`Using token: ${this.getUserIdToken()}`)

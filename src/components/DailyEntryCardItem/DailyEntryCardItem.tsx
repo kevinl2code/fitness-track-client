@@ -24,14 +24,14 @@ export const DailyEntryCardItem: React.FC<Props> = ({
 
   return (
     <CardContent>
-      <Grid container>
-        <Grid item container justifyContent="space-between" xs={3}>
+      <Grid container alignItems={'center'}>
+        <Grid item xs={1}>
           <Grid>{primaryIcon[fieldType]}</Grid>
-          <Grid>
-            <Typography>{fieldLabel}</Typography>
-          </Grid>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={3}>
+          <Typography>{fieldLabel}</Typography>
+        </Grid>
+        <Grid item xs={7}>
           <Typography sx={{ textAlign: 'end', paddingRight: '1rem' }}>
             {fieldValue}
           </Typography>
