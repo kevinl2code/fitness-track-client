@@ -8,6 +8,7 @@ import {
   TableBody,
   IconButton,
 } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import React from 'react'
 import { Meal } from '../../model/Model'
@@ -31,6 +32,10 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
       </TableCell>
       <TableCell align="right">{row.calories}</TableCell>
       <TableCell align="right">{row.protein}</TableCell>
+      <TableCell align="right">
+        <IconButton></IconButton>
+        <DeleteIcon />
+      </TableCell>
     </TableRow>
   ))
 
@@ -42,6 +47,7 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
             <TableCell>Meal</TableCell>
             <TableCell align="right">Calories</TableCell>
             <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

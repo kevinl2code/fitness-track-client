@@ -1,4 +1,4 @@
-import { CardContent, Grid, Typography } from '@mui/material'
+import { CardContent, Grid, IconButton, Typography } from '@mui/material'
 import React from 'react'
 import MonitorWeightOutlinedIcon from '@mui/icons-material/MonitorWeightOutlined'
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun'
@@ -10,12 +10,14 @@ interface Props {
   fieldType: CardFieldType
   fieldLabel: string
   fieldValue: string
+  openDialog?: () => void
 }
 
 export const DailyEntryCardItem: React.FC<Props> = ({
   fieldType,
   fieldLabel,
   fieldValue,
+  openDialog,
 }) => {
   const primaryIcon = {
     weight: <MonitorWeightOutlinedIcon fontSize="large" />,
@@ -37,7 +39,9 @@ export const DailyEntryCardItem: React.FC<Props> = ({
           </Typography>
         </Grid>
         <Grid item xs={1}>
-          <EditIcon />
+          <IconButton onClick={openDialog}>
+            <EditIcon />
+          </IconButton>
         </Grid>
       </Grid>
     </CardContent>

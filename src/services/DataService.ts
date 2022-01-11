@@ -60,8 +60,37 @@ export class DataService {
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    console.log('fired')
-    console.log(resultJSON)
+    return JSON.stringify(resultJSON.id)
+  }
+
+  public async updateDailyEntryWeight(
+    dailyEntryId: string,
+    updatedDailyEntry: number
+  ) {
+    console.log(typeof updatedDailyEntry)
+    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?dailyEntryId=${dailyEntryId}`
+    const requestOptions: RequestInit = {
+      method: 'PUT',
+      body: JSON.stringify({ weight: updatedDailyEntry }),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+
+    const resultJSON = await result.json()
+    return JSON.stringify(resultJSON.id)
+  }
+
+  public async updateDailyEntryActivityLevel(
+    dailyEntryId: string,
+    updatedDailyEntry: string
+  ) {
+    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?dailyEntryId=${dailyEntryId}`
+    const requestOptions: RequestInit = {
+      method: 'PUT',
+      body: JSON.stringify({ activityLevel: updatedDailyEntry }),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+
+    const resultJSON = await result.json()
     return JSON.stringify(resultJSON.id)
   }
 }

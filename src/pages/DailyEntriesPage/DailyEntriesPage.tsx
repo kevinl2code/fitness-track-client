@@ -11,6 +11,8 @@ import { DailyEntry } from '../../model/Model'
 import { DailyEntryMealsTable } from '../../components/DailyEntryMealsTable'
 import { DailyEntryCreateNew } from '../../components/DailyEntryCreateNew'
 import { AddMealToDailyEntryDialog } from '../../components/dialogs/AddMealToDailyEntryDialog'
+import { UpdateDailyEntryWeightDialog } from '../../components/dialogs/UpdateDailyEntryWeightDialog'
+import { UpdateDailyEntryActivityLevelDialog } from '../../components/dialogs/UpdateDailyEntryActivityLevelDialog'
 
 const today = DateTime.now().toLocaleString()
 const testDate = new Date(today)
@@ -20,6 +22,10 @@ export const DailyEntriesPage: React.FC = () => {
   const [entry, setEntry] = useState<DailyEntry[] | []>([])
   const [loading, setLoading] = useState(true)
   const [openMealDialog, setOpenMealDialog] = React.useState(false)
+  const [openUpdateWeightDialog, setOpenUpdateWeightDialog] =
+    React.useState(false)
+  const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
+    React.useState(false)
 
   const handleOpenAddMealDialog = () => {
     setOpenMealDialog(true)
@@ -28,6 +34,22 @@ export const DailyEntriesPage: React.FC = () => {
   const handleCloseAddMealDialog = () => {
     setOpenMealDialog(false)
   }
+
+  const handleOpenUpdateWeightDialog = () => {
+    setOpenUpdateWeightDialog(true)
+  }
+
+  const handleCloseUpdateWeightDialog = () => {
+    setOpenUpdateWeightDialog(false)
+  }
+  const handleOpenUpdateActivityLevelDialog = () => {
+    setOpenUpdateActivityLevelDialog(true)
+  }
+
+  const handleCloseUpdateActivityLevelDialog = () => {
+    setOpenUpdateActivityLevelDialog(false)
+  }
+
   const currentDate = pickerDate?.toLocaleString().split(',')[0]
 
   useEffect(() => {
@@ -40,7 +62,12 @@ export const DailyEntriesPage: React.FC = () => {
       }
     }
     getData()
-  }, [currentDate, openMealDialog])
+  }, [
+    currentDate,
+    openMealDialog,
+    openUpdateWeightDialog,
+    openUpdateActivityLevelDialog,
+  ])
 
   const haveEntry = entry.length > 0
 
@@ -60,12 +87,14 @@ export const DailyEntriesPage: React.FC = () => {
           fieldType="weight"
           fieldLabel="Weight"
           fieldValue={`${weight} lbs`}
+          openDialog={handleOpenUpdateWeightDialog}
         />
         <Divider light />
         <DailyEntryCardItem
           fieldType="activity"
           fieldLabel="Activity Level"
           fieldValue={activityLevel}
+          openDialog={handleOpenUpdateActivityLevelDialog}
         />
       </Card>
       <DailyEntryMealsTable
@@ -79,6 +108,16 @@ export const DailyEntriesPage: React.FC = () => {
 
   return (
     <>
+      <UpdateDailyEntryWeightDialog
+        entry={entry[0]}
+        open={openUpdateWeightDialog}
+        handleClose={handleCloseUpdateWeightDialog}
+      />
+      <UpdateDailyEntryActivityLevelDialog
+        entry={entry[0]}
+        open={openUpdateActivityLevelDialog}
+        handleClose={handleCloseUpdateActivityLevelDialog}
+      />
       <AddMealToDailyEntryDialog
         entry={entry[0]}
         open={openMealDialog}
