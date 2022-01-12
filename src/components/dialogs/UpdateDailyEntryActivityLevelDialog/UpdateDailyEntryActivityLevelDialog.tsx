@@ -13,17 +13,20 @@ import {
 import React, { useEffect } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { DailyEntry, Meal } from '../../../model/Model'
+import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
 import { DataService } from '../../../services/DataService'
 
 interface Props {
   entry: DailyEntry
   open: boolean
+  useApi: UseApi
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   entry,
   open,
+  useApi,
   setDialogOpenState,
 }) => {
   const {
@@ -40,20 +43,8 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<Partial<Meal>> = async (data: any) => {
-    const dataservice = new DataService()
-
-    try {
-      const result = await dataservice.updateDailyEntryActivityLevel(
-        entry.dailyEntryId,
-        data.activityLevel
-      )
-      console.log(result)
-      handleCloseDialog()
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`Error updating activity level: ${error.message}`)
-      }
-    }
+    useApi.updateActivityLevel(data)
+    setDialogOpenState(false)
   }
 
   return (

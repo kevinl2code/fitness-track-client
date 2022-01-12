@@ -6,7 +6,7 @@ import DatePicker from '@mui/lab/DatePicker'
 import { DailyEntryCardItem } from '../../components/DailyEntryCardItem'
 import React, { useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
-import { UseApi } from './useApi'
+import { UseApi } from './UseApi'
 import { DailyEntry } from '../../model/Model'
 import { DailyEntryMealsTable } from '../../components/DailyEntryMealsTable'
 import { DailyEntryCreateNew } from '../../components/DailyEntryCreateNew'
@@ -31,7 +31,7 @@ export const DailyEntriesPage: React.FC = () => {
   const handleOpenAddMealDialog = () => {
     setOpenMealDialog(true)
   }
-  console.log(dailyEntry)
+
   const handleOpenUpdateWeightDialog = () => {
     setOpenUpdateWeightDialog(true)
   }
@@ -55,11 +55,6 @@ export const DailyEntriesPage: React.FC = () => {
   const weight = dailyEntry?.weight || '-'
   const activityLevel = dailyEntry?.activityLevel || '-'
 
-  const mealRows =
-    dailyEntry?.meals.map((meal) => {
-      return meal
-    }) || []
-
   const mainContent = dailyEntry ? (
     <>
       <Card variant="outlined" sx={{ marginBottom: '2rem' }}>
@@ -78,7 +73,7 @@ export const DailyEntriesPage: React.FC = () => {
         />
       </Card>
       <DailyEntryMealsTable
-        rows={mealRows}
+        rows={dailyEntry?.meals}
         useApi={useApi}
         handleOpenAddMealDialog={handleOpenAddMealDialog}
       />{' '}
@@ -98,6 +93,7 @@ export const DailyEntriesPage: React.FC = () => {
       <UpdateDailyEntryActivityLevelDialog
         entry={dailyEntry!}
         open={openUpdateActivityLevelDialog}
+        useApi={useApi}
         setDialogOpenState={setOpenUpdateActivityLevelDialog}
       />
       <AddMealToDailyEntryDialog

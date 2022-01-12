@@ -14,7 +14,7 @@ import {
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { DailyEntry, Meal } from '../../../model/Model'
-import { UseApi } from '../../../pages/DailyEntriesPage/useApi'
+import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
 
 interface Props {
   entry: DailyEntry

@@ -12,7 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import React from 'react'
 import { Meal } from '../../model/Model'
-import { UseApi } from '../../pages/DailyEntriesPage/useApi'
+import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
 
 interface Props {
   rows: Meal[] | []

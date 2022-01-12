@@ -18,3 +18,5 @@ export interface DailyEntry {
   meals: Meal[] | []
   activityLevel: ActivityLevel
 }
+
+export type Sex = 'MALE' | 'FEMALE'

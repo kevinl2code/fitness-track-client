@@ -92,6 +92,6 @@ export class DataService {
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    return JSON.stringify(resultJSON.id)
+    return resultJSON.Attributes.activityLevel
   }
 }

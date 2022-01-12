@@ -56,7 +56,6 @@ export class UseApi {
           this.dailyEntry?.dailyEntryId,
           [...this.dailyEntry.meals, data]
         )
-        // console.log(result)
         this.setDailyEntry({ ...this.dailyEntry, meals: result })
       } catch (error) {
         if (error instanceof Error) {
@@ -73,11 +72,26 @@ export class UseApi {
           this.dailyEntry?.dailyEntryId,
           data.weight
         )
-        console.log(result)
         this.setDailyEntry({ ...this.dailyEntry, weight: result })
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error updating weight: ${error.message}`)
+        }
+      }
+    }
+  }
+
+  public async updateActivityLevel(data: any) {
+    if (this.dailyEntry) {
+      try {
+        const result = await this.dataService.updateDailyEntryActivityLevel(
+          this.dailyEntry.dailyEntryId,
+          data.activityLevel
+        )
+        this.setDailyEntry({ ...this.dailyEntry, activityLevel: result })
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(`Error updating activity level: ${error.message}`)
         }
       }
     }
