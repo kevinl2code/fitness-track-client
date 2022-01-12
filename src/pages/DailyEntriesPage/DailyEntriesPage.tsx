@@ -13,6 +13,7 @@ import { DailyEntryCreateNew } from '../../components/DailyEntryCreateNew'
 import { AddMealToDailyEntryDialog } from '../../components/dialogs/AddMealToDailyEntryDialog'
 import { UpdateDailyEntryWeightDialog } from '../../components/dialogs/UpdateDailyEntryWeightDialog'
 import { UpdateDailyEntryActivityLevelDialog } from '../../components/dialogs/UpdateDailyEntryActivityLevelDialog'
+import { DailyEntryDetails } from '../../components/DailyEntryDetails/DailyEntryDetails'
 
 const today = DateTime.now().toLocaleString()
 const testDate = new Date(today)
@@ -103,8 +104,9 @@ export const DailyEntriesPage: React.FC = () => {
         setDialogOpenState={setOpenMealDialog}
       />
       <Grid container>
-        <Grid item xs={4}>
-          <LocalizationProvider dateAdapter={DateAdapter}>
+        <Grid item xs={4} container justifyContent="flex-start">
+          <Grid item xs={12} sx={{ marginBottom: '2rem' }}>
+            {/* <LocalizationProvider dateAdapter={DateAdapter}> */}
             <DatePicker
               value={pickerDate}
               onChange={(newValue) => {
@@ -112,7 +114,11 @@ export const DailyEntriesPage: React.FC = () => {
               }}
               renderInput={(params) => <TextField {...params} />}
             />
-          </LocalizationProvider>
+            {/* </LocalizationProvider> */}
+          </Grid>
+          <Grid item xs={9}>
+            <DailyEntryDetails dailyEntry={dailyEntry} />
+          </Grid>
         </Grid>
         <Grid item xs={8}>
           {loading ? <LinearProgress /> : mainContent}

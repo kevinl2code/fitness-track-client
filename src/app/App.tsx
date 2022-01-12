@@ -1,5 +1,6 @@
+import { LocalizationProvider } from '@mui/lab'
 import { ThemeProvider } from '@mui/material'
-
+import DateAdapter from '@mui/lab/AdapterLuxon'
 import { CssBaseline } from '@mui/material'
 import React from 'react'
 import { NavigationContainer } from '../navigation/NavigationContainer'
@@ -10,7 +11,10 @@ function App() {
     <>
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
-        <NavigationContainer />
+
+        <LocalizationProvider dateAdapter={DateAdapter}>
+          <NavigationContainer />
+        </LocalizationProvider>
       </ThemeProvider>
     </>
   )

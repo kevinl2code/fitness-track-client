@@ -42,6 +42,12 @@ export const AddMealToDailyEntryDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<Meal> = async (data: any) => {
+    if (typeof data === 'object' && 'calories' in data) {
+      data.calories = parseInt(data.calories)
+    }
+    if (typeof data === 'object' && 'protein' in data) {
+      data.protein = parseInt(data.protein)
+    }
     useApi.addMeal(data)
     handleCloseDialog()
   }
