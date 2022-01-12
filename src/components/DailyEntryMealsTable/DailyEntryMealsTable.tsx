@@ -12,14 +12,17 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import React from 'react'
 import { Meal } from '../../model/Model'
+import { UseApi } from '../../pages/DailyEntriesPage/useApi'
 
 interface Props {
   rows: Meal[] | []
+  useApi: UseApi
   handleOpenAddMealDialog: () => void
 }
 
 export const DailyEntryMealsTable: React.FC<Props> = ({
   rows,
+  useApi,
   handleOpenAddMealDialog,
 }) => {
   const generatedRows = rows.map((row, index) => (
@@ -33,8 +36,9 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
       <TableCell align="right">{row.calories}</TableCell>
       <TableCell align="right">{row.protein}</TableCell>
       <TableCell align="right">
-        <IconButton></IconButton>
-        <DeleteIcon />
+        <IconButton onClick={() => useApi.deleteMeal(index, rows)}>
+          <DeleteIcon />
+        </IconButton>
       </TableCell>
     </TableRow>
   ))
@@ -44,10 +48,14 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Meal</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-            <TableCell align="right"></TableCell>
+            <TableCell width="50%">Meal</TableCell>
+            <TableCell width="20%" align="right">
+              Calories
+            </TableCell>
+            <TableCell width="20%" align="right">
+              Protein&nbsp;(g)
+            </TableCell>
+            <TableCell width="10%" align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -56,6 +64,7 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
             <TableCell component="th" scope="row">
               Add a meal
             </TableCell>
+            <TableCell align="right">{''}</TableCell>
             <TableCell align="right">{''}</TableCell>
             <TableCell align="right">
               <IconButton

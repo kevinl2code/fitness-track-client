@@ -18,13 +18,13 @@ import { DataService } from '../../../services/DataService'
 interface Props {
   entry: DailyEntry
   open: boolean
-  handleClose: () => void
+  setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   entry,
   open,
-  handleClose,
+  setDialogOpenState,
 }) => {
   const {
     register,
@@ -33,6 +33,11 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
+
+  const handleCloseDialog = () => {
+    setDialogOpenState(false)
+    reset()
+  }
 
   const onSubmit: SubmitHandler<Partial<Meal>> = async (data: any) => {
     const dataservice = new DataService()
@@ -43,7 +48,7 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
         data.activityLevel
       )
       console.log(result)
-      handleClose()
+      handleCloseDialog()
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error updating activity level: ${error.message}`)
@@ -51,14 +56,8 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
     }
   }
 
-  useEffect(() => {
-    if (open === false) {
-      reset()
-    }
-  }, [open])
-
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleCloseDialog}>
       <DialogTitle>Add Meal</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <DialogContentText>
@@ -102,7 +101,7 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
             <Divider variant="middle" sx={{ minWidth: '100%' }} />
           </Grid>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
             <Button type="submit">Confirm</Button>
           </DialogActions>
         </form>

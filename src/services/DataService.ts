@@ -45,6 +45,7 @@ export class DataService {
       // }
     })
     const responseJSON = await requestResult.json()
+    console.log(responseJSON)
     return responseJSON
   }
 
@@ -60,7 +61,7 @@ export class DataService {
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    return JSON.stringify(resultJSON.id)
+    return resultJSON.Attributes.meals
   }
 
   public async updateDailyEntryWeight(
@@ -76,7 +77,7 @@ export class DataService {
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    return JSON.stringify(resultJSON.id)
+    return resultJSON.Attributes.weight
   }
 
   public async updateDailyEntryActivityLevel(

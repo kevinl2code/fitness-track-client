@@ -11,21 +11,23 @@ import {
   Grid,
   InputAdornment,
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { DailyEntry, Meal } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
+import { UseApi } from '../../../pages/DailyEntriesPage/useApi'
 
 interface Props {
   entry: DailyEntry
+  useApi: UseApi
   open: boolean
-  handleClose: () => void
+  setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
   entry,
+  useApi,
   open,
-  handleClose,
+  setDialogOpenState,
 }) => {
   const {
     reset,
@@ -34,31 +36,18 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
     formState: { errors },
   } = useForm()
 
-  const onSubmit: SubmitHandler<Meal> = async (data: any) => {
-    const dataservice = new DataService()
-
-    try {
-      const result = await dataservice.updateDailyEntryWeight(
-        entry.dailyEntryId,
-        data.weight
-      )
-      console.log(result)
-      handleClose()
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`Error updating weight: ${error.message}`)
-      }
-    }
+  const handleCloseDialog = () => {
+    setDialogOpenState(false)
+    reset()
   }
 
-  useEffect(() => {
-    if (open === false) {
-      reset()
-    }
-  }, [open])
+  const onSubmit: SubmitHandler<Meal> = async (data: any) => {
+    useApi.updateWeight(data)
+    setDialogOpenState(false)
+  }
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleCloseDialog}>
       <DialogTitle>Edit Weight</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <DialogContentText></DialogContentText>
@@ -101,7 +90,7 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
             <Divider variant="middle" sx={{ minWidth: '100%' }} />
           </Grid>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
             <Button type="submit">Confirm</Button>
           </DialogActions>
         </form>

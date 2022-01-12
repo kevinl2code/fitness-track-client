@@ -6,7 +6,7 @@ import DatePicker from '@mui/lab/DatePicker'
 import { DailyEntryCardItem } from '../../components/DailyEntryCardItem'
 import React, { useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
-import { DataService } from '../../services/DataService'
+import { UseApi } from './useApi'
 import { DailyEntry } from '../../model/Model'
 import { DailyEntryMealsTable } from '../../components/DailyEntryMealsTable'
 import { DailyEntryCreateNew } from '../../components/DailyEntryCreateNew'
@@ -19,7 +19,7 @@ const testDate = new Date(today)
 
 export const DailyEntriesPage: React.FC = () => {
   const [pickerDate, setPickerDate] = useState<Date | null>(testDate)
-  const [entry, setEntry] = useState<DailyEntry[] | []>([])
+  const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [loading, setLoading] = useState(true)
   const [openMealDialog, setOpenMealDialog] = React.useState(false)
   const [openUpdateWeightDialog, setOpenUpdateWeightDialog] =
@@ -27,60 +27,40 @@ export const DailyEntriesPage: React.FC = () => {
   const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
     React.useState(false)
 
+  const useApi = new UseApi(dailyEntry, setDailyEntry)
   const handleOpenAddMealDialog = () => {
     setOpenMealDialog(true)
   }
-
-  const handleCloseAddMealDialog = () => {
-    setOpenMealDialog(false)
-  }
-
+  console.log(dailyEntry)
   const handleOpenUpdateWeightDialog = () => {
     setOpenUpdateWeightDialog(true)
   }
 
-  const handleCloseUpdateWeightDialog = () => {
-    setOpenUpdateWeightDialog(false)
-  }
   const handleOpenUpdateActivityLevelDialog = () => {
     setOpenUpdateActivityLevelDialog(true)
   }
 
-  const handleCloseUpdateActivityLevelDialog = () => {
-    setOpenUpdateActivityLevelDialog(false)
-  }
-
-  const currentDate = pickerDate?.toLocaleString().split(',')[0]
+  const currentlySelectedDate = pickerDate?.toLocaleString().split(',')[0]
 
   useEffect(() => {
-    const getData = async () => {
-      if (currentDate) {
-        const dataservice = new DataService()
-        const data = await dataservice.getDailyEntryByDate(currentDate)
-        setLoading(false)
-        setEntry(data)
-      }
-    }
-    getData()
+    useApi.fetchPageData(currentlySelectedDate!, setLoading, setDailyEntry)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    currentDate,
+    currentlySelectedDate,
     openMealDialog,
     openUpdateWeightDialog,
     openUpdateActivityLevelDialog,
   ])
 
-  const haveEntry = entry.length > 0
+  const weight = dailyEntry?.weight || '-'
+  const activityLevel = dailyEntry?.activityLevel || '-'
 
-  const weight = haveEntry ? entry[0]?.weight : '-'
-  const activityLevel = haveEntry ? entry[0]?.activityLevel : '-'
+  const mealRows =
+    dailyEntry?.meals.map((meal) => {
+      return meal
+    }) || []
 
-  const mealRows = haveEntry
-    ? entry[0].meals.map((meal) => {
-        return meal
-      })
-    : []
-
-  const mainContent = haveEntry ? (
+  const mainContent = dailyEntry ? (
     <>
       <Card variant="outlined" sx={{ marginBottom: '2rem' }}>
         <DailyEntryCardItem
@@ -99,29 +79,32 @@ export const DailyEntriesPage: React.FC = () => {
       </Card>
       <DailyEntryMealsTable
         rows={mealRows}
+        useApi={useApi}
         handleOpenAddMealDialog={handleOpenAddMealDialog}
       />{' '}
     </>
   ) : (
-    <DailyEntryCreateNew date={currentDate!} />
+    <DailyEntryCreateNew date={currentlySelectedDate!} />
   )
 
   return (
     <>
       <UpdateDailyEntryWeightDialog
-        entry={entry[0]}
+        entry={dailyEntry!}
         open={openUpdateWeightDialog}
-        handleClose={handleCloseUpdateWeightDialog}
+        useApi={useApi}
+        setDialogOpenState={setOpenUpdateWeightDialog}
       />
       <UpdateDailyEntryActivityLevelDialog
-        entry={entry[0]}
+        entry={dailyEntry!}
         open={openUpdateActivityLevelDialog}
-        handleClose={handleCloseUpdateActivityLevelDialog}
+        setDialogOpenState={setOpenUpdateActivityLevelDialog}
       />
       <AddMealToDailyEntryDialog
-        entry={entry[0]}
+        entry={dailyEntry!}
         open={openMealDialog}
-        handleClose={handleCloseAddMealDialog}
+        useApi={useApi}
+        setDialogOpenState={setOpenMealDialog}
       />
       <Grid container>
         <Grid item xs={4}>
