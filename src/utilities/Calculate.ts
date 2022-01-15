@@ -55,8 +55,8 @@ export class Calculate {
     }
 
     return {
-      minimum: minimumProteinRequiredByActivityLevel[activityLevel].toFixed(2),
-      maximum: maximumProteinRequiredByActivityLevel[activityLevel].toFixed(2),
+      minimum: minimumProteinRequiredByActivityLevel[activityLevel].toFixed(0),
+      maximum: maximumProteinRequiredByActivityLevel[activityLevel].toFixed(0),
     }
   }
 }

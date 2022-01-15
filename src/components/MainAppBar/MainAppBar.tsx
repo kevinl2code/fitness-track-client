@@ -6,17 +6,32 @@ import IconButton from '@mui/material/IconButton'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { ROUTES } from '../../navigation'
+import { AuthService } from '../../services/AuthService'
 
-export const MainAppBar = () => {
+interface Props {
+  setUser: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+export const MainAppBar: React.FC<Props> = ({ setUser }) => {
   const [auth, setAuth] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
+  const navigate = useNavigate()
+  const authService = new AuthService()
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuth(event.target.checked)
   }
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const handleLogoutClick = (route: string) => {
+    authService.logOut()
+    setUser(null)
+    navigate(route)
+    handleClose()
   }
 
   const handleClose = () => {
@@ -71,6 +86,7 @@ export const MainAppBar = () => {
             >
               <MenuItem onClick={handleClose}>Profile</MenuItem>
               <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem onClick={() => handleLogoutClick('/')}>Logout</MenuItem>
             </Menu>
           </div>
         )}

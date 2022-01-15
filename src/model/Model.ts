@@ -1,3 +1,16 @@
+import { CognitoUser } from '@aws-amplify/auth'
+
+export interface User {
+  userName: string
+  cognitoUser: CognitoUser
+  isAdmin: boolean
+}
+
+export interface UserAttribute {
+  Name: string
+  Value: string
+}
+
 export interface Meal {
   name: string
   calories: number
@@ -20,3 +33,5 @@ export interface DailyEntry {
 }
 
 export type Sex = 'MALE' | 'FEMALE'
+
+export type CognitoGender = 'male' | 'female'

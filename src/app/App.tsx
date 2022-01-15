@@ -6,14 +6,19 @@ import React from 'react'
 import { NavigationContainer } from '../navigation/NavigationContainer'
 import { defaultTheme } from '../themes/default-theme'
 
+// export const UserContext = React.createContext(user)
+
 function App() {
+  const [user, setUser] = React.useState<string | null>(null)
+
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
-
         <LocalizationProvider dateAdapter={DateAdapter}>
-          <NavigationContainer />
+          {/* <UserContext.Provider value={user}> */}
+          <NavigationContainer user={user} setUser={setUser} />
+          {/* </UserContext.Provider> */}
         </LocalizationProvider>
       </ThemeProvider>
     </>

@@ -41,11 +41,6 @@ export const MainDrawer: React.FC = () => {
             label="Daily Entries"
             route={ROUTES.dailyEntries}
           />
-          <MainDrawerItem
-            itemType="register"
-            label="Registration"
-            route={ROUTES.register}
-          />
         </List>
         <Divider />
         <List>

@@ -12,7 +12,9 @@ import { ActivityLevel, DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 import { Calculate } from '../../utilities/Calculate'
 
-interface Props {}
+interface Props {
+  user: string | null
+}
 
 export const DashboardPage: React.FC<Props> = (props: Props) => {
   const [entries, setEntries] = React.useState<DailyEntry[] | null>(null)
@@ -59,6 +61,7 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
 
   return (
     <>
+      <h1>{props.user ?? 'nope'}</h1>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

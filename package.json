@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-amplify/auth": "^4.3.20",
     "@date-io/luxon": "^2.11.1",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
@@ -16,6 +17,7 @@
     "@types/node": "^16.11.17",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "aws-amplify": "^4.3.12",
     "aws-sdk": "^2.1053.0",
     "luxon": "^2.3.0",
     "react": "^17.0.2",
