@@ -24,7 +24,7 @@ export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry }) => {
   const tdee = calculate.TDEE(bmr!, activityLevel)
 
   const confirmedMeals = meals.length > 0 ? meals : null
-  console.log(meals)
+
   const caloriesConsumed =
     confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
 

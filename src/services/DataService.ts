@@ -45,7 +45,6 @@ export class DataService {
       // }
     })
     const responseJSON = await requestResult.json()
-    console.log(responseJSON)
     return responseJSON
   }
 

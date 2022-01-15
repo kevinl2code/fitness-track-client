@@ -35,3 +35,14 @@ export interface DailyEntry {
 export type Sex = 'MALE' | 'FEMALE'
 
 export type CognitoGender = 'male' | 'female'
+
+export interface UserState {
+  userName: string
+  isAdmin: boolean
+  firstName: string
+  lastName: string
+  sex: CognitoGender
+  height: number
+  birthday: string
+  email: string
+}

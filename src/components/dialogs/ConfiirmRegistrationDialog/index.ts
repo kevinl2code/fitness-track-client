@@ -1,0 +1,1 @@
+export { ConfirmRegistrationDialog } from './ConfirmRegistrationDialog'

@@ -9,9 +9,10 @@ import Menu from '@mui/material/Menu'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ROUTES } from '../../navigation'
 import { AuthService } from '../../services/AuthService'
+import { CognitoUser } from '@aws-amplify/auth'
 
 interface Props {
-  setUser: React.Dispatch<React.SetStateAction<string | null>>
+  setUser: React.Dispatch<React.SetStateAction<CognitoUser | null>>
 }
 
 export const MainAppBar: React.FC<Props> = ({ setUser }) => {
@@ -67,7 +68,7 @@ export const MainAppBar: React.FC<Props> = ({ setUser }) => {
               onClick={handleMenu}
               color="inherit"
             >
-              <AccountCircle />
+              <AccountCircle fontSize="large" />
             </IconButton>
             <Menu
               id="menu-appbar"

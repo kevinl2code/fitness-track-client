@@ -18,6 +18,7 @@ import { Link, useNavigate } from 'react-router-dom'
 // import { setUser, UserContext } from '../../app/App'
 import { ROUTES } from '../../navigation'
 import { AuthService } from '../../services/AuthService'
+import { CognitoUser } from '@aws-amplify/auth'
 
 interface IFormInput {
   userName: string
@@ -25,7 +26,7 @@ interface IFormInput {
 }
 
 interface Props {
-  setUser: React.Dispatch<React.SetStateAction<string | null>>
+  setUser: React.Dispatch<React.SetStateAction<CognitoUser | null>>
 }
 
 export const LoginPage: React.FC<Props> = ({ setUser }) => {
@@ -41,9 +42,9 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)
-    setUser(data.userName)
     if (result) {
-      console.log(result)
+      // console.log(result)
+      setUser(result.cognitoUser)
       navigate(`app/${ROUTES.dashboard}`)
     } else {
       console.log('Login failed. Please check your credentials')

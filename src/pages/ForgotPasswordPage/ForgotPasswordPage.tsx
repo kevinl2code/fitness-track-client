@@ -100,7 +100,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   name: 'email',
                   control: control,
                   label: 'Email',
-                  placeholder: 'Email',
+                  placeholder: 'Enter your email',
                   inputProps: {
                     position: 'start',
                     icon: <Email />,

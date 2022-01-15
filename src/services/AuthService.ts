@@ -46,8 +46,8 @@ export class AuthService {
         username,
         password,
         attributes: {
-          givenName,
-          familyName,
+          given_name: givenName,
+          family_name: familyName,
           birthdate,
           gender,
           email,
@@ -112,9 +112,9 @@ export class AuthService {
     })
   }
 
-  public async getUserAttributes(user: User): Promise<UserAttribute[]> {
+  public async getUserAttributes(user: CognitoUser): Promise<UserAttribute[]> {
     const result: UserAttribute[] = []
-    const attributes = await Auth.userAttributes(user.cognitoUser)
+    const attributes = await Auth.userAttributes(user)
     result.push(...attributes)
     return result
   }

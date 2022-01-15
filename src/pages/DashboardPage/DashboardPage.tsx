@@ -13,7 +13,7 @@ import { DataService } from '../../services/DataService'
 import { Calculate } from '../../utilities/Calculate'
 
 interface Props {
-  user: string | null
+  // user: string | null
 }
 
 export const DashboardPage: React.FC<Props> = (props: Props) => {
@@ -28,9 +28,6 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     getData()
   }, [getData])
-
-  console.log(entries)
-  console.log(calculate.TDEE(1000, 'SEDENTARY'))
 
   if (!entries) {
     return <h1>No entries</h1>
@@ -61,7 +58,7 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <h1>{props.user ?? 'nope'}</h1>
+      {/* <h1>{props.user ?? 'nope'}</h1> */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
