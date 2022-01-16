@@ -1,21 +1,10 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  Grid,
-  FormControl,
-  TextField,
-  Button,
-  InputAdornment,
-} from '@mui/material'
+import { Card, CardContent, Typography, Button, Grid } from '@mui/material'
 import { TextInput } from '../../components/form/TextInput'
-import React, { useContext } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import React from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LockIcon from '@mui/icons-material/Lock'
 import { Link, useNavigate } from 'react-router-dom'
-// import { setUser, UserContext } from '../../app/App'
 import { ROUTES } from '../../navigation'
 import { AuthService } from '../../services/AuthService'
 import { CognitoUser } from '@aws-amplify/auth'
@@ -38,12 +27,10 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
   } = useForm()
   const navigate = useNavigate()
   const authService = new AuthService()
-  // const user = useContext(UserContext)
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)
     if (result) {
-      // console.log(result)
       setUser(result.cognitoUser)
       navigate(`app/${ROUTES.dashboard}`)
     } else {

@@ -2,8 +2,8 @@ import { CognitoUser } from '@aws-amplify/auth'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { ROUTES } from '.'
-import { PublicLayout } from '../layouts/PublicLayout'
-import { RootLayout } from '../layouts/RootLayout'
+import { PublicLayout, AuthLayout } from '../layouts'
+
 import { DailyEntriesPage } from '../pages/DailyEntriesPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage/ForgotPasswordPage'
@@ -11,7 +11,6 @@ import { LoginPage } from '../pages/LoginPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
 
 interface Props {
-  // user: string | null
   setUser: React.Dispatch<React.SetStateAction<CognitoUser | null>>
 }
 
@@ -24,7 +23,7 @@ export const NavigationContainer: React.FC<Props> = ({ setUser }) => {
 
         <Route path={ROUTES.register} element={<RegistrationPage />} />
         <Route path={ROUTES.forgot} element={<ForgotPasswordPage />} />
-        <Route path={ROUTES.appRoot} element={<RootLayout setUser={setUser} />}>
+        <Route path={ROUTES.appRoot} element={<AuthLayout setUser={setUser} />}>
           <Route index element={<DashboardPage />} />
           <Route path={ROUTES.dashboard} element={<DashboardPage />} />
           <Route path={ROUTES.dailyEntries} element={<DailyEntriesPage />} />

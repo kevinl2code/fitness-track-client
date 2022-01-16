@@ -10,11 +10,10 @@ import {
   DialogActions,
   Divider,
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { DailyEntry, Meal } from '../../../model/Model'
 import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
-import { DataService } from '../../../services/DataService'
 
 interface Props {
   entry: DailyEntry

@@ -4,19 +4,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  TextField,
   DialogActions,
   Button,
-  Divider,
-  FormControl,
   Grid,
-  InputAdornment,
 } from '@mui/material'
 import React from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { DailyEntry, Meal } from '../../../model/Model'
-import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
 import { AuthService } from '../../../services/AuthService'
 import { TextInput } from '../../form/TextInput'
 

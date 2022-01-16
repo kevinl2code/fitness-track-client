@@ -1,9 +1,8 @@
 import { ListItem, ListItemIcon, ListItemText } from '@mui/material'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Mail as MailIcon, Inbox as InboxIcon } from '@mui/icons-material'
+import { Inbox as InboxIcon } from '@mui/icons-material'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import React from 'react'
-import { ROUTES } from '../../navigation'
 
 type DrawerItemType = 'dashboard' | 'dailyEntries' | 'register' | 'settings'
 
@@ -17,8 +16,7 @@ export const MainDrawerItem: React.FC<Props> = ({ itemType, label, route }) => {
   const navigate = useNavigate()
   const routeParams = useLocation()
   const currentPath = routeParams.pathname.substring(1)
-  const isActive = currentPath === route ? 'active' : 'inactive'
-  const disableHoverEffect = isActive === 'active'
+  const isActive = currentPath === `app/${route}` ? 'active' : 'inactive'
 
   const backgroundColor = {
     active: '#81d4fa',
@@ -35,7 +33,14 @@ export const MainDrawerItem: React.FC<Props> = ({ itemType, label, route }) => {
     <ListItem
       button
       onClick={() => navigate(route)}
-      sx={{ backgroundColor: backgroundColor[isActive] }}
+      sx={[
+        { backgroundColor: backgroundColor[isActive] },
+        isActive && {
+          '&:hover': {
+            backgroundColor: backgroundColor[isActive],
+          },
+        },
+      ]}
     >
       <ListItemIcon>{primaryIcon[itemType]}</ListItemIcon>
       <ListItemText primary={label} />

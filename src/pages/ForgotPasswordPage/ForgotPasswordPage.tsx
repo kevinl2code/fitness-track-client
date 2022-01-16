@@ -1,24 +1,7 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Button,
-  InputAdornment,
-} from '@mui/material'
-import React, { useContext } from 'react'
-import {
-  Control,
-  Controller,
-  FieldValues,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form'
-import AccountCircle from '@mui/icons-material/AccountCircle'
-import LockIcon from '@mui/icons-material/Lock'
+import { Card, CardContent, Typography, Grid, Button } from '@mui/material'
+import React from 'react'
+import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-// import { setUser, UserContext } from '../../app/App'
-import { ROUTES } from '../../navigation'
 import { AuthService } from '../../services/AuthService'
 import { TextInput } from '../../components/form/TextInput'
 import { Email } from '@mui/icons-material'

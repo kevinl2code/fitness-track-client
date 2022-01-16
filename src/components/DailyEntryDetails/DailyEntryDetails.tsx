@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@mui/material'
 import React from 'react'
-import { DailyEntry, Meal, Sex } from '../../model/Model'
+import { DailyEntry, Sex } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
 
 interface Props {

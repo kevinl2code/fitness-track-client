@@ -8,8 +8,8 @@ import {
   ListItemText,
   Toolbar,
 } from '@mui/material'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { Mail as MailIcon, Inbox as InboxIcon } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
+import { Mail as MailIcon } from '@mui/icons-material'
 import React from 'react'
 import { ROUTES } from '../../navigation'
 import { MainDrawerItem } from './MainDrawerItem'
@@ -17,8 +17,6 @@ import { MainDrawerItem } from './MainDrawerItem'
 const drawerWidth = 240
 
 export const MainDrawer: React.FC = () => {
-  const navigate = useNavigate()
-
   return (
     <Drawer
       variant="permanent"

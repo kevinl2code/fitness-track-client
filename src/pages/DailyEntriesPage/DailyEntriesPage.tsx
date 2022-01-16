@@ -1,19 +1,21 @@
 import { Card, Divider, Grid, LinearProgress } from '@mui/material'
 import TextField from '@mui/material/TextField'
-import DateAdapter from '@mui/lab/AdapterLuxon'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import DatePicker from '@mui/lab/DatePicker'
 import { DailyEntryCardItem } from '../../components/DailyEntryCardItem'
 import React, { useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { UseApi } from './UseApi'
 import { DailyEntry } from '../../model/Model'
-import { DailyEntryMealsTable } from '../../components/DailyEntryMealsTable'
-import { DailyEntryCreateNew } from '../../components/DailyEntryCreateNew'
-import { AddMealToDailyEntryDialog } from '../../components/dialogs/AddMealToDailyEntryDialog'
-import { UpdateDailyEntryWeightDialog } from '../../components/dialogs/UpdateDailyEntryWeightDialog'
-import { UpdateDailyEntryActivityLevelDialog } from '../../components/dialogs/UpdateDailyEntryActivityLevelDialog'
-import { DailyEntryDetails } from '../../components/DailyEntryDetails/DailyEntryDetails'
+import {
+  DailyEntryMealsTable,
+  DailyEntryCreateNew,
+  DailyEntryDetails,
+} from '../../components'
+import {
+  UpdateDailyEntryWeightDialog,
+  UpdateDailyEntryActivityLevelDialog,
+  AddMealToDailyEntryDialog,
+} from '../../components/dialogs'
 
 const today = DateTime.now().toLocaleString()
 const testDate = new Date(today)

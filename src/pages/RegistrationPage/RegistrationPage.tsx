@@ -1,31 +1,12 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  Grid,
-  FormControl,
-  TextField,
-  Button,
-  InputAdornment,
-} from '@mui/material'
+import { Card, CardContent, Typography, Grid, Button } from '@mui/material'
 import WcIcon from '@mui/icons-material/Wc'
-import EmailIcon from '@mui/icons-material/Email'
 import EventIcon from '@mui/icons-material/Event'
 import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
-import React, { useContext } from 'react'
-import {
-  Control,
-  Controller,
-  FieldValues,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form'
+import React from 'react'
+import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LockIcon from '@mui/icons-material/Lock'
-import { Link, useNavigate } from 'react-router-dom'
-// import { setUser, UserContext } from '../../app/App'
-import { ROUTES } from '../../navigation'
+import { Link } from 'react-router-dom'
 import { AuthService } from '../../services/AuthService'
 import { TextInput } from '../../components/form/TextInput'
 import { Email } from '@mui/icons-material'
@@ -65,7 +46,6 @@ export const RegistrationPage: React.FC = () => {
     control,
     formState: { errors },
   } = useForm()
-  const navigate = useNavigate()
   const authService = new AuthService()
   // const user = useContext(UserContext)
 

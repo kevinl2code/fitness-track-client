@@ -1,7 +1,6 @@
 import { LocalizationProvider } from '@mui/lab'
-import { ThemeProvider } from '@mui/material'
+import { ThemeProvider, CssBaseline } from '@mui/material'
 import DateAdapter from '@mui/lab/AdapterLuxon'
-import { CssBaseline } from '@mui/material'
 import React, { useEffect } from 'react'
 import { NavigationContainer } from '../navigation/NavigationContainer'
 import { defaultTheme } from '../themes/default-theme'

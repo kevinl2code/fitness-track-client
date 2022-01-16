@@ -9,9 +9,9 @@ import {
 } from '@mui/material'
 import React, { useCallback, useContext, useEffect } from 'react'
 import { UserContext } from '../../app/App'
-import { ActivityLevel, DailyEntry } from '../../model/Model'
+import { DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
-import { Calculate } from '../../utilities/Calculate'
+import { Sort } from '../../utilities/Sort'
 
 interface Props {
   // user: string | null
@@ -20,7 +20,7 @@ interface Props {
 export const DashboardPage: React.FC<Props> = (props: Props) => {
   const [entries, setEntries] = React.useState<DailyEntry[] | null>(null)
   const user = useContext(UserContext)
-  const calculate = new Calculate()
+  const sort = new Sort()
   const getData = useCallback(async () => {
     const dataservice = new DataService()
     const data = await dataservice.getDailyEntries()
@@ -35,7 +35,10 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
     return <h1>No entries</h1>
   }
   console.log(user)
-  const generatedRows = entries.map((entry, index) => {
+
+  const sortedEntries: DailyEntry[] = sort.byDate(entries)
+
+  const generatedRows = sortedEntries.map((entry, index) => {
     const confirmedMeals = entry.meals.length > 0 ? entry.meals : null
     const caloriesConsumed =
       confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
@@ -62,7 +65,11 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
     <>
       {/* <h1>{props.user ?? 'nope'}</h1> */}
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table
+          sx={{ minWidth: 650 }}
+          size="small"
+          aria-label="daily-entries-table"
+        >
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
