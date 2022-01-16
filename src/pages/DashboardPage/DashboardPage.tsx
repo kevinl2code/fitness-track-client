@@ -7,7 +7,8 @@ import {
   TableCell,
   TableBody,
 } from '@mui/material'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
+import { UserContext } from '../../app/App'
 import { ActivityLevel, DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 import { Calculate } from '../../utilities/Calculate'
@@ -18,6 +19,7 @@ interface Props {
 
 export const DashboardPage: React.FC<Props> = (props: Props) => {
   const [entries, setEntries] = React.useState<DailyEntry[] | null>(null)
+  const user = useContext(UserContext)
   const calculate = new Calculate()
   const getData = useCallback(async () => {
     const dataservice = new DataService()
@@ -32,7 +34,7 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
   if (!entries) {
     return <h1>No entries</h1>
   }
-
+  console.log(user)
   const generatedRows = entries.map((entry, index) => {
     const confirmedMeals = entry.meals.length > 0 ? entry.meals : null
     const caloriesConsumed =

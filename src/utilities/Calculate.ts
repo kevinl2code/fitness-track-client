@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { ActivityLevel, Sex } from '../model/Model'
 
 export class Calculate {
@@ -58,5 +59,14 @@ export class Calculate {
       minimum: minimumProteinRequiredByActivityLevel[activityLevel].toFixed(0),
       maximum: maximumProteinRequiredByActivityLevel[activityLevel].toFixed(0),
     }
+  }
+
+  public age(birthday: string) {
+    const today = DateTime.now()
+    const formattedBirthday = DateTime.fromFormat(birthday, 'yyyy-MM-dd')
+    const yearsSinceBirth = Math.floor(
+      today.diff(formattedBirthday, ['years']).as('years')
+    )
+    return yearsSinceBirth
   }
 }

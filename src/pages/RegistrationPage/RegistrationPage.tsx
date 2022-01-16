@@ -140,7 +140,7 @@ export const RegistrationPage: React.FC = () => {
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container justifyContent="center">
                   {generateInput({
-                    name: 'firstName',
+                    name: 'givenName',
                     control: control,
                     label: 'First Name',
                     placeholder: 'First Name',
@@ -150,7 +150,7 @@ export const RegistrationPage: React.FC = () => {
                     },
                   })}
                   {generateInput({
-                    name: 'lastName',
+                    name: 'familyName',
                     control: control,
                     label: 'Last Name',
                     placeholder: 'Last Name',
@@ -173,7 +173,7 @@ export const RegistrationPage: React.FC = () => {
                     <TextInput
                       control={control}
                       label="Sex"
-                      name="sex"
+                      name="gender"
                       placeholder="Sex"
                       inputProps={{ position: 'start', icon: <WcIcon /> }}
                     />
@@ -214,7 +214,7 @@ export const RegistrationPage: React.FC = () => {
                     <TextInput
                       control={control}
                       label="Birthday"
-                      name="birthday"
+                      name="birthdate"
                       placeholder="yyyy-mm-dd"
                       inputProps={{ position: 'start', icon: <EventIcon /> }}
                     />

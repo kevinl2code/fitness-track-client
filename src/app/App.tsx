@@ -9,40 +9,42 @@ import { UserState } from '../model/Model'
 import { AuthService } from '../services/AuthService'
 import { CognitoUser } from '@aws-amplify/auth'
 
-export const UserContext = React.createContext(null)
+export const UserContext = React.createContext<UserState | null>(null)
 
 const authService = new AuthService()
 
 function App() {
   const [user, setUser] = React.useState<CognitoUser | null>(null)
   const [userContext, setUserContext] = React.useState<UserState | null>(null)
-  let userContextValue = null
-
-  if (user) {
-  }
 
   useEffect(() => {
     const getUserContextValue = async () => {
       if (user) {
-        const innerUserContextValue = await authService.getUserAttributes(user)
-        // setUserContext({
-        //   userName: innerUserContextValue[0].Value
-        // })
-        console.log(innerUserContextValue)
+        const userInfo = await authService.currentUserInfo()
+        setUserContext({
+          userName: userInfo.username,
+          firstName: userInfo.attributes.given_name,
+          lastName: userInfo.attributes.family_name,
+          sex: userInfo.attributes.gender,
+          height: parseInt(userInfo.attributes['custom:height']),
+          birthday: userInfo.attributes.birthdate,
+          email: userInfo.attributes.email,
+        })
+
+        console.log(userInfo)
       }
     }
-    const userValue = getUserContextValue()
-    // setUserContext(userValue)
-  })
+    getUserContextValue()
+  }, [user])
 
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
         <LocalizationProvider dateAdapter={DateAdapter}>
-          {/* <UserContext.Provider value={user}> */}
-          <NavigationContainer setUser={setUser} />
-          {/* </UserContext.Provider> */}
+          <UserContext.Provider value={userContext}>
+            <NavigationContainer setUser={setUser} />
+          </UserContext.Provider>
         </LocalizationProvider>
       </ThemeProvider>
     </>
@@ -50,3 +52,5 @@ function App() {
 }
 
 export default App
+
+//TODO - Context is lost on refresh due to state being reset.  Need to use local storage to get around this.

@@ -38,7 +38,6 @@ export type CognitoGender = 'male' | 'female'
 
 export interface UserState {
   userName: string
-  isAdmin: boolean
   firstName: string
   lastName: string
   sex: CognitoGender

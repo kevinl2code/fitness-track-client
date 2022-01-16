@@ -17,6 +17,21 @@ Amplify.configure({
   },
 })
 
+export type AmplifyUserInfo = {
+  id: string
+  username: string
+  attributes: {
+    birthdate: string
+    'custom:height': string
+    email: string
+    email_verified: boolean
+    family_name: string
+    gender: CognitoGender
+    given_name: string
+    sub: string
+  }
+}
+
 export class AuthService {
   public async confirmSignUp(
     username: string,
@@ -112,6 +127,12 @@ export class AuthService {
     })
   }
 
+  //Good for getting the currently logged in user --formatted a little nicer
+  public async currentUserInfo(): Promise<AmplifyUserInfo> {
+    const result = await Auth.currentUserInfo()
+    return result
+  }
+
   public async getUserAttributes(user: CognitoUser): Promise<UserAttribute[]> {
     const result: UserAttribute[] = []
     const attributes = await Auth.userAttributes(user)
@@ -149,3 +170,7 @@ export class AuthService {
     }
   }
 }
+
+//TODO - More of a reminder but if a logged in user is deleted from the UserPool in the Cognito console,
+// they can still access the service through their current session until their JWT expires.
+// Could look into adding an additional authentication check somewhere to prevent this.
