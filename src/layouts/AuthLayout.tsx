@@ -6,13 +6,13 @@ import { MainDrawer } from '../components/MainDrawer/MainDrawer'
 import { User } from '../model/Model'
 
 interface Props {
-  setUser: (user: User | null) => Promise<void>
+  setAppUser: (user: User | null) => Promise<void>
 }
 
-export const AuthLayout: React.FC<Props> = ({ children, setUser }) => {
+export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
   return (
     <Container maxWidth={false} disableGutters={true} sx={{ display: 'flex' }}>
-      <MainAppBar setUser={setUser} />
+      <MainAppBar setAppUser={setAppUser} />
       <MainDrawer />
       <Box component="main" sx={{ flexGrow: 1, p: 3, padding: '1rem' }}>
         <Outlet />

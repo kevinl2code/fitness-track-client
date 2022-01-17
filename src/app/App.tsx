@@ -7,6 +7,8 @@ import { defaultTheme } from '../themes/default-theme'
 import { User, UserState } from '../model/Model'
 import { AuthService } from '../services/AuthService'
 import { DataService } from '../services/DataService'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../navigation'
 export const UserContext = React.createContext<UserState | null>(null)
 
 const authService = new AuthService()
@@ -15,7 +17,7 @@ const dataService = new DataService()
 function App() {
   const [user, setUser] = React.useState<User | null>(null)
   const [userContext, setUserContext] = React.useState<UserState | null>(null)
-
+  const navigate = useNavigate()
   const setAppUser = async (user: User | null) => {
     setUser(user)
     if (user) {
@@ -25,30 +27,24 @@ function App() {
       }
       dataService.setUser(user)
       await authService.getAWSTemporaryCreds(user.cognitoUser)
+      const userInfo = await authService.currentUserInfo()
+      setUserContext({
+        user: {
+          userName: userInfo.username,
+          cognitoUser: user.cognitoUser,
+          isAdmin: user.isAdmin,
+        },
+        firstName: userInfo.attributes.given_name,
+        lastName: userInfo.attributes.family_name,
+        sex: userInfo.attributes.gender,
+        height: parseInt(userInfo.attributes['custom:height']),
+        birthday: userInfo.attributes.birthdate,
+        email: userInfo.attributes.email,
+        sub: userInfo.attributes.sub,
+      })
+      navigate(`app/${ROUTES.dashboard}`)
     }
   }
-
-  useEffect(() => {
-    const getUserContextValue = async () => {
-      if (user) {
-        const userInfo = await authService.currentUserInfo()
-        setUserContext({
-          user: {
-            userName: userInfo.username,
-            cognitoUser: user.cognitoUser,
-            isAdmin: user.isAdmin,
-          },
-          firstName: userInfo.attributes.given_name,
-          lastName: userInfo.attributes.family_name,
-          sex: userInfo.attributes.gender,
-          height: parseInt(userInfo.attributes['custom:height']),
-          birthday: userInfo.attributes.birthdate,
-          email: userInfo.attributes.email,
-        })
-      }
-    }
-    getUserContextValue()
-  }, [user])
 
   return (
     <>
@@ -56,7 +52,7 @@ function App() {
         <CssBaseline />
         <LocalizationProvider dateAdapter={DateAdapter}>
           <UserContext.Provider value={userContext}>
-            <NavigationContainer setUser={setAppUser} user={user} />
+            <NavigationContainer setAppUser={setAppUser} user={user} />
           </UserContext.Provider>
         </LocalizationProvider>
       </ThemeProvider>
@@ -66,4 +62,5 @@ function App() {
 
 export default App
 
+//TODO - Need to remove authenticated state when token expires.
 //TODO - Context is lost on refresh due to state being reset.  Need to use local storage to get around this.

@@ -26,11 +26,13 @@ export interface ICreateDailyEntry {
   date: string
   weight: number
   activityLevel: string
+  sub: string
   meals: []
 }
 
 interface Props {
   date: string
+  sub: string
   useApi: UseApi
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
   setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
@@ -39,6 +41,7 @@ interface Props {
 export const DailyEntryCreateNew: React.FC<Props> = ({
   date,
   useApi,
+  sub,
   setLoading,
   setDailyEntry,
 }) => {
@@ -50,22 +53,16 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   } = useForm()
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const dataservice = new DataService()
+    // const dataservice = new DataService()
     const newDailyEntry: ICreateDailyEntry = {
       date: date,
       weight: data.weight,
       activityLevel: data.activityLevel,
       meals: [],
+      sub: sub,
     }
-    try {
-      const id = await dataservice.createDailyEntry(newDailyEntry)
-      // alert(`Created daily entry with id: ${id} for ${date}`)
-      useApi.fetchPageData(newDailyEntry.date!, setLoading, setDailyEntry)
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`Error while creating space: ${error.message}`)
-      }
-    }
+    await useApi.createNewDailyEntry(newDailyEntry)
+    useApi.fetchPageData(newDailyEntry.date!, setLoading, setDailyEntry)
   }
 
   return (

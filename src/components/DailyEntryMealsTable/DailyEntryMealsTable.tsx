@@ -11,11 +11,11 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import React from 'react'
-import { Meal } from '../../model/Model'
+import { EntryMeal } from '../../model/Model'
 import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
 
 interface Props {
-  rows: Meal[] | []
+  rows: EntryMeal[] | []
   useApi: UseApi
   handleOpenAddMealDialog: () => void
 }

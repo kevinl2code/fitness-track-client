@@ -12,11 +12,11 @@ import { LoginPage } from '../pages/LoginPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
 
 interface Props {
-  setUser: (user: User | null) => Promise<void>
+  setAppUser: (user: User | null) => Promise<void>
   user: User | null
 }
 
-export const NavigationContainer: React.FC<Props> = ({ setUser, user }) => {
+export const NavigationContainer: React.FC<Props> = ({ setAppUser, user }) => {
   const navigate = useNavigate()
   const routeParams = useLocation()
   const isAuthRoute = routeParams.pathname.split('/').includes('app')
@@ -29,12 +29,18 @@ export const NavigationContainer: React.FC<Props> = ({ setUser, user }) => {
   return (
     <Routes>
       <Route path={ROUTES.root} element={<PublicLayout />}>
-        <Route index element={<LoginPage setUser={setUser} />} />
-        <Route path={ROUTES.login} element={<LoginPage setUser={setUser} />} />
+        <Route index element={<LoginPage setUser={setAppUser} />} />
+        <Route
+          path={ROUTES.login}
+          element={<LoginPage setUser={setAppUser} />}
+        />
 
         <Route path={ROUTES.register} element={<RegistrationPage />} />
         <Route path={ROUTES.forgot} element={<ForgotPasswordPage />} />
-        <Route path={ROUTES.appRoot} element={<AuthLayout setUser={setUser} />}>
+        <Route
+          path={ROUTES.appRoot}
+          element={<AuthLayout setAppUser={setAppUser} />}
+        >
           <Route index element={<DashboardPage />} />
           <Route path={ROUTES.dashboard} element={<DashboardPage />} />
           <Route path={ROUTES.dailyEntries} element={<DailyEntriesPage />} />

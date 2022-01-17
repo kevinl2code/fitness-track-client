@@ -1,6 +1,6 @@
 import { config } from 'aws-sdk'
 import { ICreateDailyEntry } from '../components/DailyEntryCreateNew/DailyEntryCreateNew'
-import { DailyEntry, Meal, User } from '../model/Model'
+import { DailyEntry, EntryMeal, User } from '../model/Model'
 
 config.update({
   region: process.env.REACT_APP_REGION,
@@ -67,7 +67,7 @@ export class DataService {
 
   public async updateDailyEntryMeals(
     dailyEntryId: string,
-    updatedDailyEntry: Meal[]
+    updatedDailyEntry: EntryMeal[]
   ) {
     const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?dailyEntryId=${dailyEntryId}`
     const requestOptions: RequestInit = {

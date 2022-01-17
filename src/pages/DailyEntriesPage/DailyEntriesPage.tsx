@@ -82,6 +82,7 @@ export const DailyEntriesPage: React.FC = () => {
     <DailyEntryCreateNew
       date={currentlySelectedDate!}
       useApi={useApi}
+      sub={user?.sub!}
       setLoading={setLoading}
       setDailyEntry={setDailyEntry}
     />

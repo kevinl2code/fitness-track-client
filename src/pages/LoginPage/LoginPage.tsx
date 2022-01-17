@@ -25,14 +25,13 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
     control,
     formState: { errors },
   } = useForm()
-  const navigate = useNavigate()
+
   const authService = new AuthService()
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)
     if (result) {
       setUser(result)
-      navigate(`app/${ROUTES.dashboard}`)
     } else {
       console.log('Login failed. Please check your credentials')
     }

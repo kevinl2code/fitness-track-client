@@ -11,7 +11,7 @@ export interface UserAttribute {
   Value: string
 }
 
-export interface Meal {
+export interface EntryMeal {
   name: string
   calories: number
   protein: number
@@ -28,7 +28,7 @@ export interface DailyEntry {
   dailyEntryId: string
   date: string
   weight: number
-  meals: Meal[] | []
+  meals: EntryMeal[] | []
   activityLevel: ActivityLevel
 }
 
@@ -44,4 +44,22 @@ export interface UserState {
   height: number
   birthday: string
   email: string
+  sub: string
+}
+
+export type CycleType = 'CUT' | 'BULK' | 'MAINTAIN'
+
+export interface Cycle {
+  cycleType: CycleType
+  startingWeight: number
+  goalWeight: number
+  startDate: string
+  duration: number
+}
+
+export interface NutritionalLibraryItem {
+  name: string
+  caloriesPerGram: number
+  proteinPerGram: number
+  servingSize: number
 }

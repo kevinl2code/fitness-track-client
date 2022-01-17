@@ -1,4 +1,5 @@
-import { DailyEntry, Meal, User } from '../../model/Model'
+import { ICreateDailyEntry } from '../../components/DailyEntryCreateNew/DailyEntryCreateNew'
+import { DailyEntry, EntryMeal, User } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 
 export class UseApi {
@@ -33,7 +34,18 @@ export class UseApi {
     }
   }
 
-  public async deleteMeal(mealIndex: number, rows: Meal[]) {
+  public async createNewDailyEntry(newDailyEntry: ICreateDailyEntry) {
+    try {
+      this.dataService.setUser(this.user)
+      const result = await this.dataService.createDailyEntry(newDailyEntry)
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(`Error while creating entry: ${error.message}`)
+      }
+    }
+  }
+
+  public async deleteMeal(mealIndex: number, rows: EntryMeal[]) {
     const newMeals =
       rows.filter((meal, index) => {
         return index !== mealIndex

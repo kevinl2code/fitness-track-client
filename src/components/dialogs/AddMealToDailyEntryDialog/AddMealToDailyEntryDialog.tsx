@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry, Meal } from '../../../model/Model'
+import { DailyEntry, EntryMeal } from '../../../model/Model'
 import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
 
 interface Props {
@@ -41,7 +41,7 @@ export const AddMealToDailyEntryDialog: React.FC<Props> = ({
     reset()
   }
 
-  const onSubmit: SubmitHandler<Meal> = async (data: any) => {
+  const onSubmit: SubmitHandler<EntryMeal> = async (data: any) => {
     if (typeof data === 'object' && 'calories' in data) {
       data.calories = parseInt(data.calories)
     }

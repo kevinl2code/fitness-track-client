@@ -27,13 +27,15 @@ import { UserContext } from '../../app/App'
 import { Calculate } from '../../utilities/Calculate'
 import { User } from '../../model/Model'
 import { Convert } from '../../utilities/Convert'
+import { NewUserDialog } from '../dialogs/NewUserDialog'
 
 interface Props {
-  setUser: (user: User | null) => Promise<void>
+  setAppUser: (user: User | null) => Promise<void>
 }
 
-export const MainAppBar: React.FC<Props> = ({ setUser }) => {
+export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [openNewUserDialog, setOpenNewUserDialog] = React.useState(true)
   const calculate = new Calculate()
   const convert = new Convert()
   const navigate = useNavigate()
@@ -45,7 +47,7 @@ export const MainAppBar: React.FC<Props> = ({ setUser }) => {
 
   const handleLogoutClick = (route: string) => {
     authService.logOut()
-    setUser(null)
+    setAppUser(null)
     navigate(route)
     handleClose()
   }
@@ -62,6 +64,11 @@ export const MainAppBar: React.FC<Props> = ({ setUser }) => {
 
   return (
     <>
+      <NewUserDialog
+        open={openNewUserDialog}
+        user={user!}
+        setDialogOpenState={setOpenNewUserDialog}
+      />
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
