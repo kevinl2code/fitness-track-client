@@ -2,7 +2,7 @@ import { Card, Divider, Grid, LinearProgress } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
 import { DailyEntryCardItem } from '../../components/DailyEntryCardItem'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { UseApi } from './UseApi'
 import { DailyEntry } from '../../model/Model'
@@ -16,11 +16,13 @@ import {
   UpdateDailyEntryActivityLevelDialog,
   AddMealToDailyEntryDialog,
 } from '../../components/dialogs'
+import { UserContext } from '../../app/App'
 
 const today = DateTime.now().toLocaleString()
 const testDate = new Date(today)
 
 export const DailyEntriesPage: React.FC = () => {
+  const user = useContext(UserContext)
   const [pickerDate, setPickerDate] = useState<Date | null>(testDate)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [loading, setLoading] = useState(true)
@@ -29,8 +31,8 @@ export const DailyEntriesPage: React.FC = () => {
     React.useState(false)
   const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
     React.useState(false)
-
-  const useApi = new UseApi(dailyEntry, setDailyEntry)
+  // console.log(user?.user)
+  const useApi = new UseApi(user?.user!, dailyEntry, setDailyEntry)
   const handleOpenAddMealDialog = () => {
     setOpenMealDialog(true)
   }
@@ -48,12 +50,7 @@ export const DailyEntriesPage: React.FC = () => {
   useEffect(() => {
     useApi.fetchPageData(currentlySelectedDate!, setLoading, setDailyEntry)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    currentlySelectedDate,
-    openMealDialog,
-    openUpdateWeightDialog,
-    openUpdateActivityLevelDialog,
-  ])
+  }, [currentlySelectedDate])
 
   const weight = dailyEntry?.weight || '-'
   const activityLevel = dailyEntry?.activityLevel || '-'
@@ -82,7 +79,12 @@ export const DailyEntriesPage: React.FC = () => {
       />{' '}
     </>
   ) : (
-    <DailyEntryCreateNew date={currentlySelectedDate!} />
+    <DailyEntryCreateNew
+      date={currentlySelectedDate!}
+      useApi={useApi}
+      setLoading={setLoading}
+      setDailyEntry={setDailyEntry}
+    />
   )
 
   return (

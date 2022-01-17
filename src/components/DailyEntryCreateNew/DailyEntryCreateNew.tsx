@@ -14,6 +14,8 @@ import {
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import React from 'react'
 import { DataService } from '../../services/DataService'
+import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
+import { DailyEntry } from '../../model/Model'
 
 interface IFormInput {
   weight: number
@@ -29,9 +31,17 @@ export interface ICreateDailyEntry {
 
 interface Props {
   date: string
+  useApi: UseApi
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
 }
 
-export const DailyEntryCreateNew: React.FC<Props> = ({ date }) => {
+export const DailyEntryCreateNew: React.FC<Props> = ({
+  date,
+  useApi,
+  setLoading,
+  setDailyEntry,
+}) => {
   const {
     register,
     handleSubmit,
@@ -49,7 +59,8 @@ export const DailyEntryCreateNew: React.FC<Props> = ({ date }) => {
     }
     try {
       const id = await dataservice.createDailyEntry(newDailyEntry)
-      alert(`Created daily entry with id: ${id} for ${date}`)
+      // alert(`Created daily entry with id: ${id} for ${date}`)
+      useApi.fetchPageData(newDailyEntry.date!, setLoading, setDailyEntry)
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error while creating space: ${error.message}`)

@@ -1,17 +1,20 @@
-import { DailyEntry, Meal } from '../../model/Model'
+import { DailyEntry, Meal, User } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 
 export class UseApi {
   private dailyEntry: DailyEntry | null
   setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
   private dataService: DataService
+  private user: User
 
   public constructor(
+    user: User,
     dailyEntry: DailyEntry | null,
     setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
   ) {
     this.dailyEntry = dailyEntry
     this.dataService = new DataService()
+    this.user = user
     this.setDailyEntry = setDailyEntry
   }
 
@@ -21,6 +24,7 @@ export class UseApi {
     setDailyEntry: React.Dispatch<React.SetStateAction<null | DailyEntry>>
   ) {
     if (currentlySelectedDate) {
+      this.dataService.setUser(this.user)
       const data = await this.dataService.getDailyEntryByDate(
         currentlySelectedDate
       )
@@ -36,6 +40,7 @@ export class UseApi {
       }) ?? []
     if (this.dailyEntry) {
       try {
+        this.dataService.setUser(this.user)
         const result = await this.dataService.updateDailyEntryMeals(
           this.dailyEntry?.dailyEntryId,
           newMeals
@@ -52,6 +57,7 @@ export class UseApi {
   public async addMeal(data: any) {
     if (this.dailyEntry) {
       try {
+        this.dataService.setUser(this.user)
         const result = await this.dataService.updateDailyEntryMeals(
           this.dailyEntry?.dailyEntryId,
           [...this.dailyEntry.meals, data]
@@ -68,6 +74,7 @@ export class UseApi {
   public async updateWeight(data: any) {
     if (this.dailyEntry) {
       try {
+        this.dataService.setUser(this.user)
         const result = await this.dataService.updateDailyEntryWeight(
           this.dailyEntry?.dailyEntryId,
           data.weight
@@ -84,6 +91,7 @@ export class UseApi {
   public async updateActivityLevel(data: any) {
     if (this.dailyEntry) {
       try {
+        this.dataService.setUser(this.user)
         const result = await this.dataService.updateDailyEntryActivityLevel(
           this.dailyEntry.dailyEntryId,
           data.activityLevel

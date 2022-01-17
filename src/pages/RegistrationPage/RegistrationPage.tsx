@@ -65,7 +65,6 @@ export const RegistrationPage: React.FC = () => {
       data.email
     )
     if (result) {
-      console.log(result)
       handleOpenConfirmRegistrationDialog()
     } else {
       console.log('Login failed. Please check your credentials')

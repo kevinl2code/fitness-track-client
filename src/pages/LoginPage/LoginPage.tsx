@@ -7,7 +7,7 @@ import LockIcon from '@mui/icons-material/Lock'
 import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../navigation'
 import { AuthService } from '../../services/AuthService'
-import { CognitoUser } from '@aws-amplify/auth'
+import { User } from '../../model/Model'
 
 interface IFormInput {
   userName: string
@@ -15,7 +15,7 @@ interface IFormInput {
 }
 
 interface Props {
-  setUser: React.Dispatch<React.SetStateAction<CognitoUser | null>>
+  setUser: (user: User | null) => Promise<void>
 }
 
 export const LoginPage: React.FC<Props> = ({ setUser }) => {
@@ -31,7 +31,7 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)
     if (result) {
-      setUser(result.cognitoUser)
+      setUser(result)
       navigate(`app/${ROUTES.dashboard}`)
     } else {
       console.log('Login failed. Please check your credentials')

@@ -1,12 +1,12 @@
-import { CognitoUser } from '@aws-amplify/auth'
 import { Box, Container } from '@mui/material'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { MainAppBar } from '../components/MainAppBar/MainAppBar'
 import { MainDrawer } from '../components/MainDrawer/MainDrawer'
+import { User } from '../model/Model'
 
 interface Props {
-  setUser: React.Dispatch<React.SetStateAction<CognitoUser | null>>
+  setUser: (user: User | null) => Promise<void>
 }
 
 export const AuthLayout: React.FC<Props> = ({ children, setUser }) => {

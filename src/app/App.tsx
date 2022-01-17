@@ -4,24 +4,40 @@ import DateAdapter from '@mui/lab/AdapterLuxon'
 import React, { useEffect } from 'react'
 import { NavigationContainer } from '../navigation/NavigationContainer'
 import { defaultTheme } from '../themes/default-theme'
-import { UserState } from '../model/Model'
+import { User, UserState } from '../model/Model'
 import { AuthService } from '../services/AuthService'
-import { CognitoUser } from '@aws-amplify/auth'
-
+import { DataService } from '../services/DataService'
 export const UserContext = React.createContext<UserState | null>(null)
 
 const authService = new AuthService()
+const dataService = new DataService()
 
 function App() {
-  const [user, setUser] = React.useState<CognitoUser | null>(null)
+  const [user, setUser] = React.useState<User | null>(null)
   const [userContext, setUserContext] = React.useState<UserState | null>(null)
+
+  const setAppUser = async (user: User | null) => {
+    setUser(user)
+    if (user) {
+      const isAdmin = authService.isUserAdmin(user)
+      if (isAdmin) {
+        user.isAdmin = true
+      }
+      dataService.setUser(user)
+      await authService.getAWSTemporaryCreds(user.cognitoUser)
+    }
+  }
 
   useEffect(() => {
     const getUserContextValue = async () => {
       if (user) {
         const userInfo = await authService.currentUserInfo()
         setUserContext({
-          userName: userInfo.username,
+          user: {
+            userName: userInfo.username,
+            cognitoUser: user.cognitoUser,
+            isAdmin: user.isAdmin,
+          },
           firstName: userInfo.attributes.given_name,
           lastName: userInfo.attributes.family_name,
           sex: userInfo.attributes.gender,
@@ -29,8 +45,6 @@ function App() {
           birthday: userInfo.attributes.birthdate,
           email: userInfo.attributes.email,
         })
-
-        console.log(userInfo)
       }
     }
     getUserContextValue()
@@ -42,7 +56,7 @@ function App() {
         <CssBaseline />
         <LocalizationProvider dateAdapter={DateAdapter}>
           <UserContext.Provider value={userContext}>
-            <NavigationContainer setUser={setUser} />
+            <NavigationContainer setUser={setAppUser} user={user} />
           </UserContext.Provider>
         </LocalizationProvider>
       </ThemeProvider>

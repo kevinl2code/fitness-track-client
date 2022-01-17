@@ -22,10 +22,13 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
   const user = useContext(UserContext)
   const sort = new Sort()
   const getData = useCallback(async () => {
-    const dataservice = new DataService()
-    const data = await dataservice.getDailyEntries()
-    setEntries(data)
-  }, [])
+    if (user) {
+      const dataService = new DataService()
+      dataService.setUser(user?.user!)
+      const data = await dataService.getDailyEntries()
+      setEntries(data)
+    }
+  }, [user])
 
   useEffect(() => {
     getData()
@@ -34,7 +37,7 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
   if (!entries) {
     return <h1>No entries</h1>
   }
-  console.log(user)
+  // console.log(user)
 
   const sortedEntries: DailyEntry[] = sort.byDate(entries)
 

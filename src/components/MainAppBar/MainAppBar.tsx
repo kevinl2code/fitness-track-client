@@ -25,14 +25,17 @@ import {
 } from '@mui/material'
 import { UserContext } from '../../app/App'
 import { Calculate } from '../../utilities/Calculate'
+import { User } from '../../model/Model'
+import { Convert } from '../../utilities/Convert'
 
 interface Props {
-  setUser: React.Dispatch<React.SetStateAction<CognitoUser | null>>
+  setUser: (user: User | null) => Promise<void>
 }
 
 export const MainAppBar: React.FC<Props> = ({ setUser }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const calculate = new Calculate()
+  const convert = new Convert()
   const navigate = useNavigate()
   const authService = new AuthService()
   const user = React.useContext(UserContext)
@@ -117,7 +120,7 @@ export const MainAppBar: React.FC<Props> = ({ setUser }) => {
                     <Typography variant="h6">{`${user?.firstName} ${user?.lastName}`}</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography>{user?.userName}</Typography>
+                    <Typography>{user?.user.userName}</Typography>
                   </Grid>
                   <Divider sx={{ width: '100%', marginTop: '1rem' }} />
                   <Grid item sx={{ width: '100%' }}>
@@ -162,7 +165,14 @@ export const MainAppBar: React.FC<Props> = ({ setUser }) => {
                         </ListItemAvatar>
                         <ListItemText
                           primary="Height"
-                          secondary={`${user?.height} inches`}
+                          secondary={
+                            user?.height
+                              ? `${convert.inchesToFeetAndInches(
+                                  user.height,
+                                  'ABBREVIATED'
+                                )}`
+                              : '-'
+                          }
                         />
                       </ListItem>
                       <ListItem
