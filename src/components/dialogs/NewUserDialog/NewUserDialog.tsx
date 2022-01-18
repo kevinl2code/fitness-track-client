@@ -12,13 +12,19 @@ import {
   StepLabel,
   Stepper,
   Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputAdornment,
+  TextField,
 } from '@mui/material'
-import React from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import React, { useEffect } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { UserState } from '../../../model/Model'
 import { AuthService } from '../../../services/AuthService'
 import { TextInput } from '../../form/TextInput'
+import { NewUserDialogForm } from './NewUserDialogForm'
 
 interface Props {
   open: boolean
@@ -31,7 +37,12 @@ interface IFormInput {
   code: string
 }
 
-const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad']
+const steps = ['Current Weight', 'Goal Weight', 'Timeframe', 'Review']
+const vh = Math.max(
+  document.documentElement.clientHeight || 0,
+  window.innerHeight || 0
+)
+const dialogHeight = vh * 0.5
 
 export const NewUserDialog: React.FC<Props> = ({
   open,
@@ -42,10 +53,12 @@ export const NewUserDialog: React.FC<Props> = ({
   const [skipped, setSkipped] = React.useState(new Set<number>())
   const {
     reset,
+    register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm()
+    getValues,
+  } = useForm({ mode: 'onBlur' })
   const authService = new AuthService()
   const navigate = useNavigate()
 
@@ -54,42 +67,12 @@ export const NewUserDialog: React.FC<Props> = ({
     reset()
   }
 
-  const isStepOptional = (step: number) => {
-    return step === 1
-  }
-
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step)
-  }
-
   const handleNext = () => {
-    let newSkipped = skipped
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values())
-      newSkipped.delete(activeStep)
-    }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
-    setSkipped(newSkipped)
   }
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  }
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.")
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values())
-      newSkipped.add(activeStep)
-      return newSkipped
-    })
   }
 
   const handleReset = () => {
@@ -97,18 +80,19 @@ export const NewUserDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data: any) => {
-    const result = await authService.confirmSignUp(data.username, data.code)
-    if (result) {
-      reset()
-      setDialogOpenState(false)
-      navigate('/')
-    } else {
-      console.log('Confirmation failed. Please check your credentials')
-    }
+    console.log(data)
   }
+  const values = getValues()
+
+  console.log(values)
 
   return (
-    <Dialog open={open} onClose={handleCloseDialog}>
+    <Dialog
+      open={open}
+      onClose={handleCloseDialog}
+      fullWidth
+      // sx={{ height: dialogHeight }}
+    >
       <DialogTitle
         sx={{ textAlign: 'center' }}
       >{`Welcome ${user.firstName}`}</DialogTitle>
@@ -118,20 +102,10 @@ export const NewUserDialog: React.FC<Props> = ({
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => {
               const stepProps: { completed?: boolean } = {}
-              const labelProps: {
-                optional?: React.ReactNode
-              } = {}
-              if (isStepOptional(index)) {
-                labelProps.optional = (
-                  <Typography variant="caption">Optional</Typography>
-                )
-              }
-              if (isStepSkipped(index)) {
-                stepProps.completed = false
-              }
+
               return (
                 <Step key={label} {...stepProps}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
+                  <StepLabel>{label}</StepLabel>
                 </Step>
               )
             })}
@@ -148,9 +122,17 @@ export const NewUserDialog: React.FC<Props> = ({
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                Step {activeStep + 1}
-              </Typography>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                style={{ marginTop: '2rem' }}
+              >
+                <NewUserDialogForm
+                  activeStep={activeStep}
+                  register={register}
+                  control={control}
+                  values={values}
+                />
+              </form>
               <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                 <Button
                   color="inherit"
@@ -161,11 +143,6 @@ export const NewUserDialog: React.FC<Props> = ({
                   Back
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
-                {isStepOptional(activeStep) && (
-                  <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                    Skip
-                  </Button>
-                )}
                 <Button onClick={handleNext}>
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button>
@@ -173,56 +150,6 @@ export const NewUserDialog: React.FC<Props> = ({
             </React.Fragment>
           )}
         </Box>
-        {/* <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container justifyContent="center">
-            <Grid item container alignItems="center" sx={{ padding: '2rem' }}>
-              <Grid
-                item
-                xs={12}
-                container
-                direction={'column'}
-                sx={{
-                  paddingLeft: '2rem',
-                  paddingRight: '2rem',
-                  paddingBottom: '1rem',
-                }}
-              >
-                <TextInput
-                  control={control}
-                  label="Username"
-                  name="username"
-                  placeholder="Username"
-                  inputProps={{ position: 'start', icon: <AccountCircle /> }}
-                />
-              </Grid>
-            </Grid>
-            <Grid item container alignItems="center" sx={{ padding: '2rem' }}>
-              <Grid
-                item
-                xs={12}
-                container
-                direction={'column'}
-                sx={{
-                  paddingLeft: '2rem',
-                  paddingRight: '2rem',
-                  paddingBottom: '1rem',
-                }}
-              >
-                <TextInput
-                  control={control}
-                  label="Verification Code"
-                  name="code"
-                  placeholder="Verification Code"
-                  inputProps={{ position: 'start', icon: <AccountCircle /> }}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button type="submit">Confirm</Button>
-          </DialogActions>
-        </form> */}
       </DialogContent>
     </Dialog>
   )
