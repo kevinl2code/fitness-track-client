@@ -25,11 +25,11 @@ export type ActivityLevel =
   | 'EXTRA_ACTIVE'
 
 export interface DailyEntry {
-  dailyEntryId: string
-  date: string
-  weight: number
-  meals: EntryMeal[] | []
-  activityLevel: ActivityLevel
+  userId: string
+  sortKey: string
+  dailyEntryWeight: number
+  dailyEntryMeals: EntryMeal[] | []
+  dailyEntryActivityLevel: ActivityLevel
 }
 
 export type Sex = 'MALE' | 'FEMALE'

@@ -42,7 +42,7 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<Partial<EntryMeal>> = async (data: any) => {
-    useApi.updateActivityLevel(data)
+    useApi.updateActivityLevel(data.activityLevel)
     setDialogOpenState(false)
   }
 
@@ -51,7 +51,7 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
       <DialogTitle>Add Meal</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <DialogContentText>
-          {`Edit activity level on daily entry for ${entry?.date}`}
+          {`Edit activity level on daily entry for ${entry?.sortKey}`}
         </DialogContentText>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justifyContent="center">

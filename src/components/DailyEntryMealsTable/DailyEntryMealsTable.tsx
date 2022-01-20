@@ -25,7 +25,7 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
   useApi,
   handleOpenAddMealDialog,
 }) => {
-  const generatedRows = rows.map((row, index) => (
+  const generatedRows = rows?.map((row, index) => (
     <TableRow
       key={`${row.name} + ${index}`}
       // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

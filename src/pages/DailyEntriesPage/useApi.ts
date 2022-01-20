@@ -7,34 +7,40 @@ export class UseApi {
   setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
   private dataService: DataService
   private user: User
+  private userId: string
+  private currentlySelectedDate: string | undefined
 
   public constructor(
     user: User,
+    userId: string,
+    currentlySelectedDate: string | undefined,
     dailyEntry: DailyEntry | null,
     setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
   ) {
     this.dailyEntry = dailyEntry
     this.dataService = new DataService()
     this.user = user
+    this.userId = userId
+    this.currentlySelectedDate = currentlySelectedDate
     this.setDailyEntry = setDailyEntry
   }
 
   public async fetchPageData(
-    currentlySelectedDate: string,
     setPageLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setDailyEntry: React.Dispatch<React.SetStateAction<null | DailyEntry>>
   ) {
-    if (currentlySelectedDate) {
+    if (this.currentlySelectedDate) {
       this.dataService.setUser(this.user)
       const data = await this.dataService.getDailyEntryByDate(
-        currentlySelectedDate
+        this.userId,
+        this.currentlySelectedDate
       )
       setPageLoading(false)
       data.length > 0 ? setDailyEntry(data[0]) : setDailyEntry(null)
     }
   }
 
-  public async createNewDailyEntry(newDailyEntry: ICreateDailyEntry) {
+  public async createNewDailyEntry(newDailyEntry: any) {
     try {
       this.dataService.setUser(this.user)
       const result = await this.dataService.createDailyEntry(newDailyEntry)
@@ -52,12 +58,15 @@ export class UseApi {
       }) ?? []
     if (this.dailyEntry) {
       try {
-        this.dataService.setUser(this.user)
-        const result = await this.dataService.updateDailyEntryMeals(
-          this.dailyEntry?.dailyEntryId,
-          newMeals
-        )
-        this.setDailyEntry({ ...this.dailyEntry, meals: result })
+        if (this.currentlySelectedDate) {
+          this.dataService.setUser(this.user)
+          const result = await this.dataService.updateDailyEntryMeals(
+            this.userId,
+            this.currentlySelectedDate,
+            newMeals
+          )
+          this.setDailyEntry({ ...this.dailyEntry, dailyEntryMeals: result })
+        }
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error deleting meals: ${error.message}`)
@@ -69,12 +78,16 @@ export class UseApi {
   public async addMeal(data: any) {
     if (this.dailyEntry) {
       try {
-        this.dataService.setUser(this.user)
-        const result = await this.dataService.updateDailyEntryMeals(
-          this.dailyEntry?.dailyEntryId,
-          [...this.dailyEntry.meals, data]
-        )
-        this.setDailyEntry({ ...this.dailyEntry, meals: result })
+        if (this.currentlySelectedDate) {
+          this.dataService.setUser(this.user)
+          const result = await this.dataService.updateDailyEntryMeals(
+            this.userId,
+            this.currentlySelectedDate,
+            [...this.dailyEntry.dailyEntryMeals, data]
+          )
+          console.log(result)
+          this.setDailyEntry({ ...this.dailyEntry, dailyEntryMeals: result })
+        }
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error adding meal: ${error.message}`)
@@ -86,12 +99,15 @@ export class UseApi {
   public async updateWeight(data: any) {
     if (this.dailyEntry) {
       try {
-        this.dataService.setUser(this.user)
-        const result = await this.dataService.updateDailyEntryWeight(
-          this.dailyEntry?.dailyEntryId,
-          data.weight
-        )
-        this.setDailyEntry({ ...this.dailyEntry, weight: result })
+        if (this.currentlySelectedDate) {
+          this.dataService.setUser(this.user)
+          const result = await this.dataService.updateDailyEntryWeight(
+            this.userId,
+            this.currentlySelectedDate,
+            data
+          )
+          this.setDailyEntry({ ...this.dailyEntry, dailyEntryWeight: result })
+        }
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error updating weight: ${error.message}`)
@@ -103,12 +119,18 @@ export class UseApi {
   public async updateActivityLevel(data: any) {
     if (this.dailyEntry) {
       try {
-        this.dataService.setUser(this.user)
-        const result = await this.dataService.updateDailyEntryActivityLevel(
-          this.dailyEntry.dailyEntryId,
-          data.activityLevel
-        )
-        this.setDailyEntry({ ...this.dailyEntry, activityLevel: result })
+        if (this.currentlySelectedDate) {
+          this.dataService.setUser(this.user)
+          const result = await this.dataService.updateDailyEntryActivityLevel(
+            this.userId,
+            this.currentlySelectedDate,
+            data
+          )
+          this.setDailyEntry({
+            ...this.dailyEntry,
+            dailyEntryActivityLevel: result,
+          })
+        }
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error updating activity level: ${error.message}`)

@@ -53,8 +53,11 @@ export class DataService {
     }
   }
 
-  public async getDailyEntryByDate(date: string): Promise<DailyEntry[]> {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?date=${date}`
+  public async getDailyEntryByDate(
+    userId: string,
+    date: string
+  ): Promise<DailyEntry[]> {
+    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
     const requestResult = await fetch(requestUrl, {
       method: 'GET',
       headers: {
@@ -66,56 +69,60 @@ export class DataService {
   }
 
   public async updateDailyEntryMeals(
-    dailyEntryId: string,
+    userId: string,
+    date: string,
     updatedDailyEntry: EntryMeal[]
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?dailyEntryId=${dailyEntryId}`
+    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
         Authorization: this.getUserIdToken(),
       },
-      body: JSON.stringify({ meals: updatedDailyEntry }),
+      body: JSON.stringify({ dailyEntryMeals: updatedDailyEntry }),
     }
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    return resultJSON.Attributes.meals
+    return resultJSON.Attributes.dailyEntryMeals
   }
 
   public async updateDailyEntryWeight(
-    dailyEntryId: string,
-    updatedDailyEntry: number
+    userId: string,
+    date: string,
+    updatedDailyEntryWeight: number
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?dailyEntryId=${dailyEntryId}`
+    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
         Authorization: this.getUserIdToken(),
       },
-      body: JSON.stringify({ weight: updatedDailyEntry }),
+      body: JSON.stringify({ dailyEntryWeight: updatedDailyEntryWeight }),
     }
+    console.log(requestOptions)
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    return resultJSON.Attributes.weight
+    return resultJSON.Attributes.dailyEntryWeight
   }
 
   public async updateDailyEntryActivityLevel(
-    dailyEntryId: string,
+    userId: string,
+    date: string,
     updatedDailyEntry: string
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?dailyEntryId=${dailyEntryId}`
+    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
         Authorization: this.getUserIdToken(),
       },
-      body: JSON.stringify({ activityLevel: updatedDailyEntry }),
+      body: JSON.stringify({ dailyEntryActivityLevel: updatedDailyEntry }),
     }
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    return resultJSON.Attributes.activityLevel
+    return resultJSON.Attributes.dailyEntryActivityLevel
   }
 }

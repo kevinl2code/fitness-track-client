@@ -13,17 +13,23 @@ export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry }) => {
   }
 
   const calculate = new Calculate()
-  const { weight, activityLevel, meals } = dailyEntry
+  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryMeals } =
+    dailyEntry
   const fakeUser = {
     height: 74,
     sex: 'MALE' as Sex,
     age: 30,
   }
 
-  const bmr = calculate.BMR(fakeUser.height, weight, fakeUser.age, fakeUser.sex)
-  const tdee = calculate.TDEE(bmr!, activityLevel)
+  const bmr = calculate.BMR(
+    fakeUser.height,
+    dailyEntryWeight,
+    fakeUser.age,
+    fakeUser.sex
+  )
+  const tdee = calculate.TDEE(bmr!, dailyEntryActivityLevel)
 
-  const confirmedMeals = meals.length > 0 ? meals : null
+  const confirmedMeals = dailyEntryMeals?.length > 0 ? dailyEntryMeals : null
 
   const caloriesConsumed =
     confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
@@ -32,11 +38,11 @@ export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry }) => {
     confirmedMeals?.reduce((acc, meal) => acc + meal.protein, 0) || 0
 
   const proteinRequired = calculate.proteinRequiredForWeightLoss(
-    weight,
-    activityLevel
+    dailyEntryWeight,
+    dailyEntryActivityLevel
   )
 
-  const bmi = calculate.BMI(fakeUser.height, weight)
+  const bmi = calculate.BMI(fakeUser.height, dailyEntryWeight)
 
   return (
     <Card variant="outlined">

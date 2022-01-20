@@ -13,21 +13,20 @@ import {
 } from '@mui/material'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import React from 'react'
-import { DataService } from '../../services/DataService'
 import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
-import { DailyEntry } from '../../model/Model'
+import { ActivityLevel, DailyEntry } from '../../model/Model'
 
 interface IFormInput {
   weight: number
-  activityLevel: string
+  activityLevel: ActivityLevel
 }
 
 export interface ICreateDailyEntry {
-  date: string
-  weight: number
-  activityLevel: string
-  sub: string
-  meals: []
+  userId: string
+  sortKey: string
+  dailyEntryWeight: number
+  dailyEntryMeals: []
+  dailyEntryActivityLevel: ActivityLevel
 }
 
 interface Props {
@@ -51,18 +50,17 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
-
+  console.log(date)
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    // const dataservice = new DataService()
     const newDailyEntry: ICreateDailyEntry = {
-      date: date,
-      weight: data.weight,
-      activityLevel: data.activityLevel,
-      meals: [],
-      sub: sub,
+      userId: sub,
+      sortKey: date,
+      dailyEntryWeight: data.weight,
+      dailyEntryMeals: [],
+      dailyEntryActivityLevel: data.activityLevel,
     }
     await useApi.createNewDailyEntry(newDailyEntry)
-    useApi.fetchPageData(newDailyEntry.date!, setLoading, setDailyEntry)
+    useApi.fetchPageData(setLoading, setDailyEntry)
   }
 
   return (

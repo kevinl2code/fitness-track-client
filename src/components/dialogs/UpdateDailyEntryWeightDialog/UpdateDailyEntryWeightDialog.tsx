@@ -42,7 +42,10 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<EntryMeal> = async (data: any) => {
-    useApi.updateWeight(data)
+    if (typeof data === 'object' && 'weight' in data) {
+      data.weight = parseInt(data?.weight)
+    }
+    useApi.updateWeight(data.weight)
     setDialogOpenState(false)
   }
 
@@ -61,7 +64,7 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
                 <Controller
                   name="weight"
                   control={control}
-                  defaultValue={entry?.weight}
+                  defaultValue={entry?.dailyEntryWeight}
                   render={({
                     field,
                     fieldState: { invalid, isTouched, isDirty, error },

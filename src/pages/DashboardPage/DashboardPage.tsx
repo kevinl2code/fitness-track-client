@@ -42,7 +42,8 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
   const sortedEntries: DailyEntry[] = sort.byDate(entries)
 
   const generatedRows = sortedEntries.map((entry, index) => {
-    const confirmedMeals = entry.meals.length > 0 ? entry.meals : null
+    const confirmedMeals =
+      entry.dailyEntryMeals.length > 0 ? entry.dailyEntryMeals : null
     const caloriesConsumed =
       confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
 
@@ -50,16 +51,16 @@ export const DashboardPage: React.FC<Props> = (props: Props) => {
       confirmedMeals?.reduce((acc, meal) => acc + meal.protein, 0) || 0
     return (
       <TableRow
-        key={`${entry.date} + ${index}`}
+        key={`${entry.sortKey} + ${index}`}
         // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
         <TableCell component="th" scope="row">
-          {entry.date}
+          {entry.sortKey}
         </TableCell>
         <TableCell align="right">{caloriesConsumed}</TableCell>
         <TableCell align="right">{proteinConsumed}</TableCell>
-        <TableCell align="right">{entry.activityLevel}</TableCell>
-        <TableCell align="right">{entry.weight}</TableCell>
+        <TableCell align="right">{entry.dailyEntryActivityLevel}</TableCell>
+        <TableCell align="right">{entry.dailyEntryWeight}</TableCell>
       </TableRow>
     )
   })

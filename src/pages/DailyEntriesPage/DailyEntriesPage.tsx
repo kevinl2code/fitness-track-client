@@ -18,12 +18,12 @@ import {
 } from '../../components/dialogs'
 import { UserContext } from '../../app/App'
 
-const today = DateTime.now().toLocaleString()
-const testDate = new Date(today)
+const today = DateTime.now()
+// const testDate = new Date(today)
 
 export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
-  const [pickerDate, setPickerDate] = useState<Date | null>(testDate)
+  const [pickerDate, setPickerDate] = useState<DateTime | null>(today)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [loading, setLoading] = useState(true)
   const [openMealDialog, setOpenMealDialog] = React.useState(false)
@@ -32,7 +32,14 @@ export const DailyEntriesPage: React.FC = () => {
   const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
     React.useState(false)
   // console.log(user?.user)
-  const useApi = new UseApi(user?.user!, dailyEntry, setDailyEntry)
+  const currentlySelectedDate = pickerDate?.toISODate()?.split('-')?.join('')
+  const useApi = new UseApi(
+    user?.user!,
+    user?.sub!,
+    currentlySelectedDate,
+    dailyEntry,
+    setDailyEntry
+  )
   const handleOpenAddMealDialog = () => {
     setOpenMealDialog(true)
   }
@@ -45,15 +52,13 @@ export const DailyEntriesPage: React.FC = () => {
     setOpenUpdateActivityLevelDialog(true)
   }
 
-  const currentlySelectedDate = pickerDate?.toLocaleString().split(',')[0]
-
   useEffect(() => {
-    useApi.fetchPageData(currentlySelectedDate!, setLoading, setDailyEntry)
+    useApi.fetchPageData(setLoading, setDailyEntry)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlySelectedDate])
 
-  const weight = dailyEntry?.weight || '-'
-  const activityLevel = dailyEntry?.activityLevel || '-'
+  const weight = dailyEntry?.dailyEntryWeight || '-'
+  const activityLevel = dailyEntry?.dailyEntryActivityLevel || '-'
 
   const mainContent = dailyEntry ? (
     <>
@@ -73,7 +78,7 @@ export const DailyEntriesPage: React.FC = () => {
         />
       </Card>
       <DailyEntryMealsTable
-        rows={dailyEntry?.meals}
+        rows={dailyEntry?.dailyEntryMeals}
         useApi={useApi}
         handleOpenAddMealDialog={handleOpenAddMealDialog}
       />{' '}
