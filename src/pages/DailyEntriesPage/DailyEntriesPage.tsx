@@ -17,6 +17,8 @@ import {
   AddMealToDailyEntryDialog,
 } from '../../components/dialogs'
 import { CycleContext, UserContext } from '../../app/App'
+import { LocalizationProvider } from '@mui/lab'
+import DateAdapter from '@mui/lab/AdapterLuxon'
 
 const today = DateTime.now()
 // const testDate = new Date(today)
@@ -33,7 +35,10 @@ export const DailyEntriesPage: React.FC = () => {
   const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
     React.useState(false)
   // console.log(user?.user)
+
+  const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
   const currentlySelectedDate = pickerDate?.toISODate()?.split('-')?.join('')
+  const isFirstDay = cycle?.startDate === currentlySelectedDate
   const useApi = new UseApi(
     user?.user!,
     user?.sub!,
@@ -41,23 +46,13 @@ export const DailyEntriesPage: React.FC = () => {
     dailyEntry,
     setDailyEntry
   )
-  const handleOpenAddMealDialog = () => {
-    setOpenMealDialog(true)
-  }
-
-  const handleOpenUpdateWeightDialog = () => {
-    setOpenUpdateWeightDialog(true)
-  }
-
-  const handleOpenUpdateActivityLevelDialog = () => {
-    setOpenUpdateActivityLevelDialog(true)
-  }
 
   useEffect(() => {
+    setLoading(true)
     useApi.fetchPageData(setLoading, setDailyEntry)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlySelectedDate])
-  console.log(cycle)
+  // console.log(cycle)
   const weight = dailyEntry?.dailyEntryWeight || '-'
   const activityLevel = dailyEntry?.dailyEntryActivityLevel || '-'
 
@@ -68,25 +63,33 @@ export const DailyEntriesPage: React.FC = () => {
           fieldType="weight"
           fieldLabel="Weight"
           fieldValue={`${weight} lbs`}
-          openDialog={handleOpenUpdateWeightDialog}
+          canEdit={isFirstDay ? false : true}
+          openDialog={() => {
+            setOpenUpdateWeightDialog(true)
+          }}
         />
         <Divider light />
         <DailyEntryCardItem
           fieldType="activity"
           fieldLabel="Activity Level"
           fieldValue={activityLevel}
-          openDialog={handleOpenUpdateActivityLevelDialog}
+          openDialog={() => {
+            setOpenUpdateActivityLevelDialog(true)
+          }}
         />
       </Card>
       <DailyEntryMealsTable
         rows={dailyEntry?.dailyEntryMeals}
         useApi={useApi}
-        handleOpenAddMealDialog={handleOpenAddMealDialog}
+        handleOpenAddMealDialog={() => {
+          setOpenMealDialog(true)
+        }}
       />{' '}
     </>
   ) : (
     <DailyEntryCreateNew
       date={currentlySelectedDate!}
+      cycle={cycle}
       useApi={useApi}
       sub={user?.sub!}
       setLoading={setLoading}
@@ -120,6 +123,7 @@ export const DailyEntriesPage: React.FC = () => {
             {/* <LocalizationProvider dateAdapter={DateAdapter}> */}
             <DatePicker
               value={pickerDate}
+              minDate={cycleStartDate}
               onChange={(newValue) => {
                 setPickerDate(newValue)
               }}

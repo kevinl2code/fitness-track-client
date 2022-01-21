@@ -1,25 +1,21 @@
-import { AccountCircle } from '@mui/icons-material'
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions,
   Button,
-  Grid,
   Box,
   Step,
   StepLabel,
   Stepper,
 } from '@mui/material'
 import { DateTime } from 'luxon'
-import React, { useEffect } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import React from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Cycle, UserState, CycleType } from '../../../model/Model'
 import { UseApi } from '../../../pages/DashboardPage/UseApi'
 import { AuthService } from '../../../services/AuthService'
-import { TextInput } from '../../form/TextInput'
 import { NewUserDialogForm } from './NewUserDialogForm'
 
 interface Props {
@@ -56,13 +52,13 @@ export const NewUserDialog: React.FC<Props> = ({
     formState: { errors },
     getValues,
   } = useForm({ mode: 'onBlur' })
-  const authService = new AuthService()
-  const navigate = useNavigate()
+  // const authService = new AuthService()
+  // const navigate = useNavigate()
 
-  const handleCloseDialog = () => {
-    setDialogOpenState(false)
-    reset()
-  }
+  // const handleCloseDialog = () => {
+  //   setDialogOpenState(false)
+  //   reset()
+  // }
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -84,7 +80,7 @@ export const NewUserDialog: React.FC<Props> = ({
     }
     const newUserCycle: Cycle = {
       userId: user.sub,
-      sortKey: 'cycle001',
+      sortKey: 'cycle000',
       cycleType: cycleType,
       startingWeight: values.currentWeight,
       goalWeight: values.goalWeight,
@@ -150,16 +146,6 @@ export const NewUserDialog: React.FC<Props> = ({
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
               {stepperButton}
-              {/* <Button
-                form="ff"
-                onClick={
-                  activeStep === steps.length - 1
-                    ? handleCloseDialog
-                    : handleNext
-                }
-              >
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </Button> */}
             </Box>
           </React.Fragment>
         </Box>

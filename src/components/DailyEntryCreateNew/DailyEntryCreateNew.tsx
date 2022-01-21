@@ -12,9 +12,9 @@ import {
   Typography,
 } from '@mui/material'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
-import { ActivityLevel, DailyEntry } from '../../model/Model'
+import { ActivityLevel, Cycle, DailyEntry } from '../../model/Model'
 
 interface IFormInput {
   weight: number
@@ -24,6 +24,7 @@ interface IFormInput {
 interface Props {
   date: string
   sub: string
+  cycle: Cycle | null
   useApi: UseApi
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
   setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
@@ -33,16 +34,23 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   date,
   useApi,
   sub,
+  cycle,
   setLoading,
   setDailyEntry,
 }) => {
   const {
     register,
     handleSubmit,
+    reset,
+    setValue,
     control,
     formState: { errors },
   } = useForm()
-  console.log(date)
+  const isFirstDay = date === cycle?.startDate
+  const weightDefaultValue = isFirstDay ? cycle.startingWeight : 0
+  useEffect(() => {
+    setValue('weight', weightDefaultValue)
+  }, [date, setValue, weightDefaultValue])
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const newDailyEntry: DailyEntry = {
       userId: sub,
@@ -55,12 +63,25 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
     useApi.fetchPageData(setLoading, setDailyEntry)
   }
 
+  const formHeaderSubText = {
+    CUT: 'lose some weight',
+    BULK: 'gain some weight',
+    MAINTAIN: 'maintain your weight',
+  }
+  console.log(cycle?.cycleType!)
+  const formHeaderText = {
+    firstDay: `Today marks the first day of your plan to ${
+      formHeaderSubText[cycle?.cycleType!]
+    }.  Since your starting weight was already entered, you will only need to set your activity level.`,
+    standard:
+      'No entries exist for this day. Get started by adding your weight and activity level.',
+  }
+
   return (
     <Card variant="outlined">
       <CardContent>
         <Typography>
-          No entries exist for this day. Get started by adding your weight and
-          activity level.
+          {isFirstDay ? formHeaderText.firstDay : formHeaderText.standard}
         </Typography>
       </CardContent>
       <Divider variant="middle" sx={{ minWidth: '85%' }} />
@@ -75,7 +96,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
                 <Controller
                   name="weight"
                   control={control}
-                  defaultValue={0}
+                  defaultValue={weightDefaultValue}
                   render={({
                     field,
                     fieldState: { invalid, isTouched, isDirty, error },
@@ -84,6 +105,8 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
                       <TextField
                         {...field}
                         error={invalid}
+                        disabled={isFirstDay}
+                        // value={isFirstDay ? cycle.startingWeight : field.value}
                         helperText={
                           invalid && 'Weight must be greater than 50 lbs'
                         }

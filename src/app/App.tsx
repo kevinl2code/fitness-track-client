@@ -20,6 +20,7 @@ function App() {
   const [userContext, setUserContext] = React.useState<UserState | null>(null)
   const [cycleContext, setCycleContext] = React.useState<Cycle | null>(null)
   const navigate = useNavigate()
+
   const setAppUser = async (user: User | null) => {
     setUser(user)
     if (user) {
@@ -46,13 +47,17 @@ function App() {
       })
       navigate(`app/${ROUTES.dashboard}`)
     }
+    if (!user) {
+      setUserContext(null)
+      setCycleContext(null)
+    }
   }
 
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
-        <LocalizationProvider dateAdapter={DateAdapter}>
+        <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
           <UserContext.Provider value={userContext}>
             <CycleContext.Provider value={cycleContext}>
               <NavigationContainer

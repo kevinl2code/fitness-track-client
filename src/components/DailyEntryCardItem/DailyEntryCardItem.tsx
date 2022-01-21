@@ -10,6 +10,7 @@ interface Props {
   fieldType: CardFieldType
   fieldLabel: string
   fieldValue: string
+  canEdit?: boolean
   openDialog?: () => void
 }
 
@@ -17,6 +18,7 @@ export const DailyEntryCardItem: React.FC<Props> = ({
   fieldType,
   fieldLabel,
   fieldValue,
+  canEdit = true,
   openDialog,
 }) => {
   const primaryIcon = {
@@ -39,9 +41,11 @@ export const DailyEntryCardItem: React.FC<Props> = ({
           </Typography>
         </Grid>
         <Grid item xs={1}>
-          <IconButton onClick={openDialog}>
-            <EditIcon />
-          </IconButton>
+          {canEdit && (
+            <IconButton onClick={openDialog}>
+              <EditIcon />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
     </CardContent>

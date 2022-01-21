@@ -1,5 +1,5 @@
 import { LinearProgress, Grid } from '@mui/material'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { CycleContext, UserContext } from '../../app/App'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
 import { DashboardGoalPanel } from '../../components/DashboardGoalPanel'

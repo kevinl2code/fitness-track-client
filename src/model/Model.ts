@@ -51,9 +51,9 @@ export interface UserState {
 // export type CycleType = 'CUT' | 'BULK' | 'MAINTAIN'
 
 export enum CycleType {
-  CUT,
-  BULK,
-  MAINTAIN,
+  CUT = 'CUT',
+  BULK = 'BULK',
+  MAINTAIN = 'MAINTAIN',
 }
 
 export interface Cycle {

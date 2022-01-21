@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography, Button, Grid } from '@mui/material'
 import { TextInput } from '../../components/form/TextInput'
-import React from 'react'
+import React, { useContext } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LockIcon from '@mui/icons-material/Lock'
@@ -8,6 +8,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../navigation'
 import { AuthService } from '../../services/AuthService'
 import { User } from '../../model/Model'
+
+import { CycleContext, UserContext } from '../../app/App'
 
 interface IFormInput {
   userName: string
@@ -27,6 +29,12 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
   } = useForm()
 
   const authService = new AuthService()
+
+  const user = useContext(UserContext)
+  const cycle = useContext(CycleContext)
+
+  console.log(user)
+  console.log(cycle)
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)
