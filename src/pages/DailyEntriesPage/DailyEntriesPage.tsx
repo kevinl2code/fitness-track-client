@@ -16,13 +16,14 @@ import {
   UpdateDailyEntryActivityLevelDialog,
   AddMealToDailyEntryDialog,
 } from '../../components/dialogs'
-import { UserContext } from '../../app/App'
+import { CycleContext, UserContext } from '../../app/App'
 
 const today = DateTime.now()
 // const testDate = new Date(today)
 
 export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
+  const cycle = useContext(CycleContext)
   const [pickerDate, setPickerDate] = useState<DateTime | null>(today)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [loading, setLoading] = useState(true)
@@ -56,7 +57,7 @@ export const DailyEntriesPage: React.FC = () => {
     useApi.fetchPageData(setLoading, setDailyEntry)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlySelectedDate])
-
+  console.log(cycle)
   const weight = dailyEntry?.dailyEntryWeight || '-'
   const activityLevel = dailyEntry?.dailyEntryActivityLevel || '-'
 

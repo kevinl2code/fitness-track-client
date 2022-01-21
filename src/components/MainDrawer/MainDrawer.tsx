@@ -8,7 +8,6 @@ import {
   ListItemText,
   Toolbar,
 } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
 import { Mail as MailIcon } from '@mui/icons-material'
 import React from 'react'
 import { ROUTES } from '../../navigation'
@@ -41,8 +40,8 @@ export const MainDrawer: React.FC = () => {
           />
           <MainDrawerItem
             itemType="dailyEntries"
-            label="Meal Data"
-            route={ROUTES.dailyEntries}
+            label="Foods"
+            route={ROUTES.foods}
           />
         </List>
         <Divider />

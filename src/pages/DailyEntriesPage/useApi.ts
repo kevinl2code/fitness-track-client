@@ -1,4 +1,3 @@
-import { ICreateDailyEntry } from '../../components/DailyEntryCreateNew/DailyEntryCreateNew'
 import { DailyEntry, EntryMeal, User } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 

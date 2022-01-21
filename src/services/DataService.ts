@@ -1,6 +1,5 @@
 import { config } from 'aws-sdk'
-import { ICreateDailyEntry } from '../components/DailyEntryCreateNew/DailyEntryCreateNew'
-import { DailyEntry, EntryMeal, User } from '../model/Model'
+import { Cycle, DailyEntry, EntryMeal, User, UserItem } from '../model/Model'
 
 config.update({
   region: process.env.REACT_APP_REGION,
@@ -23,23 +22,40 @@ export class DataService {
     this.user = user
   }
 
-  public async createDailyEntry(iCreateDailyEntry: ICreateDailyEntry) {
+  public async createDailyEntry(dailyEntry: DailyEntry) {
     const requestUrl = process.env.REACT_APP_API_DAILY_ENTRIES!
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
         Authorization: this.getUserIdToken(),
       },
-      body: JSON.stringify(iCreateDailyEntry),
+      body: JSON.stringify(dailyEntry),
     }
     const result = await fetch(requestUrl, requestOptions)
     const resultJSON = await result.json()
+    // console.log(resultJSON)
     return JSON.stringify(resultJSON.id)
   }
 
-  public async getDailyEntries(): Promise<DailyEntry[]> {
+  public async createUserCycle(cycle: Cycle) {
+    const requestUrl = process.env.REACT_APP_API_DAILY_ENTRIES!
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify(cycle),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+    const resultJSON = await result.json()
+    // console.log(resultJSON)
+    return JSON.stringify(resultJSON.id)
+  }
+
+  public async getDailyEntries(userId: string): Promise<UserItem[]> {
     if (this.user) {
-      const requestUrl = process.env.REACT_APP_API_DAILY_ENTRIES!
+      const requestUrl = `${process.env
+        .REACT_APP_API_DAILY_ENTRIES!}?userId=${userId}`
       const requestResult = await fetch(requestUrl, {
         method: 'GET',
         headers: {

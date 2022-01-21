@@ -1,4 +1,5 @@
 import { CognitoUser } from '@aws-amplify/auth'
+import { cursorTo } from 'readline'
 
 export interface User {
   userName: string
@@ -47,9 +48,17 @@ export interface UserState {
   sub: string
 }
 
-export type CycleType = 'CUT' | 'BULK' | 'MAINTAIN'
+// export type CycleType = 'CUT' | 'BULK' | 'MAINTAIN'
+
+export enum CycleType {
+  CUT,
+  BULK,
+  MAINTAIN,
+}
 
 export interface Cycle {
+  userId: string
+  sortKey: string
   cycleType: CycleType
   startingWeight: number
   goalWeight: number
@@ -63,3 +72,5 @@ export interface NutritionalLibraryItem {
   proteinPerGram: number
   servingSize: number
 }
+
+export type UserItem = Cycle | DailyEntry

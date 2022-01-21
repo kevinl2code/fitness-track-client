@@ -6,4 +6,5 @@ export const ROUTES = {
   dailyEntries: 'dailyEntries',
   register: 'register',
   forgot: 'forgot',
+  foods: 'foods',
 }

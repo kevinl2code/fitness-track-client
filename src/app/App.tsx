@@ -4,12 +4,13 @@ import DateAdapter from '@mui/lab/AdapterLuxon'
 import React, { useEffect } from 'react'
 import { NavigationContainer } from '../navigation/NavigationContainer'
 import { defaultTheme } from '../themes/default-theme'
-import { User, UserState } from '../model/Model'
+import { Cycle, User, UserState } from '../model/Model'
 import { AuthService } from '../services/AuthService'
 import { DataService } from '../services/DataService'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../navigation'
 export const UserContext = React.createContext<UserState | null>(null)
+export const CycleContext = React.createContext<Cycle | null>(null)
 
 const authService = new AuthService()
 const dataService = new DataService()
@@ -17,6 +18,7 @@ const dataService = new DataService()
 function App() {
   const [user, setUser] = React.useState<User | null>(null)
   const [userContext, setUserContext] = React.useState<UserState | null>(null)
+  const [cycleContext, setCycleContext] = React.useState<Cycle | null>(null)
   const navigate = useNavigate()
   const setAppUser = async (user: User | null) => {
     setUser(user)
@@ -52,7 +54,13 @@ function App() {
         <CssBaseline />
         <LocalizationProvider dateAdapter={DateAdapter}>
           <UserContext.Provider value={userContext}>
-            <NavigationContainer setAppUser={setAppUser} user={user} />
+            <CycleContext.Provider value={cycleContext}>
+              <NavigationContainer
+                setAppUser={setAppUser}
+                setCycleContext={setCycleContext}
+                user={user}
+              />
+            </CycleContext.Provider>
           </UserContext.Provider>
         </LocalizationProvider>
       </ThemeProvider>

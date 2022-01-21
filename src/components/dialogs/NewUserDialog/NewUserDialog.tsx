@@ -11,17 +11,13 @@ import {
   Step,
   StepLabel,
   Stepper,
-  Typography,
-  MenuItem,
-  Select,
-  FormControl,
-  InputAdornment,
-  TextField,
 } from '@mui/material'
+import { DateTime } from 'luxon'
 import React, { useEffect } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { UserState } from '../../../model/Model'
+import { Cycle, UserState, CycleType } from '../../../model/Model'
+import { UseApi } from '../../../pages/DashboardPage/UseApi'
 import { AuthService } from '../../../services/AuthService'
 import { TextInput } from '../../form/TextInput'
 import { NewUserDialogForm } from './NewUserDialogForm'
@@ -29,6 +25,7 @@ import { NewUserDialogForm } from './NewUserDialogForm'
 interface Props {
   open: boolean
   user: UserState
+  useApi: UseApi
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -47,10 +44,10 @@ const dialogHeight = vh * 0.5
 export const NewUserDialog: React.FC<Props> = ({
   open,
   user,
+  useApi,
   setDialogOpenState,
 }) => {
   const [activeStep, setActiveStep] = React.useState(0)
-  const [skipped, setSkipped] = React.useState(new Set<number>())
   const {
     reset,
     register,
@@ -74,22 +71,41 @@ export const NewUserDialog: React.FC<Props> = ({
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
-
-  const handleReset = () => {
-    setActiveStep(0)
-  }
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data: any) => {
-    console.log(data)
-  }
   const values = getValues()
+  const today = DateTime.now().toISODate()?.split('-')?.join('')
+  const onSubmit: SubmitHandler<IFormInput> = async (data: any) => {
+    let cycleType
+    if (values.goalWeight < values.currentWeight) {
+      cycleType = CycleType.CUT
+    } else if (values.goalWeight > values.currentWeight) {
+      cycleType = CycleType.BULK
+    } else {
+      cycleType = CycleType.MAINTAIN
+    }
+    const newUserCycle: Cycle = {
+      userId: user.sub,
+      sortKey: 'cycle001',
+      cycleType: cycleType,
+      startingWeight: values.currentWeight,
+      goalWeight: values.goalWeight,
+      startDate: today,
+      duration: values.timeFrame,
+    }
+    await useApi.createNewUserCycle(newUserCycle)
+    // console.log(newUserCycle)
+  }
 
-  console.log(values)
+  const stepperButton =
+    activeStep === steps.length - 1 ? (
+      <Button onClick={handleSubmit(onSubmit)}>Finish</Button>
+    ) : (
+      <Button onClick={handleNext}>Next</Button>
+    )
 
   return (
     <Dialog
       open={open}
-      onClose={handleCloseDialog}
+      // onClose={handleCloseDialog}
       fullWidth
       // sx={{ height: dialogHeight }}
     >
@@ -110,45 +126,42 @@ export const NewUserDialog: React.FC<Props> = ({
               )
             })}
           </Stepper>
-          {activeStep === steps.length ? (
-            <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                <Box sx={{ flex: '1 1 auto' }} />
-                <Button onClick={handleReset}>Reset</Button>
-              </Box>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                style={{ marginTop: '2rem' }}
+
+          <React.Fragment>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              style={{ marginTop: '2rem' }}
+            >
+              <NewUserDialogForm
+                activeStep={activeStep}
+                register={register}
+                control={control}
+                values={values}
+              />
+            </form>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
               >
-                <NewUserDialogForm
-                  activeStep={activeStep}
-                  register={register}
-                  control={control}
-                  values={values}
-                />
-              </form>
-              <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                <Button
-                  color="inherit"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
-                >
-                  Back
-                </Button>
-                <Box sx={{ flex: '1 1 auto' }} />
-                <Button onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
-              </Box>
-            </React.Fragment>
-          )}
+                Back
+              </Button>
+              <Box sx={{ flex: '1 1 auto' }} />
+              {stepperButton}
+              {/* <Button
+                form="ff"
+                onClick={
+                  activeStep === steps.length - 1
+                    ? handleCloseDialog
+                    : handleNext
+                }
+              >
+                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              </Button> */}
+            </Box>
+          </React.Fragment>
         </Box>
       </DialogContent>
     </Dialog>

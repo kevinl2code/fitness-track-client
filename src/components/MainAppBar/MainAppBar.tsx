@@ -11,7 +11,6 @@ import { Email } from '@mui/icons-material'
 import PersonIcon from '@mui/icons-material/Person'
 import { useNavigate } from 'react-router-dom'
 import { AuthService } from '../../services/AuthService'
-import { CognitoUser } from '@aws-amplify/auth'
 import {
   Avatar,
   Button,
@@ -27,7 +26,6 @@ import { UserContext } from '../../app/App'
 import { Calculate } from '../../utilities/Calculate'
 import { User } from '../../model/Model'
 import { Convert } from '../../utilities/Convert'
-import { NewUserDialog } from '../dialogs/NewUserDialog'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -35,7 +33,7 @@ interface Props {
 
 export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const [openNewUserDialog, setOpenNewUserDialog] = React.useState(true)
+
   const calculate = new Calculate()
   const convert = new Convert()
   const navigate = useNavigate()
@@ -64,11 +62,6 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
 
   return (
     <>
-      <NewUserDialog
-        open={openNewUserDialog}
-        user={user!}
-        setDialogOpenState={setOpenNewUserDialog}
-      />
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}

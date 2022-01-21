@@ -21,14 +21,6 @@ interface IFormInput {
   activityLevel: ActivityLevel
 }
 
-export interface ICreateDailyEntry {
-  userId: string
-  sortKey: string
-  dailyEntryWeight: number
-  dailyEntryMeals: []
-  dailyEntryActivityLevel: ActivityLevel
-}
-
 interface Props {
   date: string
   sub: string
@@ -52,7 +44,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   } = useForm()
   console.log(date)
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const newDailyEntry: ICreateDailyEntry = {
+    const newDailyEntry: DailyEntry = {
       userId: sub,
       sortKey: date,
       dailyEntryWeight: data.weight,
