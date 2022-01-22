@@ -33,7 +33,7 @@ export interface DailyEntry {
   dailyEntryActivityLevel: ActivityLevel
 }
 
-export type Sex = 'MALE' | 'FEMALE'
+export type Sex = 'male' | 'female'
 
 export type CognitoGender = 'male' | 'female'
 

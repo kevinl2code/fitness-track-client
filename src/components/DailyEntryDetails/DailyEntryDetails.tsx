@@ -17,7 +17,7 @@ export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry }) => {
     dailyEntry
   const fakeUser = {
     height: 74,
-    sex: 'MALE' as Sex,
+    sex: 'male' as Sex,
     age: 30,
   }
 

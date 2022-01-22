@@ -10,11 +10,11 @@ export class Calculate {
 
   //https://www.bmi-calculator.net/bmr-calculator/bmr-formula.php
   public BMR(height: number, weight: number, age: number, sex: Sex) {
-    if (sex === 'MALE') {
+    if (sex === 'male') {
       return 66 + 6.23 * weight + 12.7 * height - 6.8 * age
     }
 
-    if (sex === 'FEMALE') {
+    if (sex === 'female') {
       return 655 + 4.35 * weight + 4.7 * height - 4.7 * age
     }
   }
@@ -56,8 +56,8 @@ export class Calculate {
     }
 
     return {
-      minimum: minimumProteinRequiredByActivityLevel[activityLevel].toFixed(0),
-      maximum: maximumProteinRequiredByActivityLevel[activityLevel].toFixed(0),
+      minimum: minimumProteinRequiredByActivityLevel[activityLevel],
+      maximum: maximumProteinRequiredByActivityLevel[activityLevel],
     }
   }
 

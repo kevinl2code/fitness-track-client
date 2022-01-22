@@ -1,6 +1,7 @@
 import { LinearProgress, Grid } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { CycleContext, UserContext } from '../../app/App'
+import { DashboardChart } from '../../components/DashboardChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
 import { DashboardGoalPanel } from '../../components/DashboardGoalPanel'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
@@ -54,8 +55,11 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
             )}
           </Grid>
           <Grid item xs={8}>
-            {entries ? (
-              <DashboardEntriesPanel entries={entries} />
+            <DashboardChart />
+          </Grid>
+          <Grid item xs={12}>
+            {entries && user ? (
+              <DashboardEntriesPanel entries={entries} user={user} />
             ) : (
               <h1>No entries</h1>
             )}

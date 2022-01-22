@@ -46,6 +46,8 @@ export const DailyEntriesPage: React.FC = () => {
     dailyEntry,
     setDailyEntry
   )
+  console.log(cycle)
+  //Plan is to fetch the previous day and now allow the current day to set a weight thats more than 10lbs or so different.
 
   useEffect(() => {
     setLoading(true)
