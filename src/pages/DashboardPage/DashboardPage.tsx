@@ -1,9 +1,9 @@
 import { LinearProgress, Grid } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { CycleContext, UserContext } from '../../app/App'
-import { DashboardChart } from '../../components/DashboardChart'
+import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
-import { DashboardGoalPanel } from '../../components/DashboardGoalPanel'
+import { DashboardSummaryCard } from '../../components/DashboardSummaryCard'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { Cycle, DailyEntry } from '../../model/Model'
 import { UseApi } from './UseApi'
@@ -42,20 +42,25 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
       {loading ? (
         <LinearProgress />
       ) : (
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={4}>
             {cycle && (
-              <DashboardGoalPanel
+              <DashboardSummaryCard
                 cycleType={cycle?.cycleType!}
                 duration={cycle?.duration!}
                 goalWeight={cycle?.goalWeight!}
+                entries={entries}
                 startDate={cycle?.startDate!}
                 startingWeight={cycle?.startingWeight!}
               />
             )}
           </Grid>
-          <Grid item xs={8}>
-            <DashboardChart />
+          <Grid item xs={8} container justifyContent="flex-end">
+            {entries && user ? (
+              <DashboardWeightTrackerChart entries={entries} user={user} />
+            ) : (
+              <h1>No entries</h1>
+            )}
           </Grid>
           <Grid item xs={12}>
             {entries && user ? (

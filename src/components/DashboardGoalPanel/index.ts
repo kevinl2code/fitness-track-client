@@ -1,1 +1,0 @@
-export { DashboardGoalPanel } from './DashboardGoalPanel'

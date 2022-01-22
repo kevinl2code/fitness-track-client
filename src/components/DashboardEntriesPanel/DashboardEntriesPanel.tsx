@@ -115,7 +115,16 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
   })
 
   return (
-    <TableContainer component={Paper} sx={{ marginTop: '2rem' }}>
+    <TableContainer
+      component={Paper}
+      elevation={2}
+      sx={{
+        marginTop: '2rem',
+        padding: '1rem 2rem 1rem 2rem',
+        borderRadius: '2rem',
+        marginBottom: '2rem',
+      }}
+    >
       <Table
         sx={{ minWidth: 650 }}
         size="small"

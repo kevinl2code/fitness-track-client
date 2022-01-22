@@ -1,5 +1,4 @@
 import { CognitoUser } from '@aws-amplify/auth'
-import { cursorTo } from 'readline'
 
 export interface User {
   userName: string
