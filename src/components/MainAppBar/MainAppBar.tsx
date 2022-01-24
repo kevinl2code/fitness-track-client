@@ -1,31 +1,18 @@
 import * as React from 'react'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import AccountCircle from '@mui/icons-material/AccountCircle'
-import Menu from '@mui/material/Menu'
-import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
-import WcIcon from '@mui/icons-material/Wc'
-import { Email } from '@mui/icons-material'
-import PersonIcon from '@mui/icons-material/Person'
+
 import { useNavigate } from 'react-router-dom'
 import { AuthService } from '../../services/AuthService'
-import {
-  Avatar,
-  Button,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-} from '@mui/material'
 import { UserContext } from '../../app/App'
-import { Calculate } from '../../utilities/Calculate'
+
 import { User } from '../../model/Model'
-import { Convert } from '../../utilities/Convert'
+
+import { MainAppBarMenu } from './MainAppBarMenu'
+import { Box, Grid } from '@mui/material'
+import { MainAppBarTabs } from './MainAppBarTabs'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -34,8 +21,6 @@ interface Props {
 export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
-  const calculate = new Calculate()
-  const convert = new Convert()
   const navigate = useNavigate()
   const authService = new AuthService()
   const user = React.useContext(UserContext)
@@ -50,37 +35,30 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
     handleClose()
   }
 
-  let usersAge
-
-  if (user) {
-    usersAge = calculate.age(user?.birthday!)
-  }
-
   const handleClose = () => {
     setAnchorEl(null)
   }
-
+  const ftlogo = `${process.env.PUBLIC_URL}/ftlogo2.png`
   return (
-    <>
+    <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        elevation={0}
       >
-        <Toolbar>
-          {/* TODO - ONLY SHOW ON MOBILE */}
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
+        <Toolbar variant="dense">
+          <Grid
+            container
+            alignItems="flex-end"
+            justifyContent="space-between"
+            sx={{ height: '100%' }}
           >
-            <MenuIcon />
-          </IconButton> */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Fitness Track
-          </Typography>
-          <div>
+            <img
+              src={ftlogo}
+              style={{ height: '58px', objectFit: 'fill', overflow: 'hidden' }}
+              alt="Fitness Track logo"
+            />
+            <MainAppBarTabs />
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -91,120 +69,15 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
             >
               <AccountCircle fontSize="large" />
             </IconButton>
-            <Menu
-              id="menu-appbar"
+            <MainAppBarMenu
               anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <Paper elevation={0}>
-                <Grid
-                  container
-                  direction="column"
-                  alignItems="center"
-                  sx={{ marginTop: '1rem' }}
-                >
-                  <Grid item>
-                    <AccountCircle fontSize="large" />
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="h6">{`${user?.firstName} ${user?.lastName}`}</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography>{user?.user.userName}</Typography>
-                  </Grid>
-                  <Divider sx={{ width: '100%', marginTop: '1rem' }} />
-                  <Grid item sx={{ width: '100%' }}>
-                    <List
-                      sx={{
-                        width: '100%',
-                        maxWidth: 360,
-                        bgcolor: 'background.paper',
-                      }}
-                      dense={true}
-                    >
-                      <ListItem
-                        sx={{ paddingLeft: '8px', paddingBottom: '0px' }}
-                      >
-                        <ListItemAvatar>
-                          <Avatar>
-                            <PersonIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary="Age"
-                          secondary={`${usersAge} yrs`}
-                        />
-                      </ListItem>
-                      <ListItem
-                        sx={{ paddingLeft: '8px', paddingBottom: '0px' }}
-                      >
-                        <ListItemAvatar>
-                          <Avatar>
-                            <WcIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Sex" secondary={user?.sex} />
-                      </ListItem>
-                      <ListItem
-                        sx={{ paddingLeft: '8px', paddingBottom: '0px' }}
-                      >
-                        <ListItemAvatar>
-                          <Avatar>
-                            <AlignHorizontalLeftIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary="Height"
-                          secondary={
-                            user?.height
-                              ? `${convert.inchesToFeetAndInches(
-                                  user.height,
-                                  'ABBREVIATED'
-                                )}`
-                              : '-'
-                          }
-                        />
-                      </ListItem>
-                      <ListItem
-                        sx={{ paddingLeft: '8px', paddingBottom: '0px' }}
-                      >
-                        <ListItemAvatar>
-                          <Avatar>
-                            <Email />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary="Email"
-                          secondary={`${user?.email}`}
-                        />
-                      </ListItem>
-                    </List>
-                  </Grid>
-                  <Divider sx={{ width: '100%', marginBottom: '1rem' }} />
-                  <Button
-                    variant="outlined"
-                    size="medium"
-                    onClick={() => handleLogoutClick('/')}
-                    sx={{ marginBottom: '8px' }}
-                  >
-                    Sign Out
-                  </Button>
-                </Grid>
-              </Paper>
-            </Menu>
-          </div>
+              user={user}
+              handleClose={handleClose}
+              handleLogoutClick={handleLogoutClick}
+            />
+          </Grid>
         </Toolbar>
       </AppBar>
-    </>
+    </Box>
   )
 }

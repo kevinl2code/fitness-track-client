@@ -39,8 +39,8 @@ export const MainDrawer: React.FC = () => {
             route={ROUTES.dailyEntries}
           />
           <MainDrawerItem
-            itemType="dailyEntries"
-            label="Foods"
+            itemType="foods"
+            label="My Foods"
             route={ROUTES.foods}
           />
         </List>

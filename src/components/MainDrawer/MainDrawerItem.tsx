@@ -3,8 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Inbox as InboxIcon } from '@mui/icons-material'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import React from 'react'
+import RestaurantIcon from '@mui/icons-material/Restaurant'
 
-type DrawerItemType = 'dashboard' | 'dailyEntries' | 'register' | 'settings'
+type DrawerItemType = 'dashboard' | 'dailyEntries' | 'foods' | 'settings'
 
 interface Props {
   itemType: DrawerItemType
@@ -26,7 +27,7 @@ export const MainDrawerItem: React.FC<Props> = ({ itemType, label, route }) => {
   const primaryIcon = {
     dashboard: <DashboardOutlinedIcon fontSize="large" />,
     dailyEntries: <InboxIcon />,
-    register: <InboxIcon />,
+    foods: <RestaurantIcon />,
     settings: <InboxIcon />,
   }
   return (
@@ -47,3 +48,8 @@ export const MainDrawerItem: React.FC<Props> = ({ itemType, label, route }) => {
     </ListItem>
   )
 }
+
+// backgroundColor: '#ffffff'
+// color: 'blue'
+// borderTopLeftRadius: '15px'
+// borderTopRightRadius: '15px'

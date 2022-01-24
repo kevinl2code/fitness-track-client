@@ -13,7 +13,7 @@ export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
   return (
     <Container maxWidth={false} disableGutters={true} sx={{ display: 'flex' }}>
       <MainAppBar setAppUser={setAppUser} />
-      <MainDrawer />
+      {/* <MainDrawer /> */}
       <Box component="main" sx={{ flexGrow: 1, p: 3, padding: '1rem' }}>
         <Outlet />
       </Box>

@@ -1,0 +1,1 @@
+export { MyFoodsTile } from './MyFoodsTile'
