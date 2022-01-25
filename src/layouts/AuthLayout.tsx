@@ -1,8 +1,7 @@
-import { Box, Container } from '@mui/material'
+import { Box, Container, Toolbar } from '@mui/material'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { MainAppBar } from '../components/MainAppBar/MainAppBar'
-import { MainDrawer } from '../components/MainDrawer/MainDrawer'
 import { User } from '../model/Model'
 
 interface Props {
@@ -15,6 +14,7 @@ export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
       <MainAppBar setAppUser={setAppUser} />
       {/* <MainDrawer /> */}
       <Box component="main" sx={{ flexGrow: 1, p: 3, padding: '1rem' }}>
+        <Toolbar />
         <Outlet />
       </Box>
     </Container>

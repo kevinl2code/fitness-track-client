@@ -43,21 +43,21 @@ export const NavigationContainer: React.FC<Props> = ({
 
         <Route path={ROUTES.register} element={<RegistrationPage />} />
         <Route path={ROUTES.forgot} element={<ForgotPasswordPage />} />
+      </Route>
+      <Route
+        path={ROUTES.appRoot}
+        element={<AuthLayout setAppUser={setAppUser} />}
+      >
         <Route
-          path={ROUTES.appRoot}
-          element={<AuthLayout setAppUser={setAppUser} />}
-        >
-          <Route
-            index
-            element={<DashboardPage setCycleContext={setCycleContext} />}
-          />
-          <Route
-            path={ROUTES.dashboard}
-            element={<DashboardPage setCycleContext={setCycleContext} />}
-          />
-          <Route path={ROUTES.dailyEntries} element={<DailyEntriesPage />} />
-          <Route path={ROUTES.foods} element={<MyFoodsPage />} />
-        </Route>
+          index
+          element={<DashboardPage setCycleContext={setCycleContext} />}
+        />
+        <Route
+          path={ROUTES.dashboard}
+          element={<DashboardPage setCycleContext={setCycleContext} />}
+        />
+        <Route path={ROUTES.dailyEntries} element={<DailyEntriesPage />} />
+        <Route path={ROUTES.foods} element={<MyFoodsPage />} />
       </Route>
     </Routes>
   )

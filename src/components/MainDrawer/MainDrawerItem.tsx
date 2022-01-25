@@ -48,8 +48,3 @@ export const MainDrawerItem: React.FC<Props> = ({ itemType, label, route }) => {
     </ListItem>
   )
 }
-
-// backgroundColor: '#ffffff'
-// color: 'blue'
-// borderTopLeftRadius: '15px'
-// borderTopRightRadius: '15px'

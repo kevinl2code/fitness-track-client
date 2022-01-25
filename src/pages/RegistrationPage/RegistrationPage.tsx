@@ -108,7 +108,7 @@ export const RegistrationPage: React.FC = () => {
         open={openConfirmRegistrationDialog}
       />
       <Grid container justifyContent="center">
-        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+        <Grid item xs={12} sm={6} md={6} lg={7} xl={7}>
           <Card variant="outlined" sx={{ width: '100%' }}>
             <CardContent>
               <Typography variant="h4" align="center">
