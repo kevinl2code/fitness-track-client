@@ -107,7 +107,7 @@ export const RegistrationPage: React.FC = () => {
         setDialogOpenState={setOpenConfirmRegistrationDialog}
         open={openConfirmRegistrationDialog}
       />
-      <Grid container justifyContent="center">
+      <Grid container justifyContent="center" alignItems="center">
         <Grid item xs={12} sm={6} md={6} lg={7} xl={7}>
           <Card variant="outlined" sx={{ width: '100%' }}>
             <CardContent>

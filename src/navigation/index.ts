@@ -7,4 +7,5 @@ export const ROUTES = {
   register: 'register',
   forgot: 'forgot',
   foods: 'foods',
+  admin: 'admin',
 }

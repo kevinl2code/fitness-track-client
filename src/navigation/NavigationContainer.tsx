@@ -10,7 +10,8 @@ import { DashboardPage } from '../pages/DashboardPage'
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage/ForgotPasswordPage'
 import { LoginPage } from '../pages/LoginPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
-import { MyFoodsPage } from '../pages/MyFoodsPage'
+import { FoodsPage } from '../pages/FoodsPage'
+import { AdminPage } from '../pages/AdminPage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -57,7 +58,8 @@ export const NavigationContainer: React.FC<Props> = ({
           element={<DashboardPage setCycleContext={setCycleContext} />}
         />
         <Route path={ROUTES.dailyEntries} element={<DailyEntriesPage />} />
-        <Route path={ROUTES.foods} element={<MyFoodsPage />} />
+        <Route path={ROUTES.foods} element={<FoodsPage />} />
+        <Route path={ROUTES.admin} element={<AdminPage />} />
       </Route>
     </Routes>
   )

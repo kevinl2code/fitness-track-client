@@ -73,3 +73,40 @@ export interface NutritionalLibraryItem {
 }
 
 export type UserItem = Cycle | DailyEntry
+
+export type SubCategoryListItem = {
+  name: string
+  subCategoryId: string
+}
+
+export type Category = {
+  PK: 'CATEGORIES'
+  SK: string
+  categoryId: string
+  name: string
+  subCategories: SubCategoryListItem[]
+  type: 'CATEGORY'
+}
+
+export type FoodItemUnits = 'GRAMS' | 'OUNCES' | 'EACH'
+
+//PK should be in format F#<foodItemId>
+//GSI1PK should be in format C#<categoryId>
+//GSI1SK should be in format S#<subCategoryId>#F#<foodItemId>
+export interface FitnessTrackFoodItem {
+  PK: string
+  SK: 'METADATA'
+  GSI1PK: string
+  GSI1SK: string
+  type: 'FOOD'
+  foodItemName: string
+  foodItemUnit: FoodItemUnits
+  servingSize: number
+  calories: number
+  protein: number
+  fat: number
+  carbohydrates: number
+  categoryId: string
+  subCategoryId: string
+  foodItemId: string
+}

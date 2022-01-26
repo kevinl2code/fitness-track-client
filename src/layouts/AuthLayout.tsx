@@ -10,10 +10,13 @@ interface Props {
 
 export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
   return (
-    <Container maxWidth={false} disableGutters={true} sx={{ display: 'flex' }}>
+    <Container sx={{ display: 'flex' }}>
       <MainAppBar setAppUser={setAppUser} />
       {/* <MainDrawer /> */}
-      <Box component="main" sx={{ flexGrow: 1, p: 3, padding: '1rem' }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, p: 3, padding: '1rem', width: '100%' }}
+      >
         <Toolbar />
         <Outlet />
       </Box>

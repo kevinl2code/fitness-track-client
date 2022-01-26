@@ -42,7 +42,7 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
       {loading ? (
         <LinearProgress />
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ width: '100%' }}>
           <Grid item xs={4}>
             {cycle && (
               <DashboardSummaryCard

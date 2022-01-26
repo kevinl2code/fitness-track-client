@@ -2,7 +2,9 @@ import { Tabs, Tab } from '@mui/material'
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ROUTES } from '../../navigation'
-interface Props {}
+interface Props {
+  isAdmin: boolean
+}
 
 function a11yProps(index: number) {
   return {
@@ -11,7 +13,7 @@ function a11yProps(index: number) {
   }
 }
 
-export const MainAppBarTabs: React.FC<Props> = ({}) => {
+export const MainAppBarTabs: React.FC<Props> = ({ isAdmin }) => {
   const [value, setValue] = React.useState(0)
   const navigate = useNavigate()
   const routeParams = useLocation()
@@ -19,7 +21,7 @@ export const MainAppBarTabs: React.FC<Props> = ({}) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
-
+  console.log(isAdmin)
   return (
     <Tabs
       value={value}
@@ -43,10 +45,17 @@ export const MainAppBarTabs: React.FC<Props> = ({}) => {
         onClick={() => navigate(ROUTES.dailyEntries)}
       />
       <Tab
-        label="My Foods"
+        label="Foods"
         {...a11yProps(2)}
         onClick={() => navigate(ROUTES.foods)}
       />
+      {isAdmin && (
+        <Tab
+          label="Admin"
+          {...a11yProps(2)}
+          onClick={() => navigate(ROUTES.admin)}
+        />
+      )}
     </Tabs>
   )
 }

@@ -23,7 +23,7 @@ export class DataService {
   }
 
   public async createDailyEntry(dailyEntry: DailyEntry) {
-    const requestUrl = process.env.REACT_APP_API_DAILY_ENTRIES!
+    const requestUrl = process.env.REACT_APP_API_USER!
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
@@ -38,7 +38,7 @@ export class DataService {
   }
 
   public async createUserCycle(cycle: Cycle) {
-    const requestUrl = process.env.REACT_APP_API_DAILY_ENTRIES!
+    const requestUrl = process.env.REACT_APP_API_USER!
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
@@ -54,8 +54,7 @@ export class DataService {
 
   public async getDailyEntries(userId: string): Promise<UserItem[]> {
     if (this.user) {
-      const requestUrl = `${process.env
-        .REACT_APP_API_DAILY_ENTRIES!}?userId=${userId}`
+      const requestUrl = `${process.env.REACT_APP_API_USER!}?userId=${userId}`
       const requestResult = await fetch(requestUrl, {
         method: 'GET',
         headers: {
@@ -73,7 +72,7 @@ export class DataService {
     userId: string,
     date: string
   ): Promise<DailyEntry[]> {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?userId=${userId}&sortKey=${date}`
     const requestResult = await fetch(requestUrl, {
       method: 'GET',
       headers: {
@@ -89,7 +88,7 @@ export class DataService {
     date: string,
     updatedDailyEntry: EntryMeal[]
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?userId=${userId}&sortKey=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -108,7 +107,7 @@ export class DataService {
     date: string,
     updatedDailyEntryWeight: number
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?userId=${userId}&sortKey=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -128,7 +127,7 @@ export class DataService {
     date: string,
     updatedDailyEntry: string
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_DAILY_ENTRIES}?userId=${userId}&sortKey=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?userId=${userId}&sortKey=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -140,5 +139,29 @@ export class DataService {
 
     const resultJSON = await result.json()
     return resultJSON.Attributes.dailyEntryActivityLevel
+  }
+
+  public async getFoodCategories() {
+    const requestUrl = `${process.env.REACT_APP_API_FOODS}?PK=CATEGORIES`
+    const requestResult = await fetch(requestUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+    })
+    const responseJSON = await requestResult.json()
+    return responseJSON
+  }
+
+  public async getFoodItems(categoryId: string, subCategoryId: string) {
+    const requestUrl = `${process.env.REACT_APP_API_FOODS}?GSI1PK=C_${categoryId}&GSI1SK=S_${subCategoryId}`
+    const requestResult = await fetch(requestUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+    })
+    const responseJSON = await requestResult.json()
+    return responseJSON
   }
 }

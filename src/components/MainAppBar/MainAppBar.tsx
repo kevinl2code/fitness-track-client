@@ -58,7 +58,7 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
               style={{ height: '58px', objectFit: 'fill', overflow: 'hidden' }}
               alt="Fitness Track logo"
             />
-            <MainAppBarTabs />
+            <MainAppBarTabs isAdmin={user?.user.isAdmin!} />
             <IconButton
               size="large"
               aria-label="account of current user"
