@@ -13,6 +13,8 @@ import { User } from '../../model/Model'
 import { MainAppBarMenu } from './MainAppBarMenu'
 import { Box, Grid } from '@mui/material'
 import { MainAppBarTabs } from './MainAppBarTabs'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { MainAppBarMobileText } from './MainAppBarMobileText'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -27,7 +29,7 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
-
+  const { matchesMD } = useMediaQueries()
   const handleLogoutClick = (route: string) => {
     authService.logOut()
     setAppUser(null)
@@ -47,35 +49,42 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
         elevation={0}
       >
         <Toolbar variant="dense">
-          <Grid
-            container
-            alignItems="flex-end"
-            justifyContent="space-between"
-            sx={{ height: '100%' }}
-          >
-            <img
-              src={ftlogo}
-              style={{ height: '58px', objectFit: 'fill', overflow: 'hidden' }}
-              alt="Fitness Track logo"
-            />
-            <MainAppBarTabs isAdmin={user?.user.isAdmin!} />
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
+          {matchesMD && (
+            <Grid
+              container
+              alignItems="flex-end"
+              justifyContent="space-between"
+              sx={{ height: '100%' }}
             >
-              <AccountCircle fontSize="large" />
-            </IconButton>
-            <MainAppBarMenu
-              anchorEl={anchorEl}
-              user={user}
-              handleClose={handleClose}
-              handleLogoutClick={handleLogoutClick}
-            />
-          </Grid>
+              <img
+                src={ftlogo}
+                style={{
+                  height: '58px',
+                  objectFit: 'fill',
+                  overflow: 'hidden',
+                }}
+                alt="Fitness Track logo"
+              />
+              <MainAppBarTabs isAdmin={user?.user.isAdmin!} />
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle fontSize="large" />
+              </IconButton>
+              <MainAppBarMenu
+                anchorEl={anchorEl}
+                user={user}
+                handleClose={handleClose}
+                handleLogoutClick={handleLogoutClick}
+              />
+            </Grid>
+          )}
+          {!matchesMD && <MainAppBarMobileText />}
         </Toolbar>
       </AppBar>
     </Box>

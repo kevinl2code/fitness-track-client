@@ -1,0 +1,1 @@
+export { MainBottomNavigation } from './MainBottomNavigation'

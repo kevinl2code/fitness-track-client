@@ -7,6 +7,8 @@ import {
   TableCell,
   TableBody,
   Card,
+  Grid,
+  Typography,
 } from '@mui/material'
 import React from 'react'
 import { FitnessTrackFoodItem } from '../../model/Model'
@@ -36,33 +38,42 @@ export const FoodsTable: React.FC<Props> = ({ foodItems }) => {
   })
 
   return (
-    <TableContainer
-      component={Card}
-      // elevation={1}
-      variant="outlined"
-      // sx={{
-      //   marginTop: '2rem',
-      //   padding: '1rem 2rem 1rem 2rem',
-      //   borderRadius: '2rem',
-      //   marginBottom: '2rem',
-      // }}
-    >
-      <Table
-        // sx={{ minWidth: 650 }}
-        size="small"
-        aria-label="daily-entries-table"
-      >
-        <TableHead>
-          <TableRow>
-            <TableCell>Food (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Protein</TableCell>
-            <TableCell align="right">Fat</TableCell>
-            <TableCell align="right">Carbs</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{generatedRows}</TableBody>
-      </Table>
-    </TableContainer>
+    <Paper>
+      <Grid container>
+        <Grid container item xs={12}>
+          <Typography>Values per 100g serving</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <TableContainer
+            component={Card}
+            // elevation={1}
+            // variant="outlined"
+            // sx={{
+            //   marginTop: '2rem',
+            //   padding: '1rem 2rem 1rem 2rem',
+            //   borderRadius: '2rem',
+            //   marginBottom: '2rem',
+            // }}
+          >
+            <Table
+              // sx={{ minWidth: 650 }}
+              size="small"
+              aria-label="daily-entries-table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell align="right">Calories</TableCell>
+                  <TableCell align="right">Protein</TableCell>
+                  <TableCell align="right">Fat</TableCell>
+                  <TableCell align="right">Carbs</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{generatedRows}</TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+      </Grid>
+    </Paper>
   )
 }

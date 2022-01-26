@@ -43,7 +43,7 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
         <LinearProgress />
       ) : (
         <Grid container spacing={2} sx={{ width: '100%' }}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             {cycle && (
               <DashboardSummaryCard
                 cycleType={cycle?.cycleType!}
@@ -55,7 +55,7 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
               />
             )}
           </Grid>
-          <Grid item xs={8} container justifyContent="flex-end">
+          <Grid item xs={12} md={8} container justifyContent="flex-end">
             {entries && user ? (
               <DashboardWeightTrackerChart entries={entries} user={user} />
             ) : (

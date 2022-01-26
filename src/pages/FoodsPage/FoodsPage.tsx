@@ -16,6 +16,7 @@ import {
   FitnessTrackFoodItem,
   SubCategoryListItem,
 } from '../../model/Model'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { UseApi } from './UseApi'
 // import meatImage from '../../../public/meat.jpg'
 // import { MyFoodsTile } from '../../components/MyFoodsTile'
@@ -29,6 +30,7 @@ export const FoodsPage: React.FC = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const user = useContext(UserContext)
   const useApi = new UseApi(user?.user!, setCategories, setFoodItems)
+  const { matchesMD } = useMediaQueries()
 
   const subCategories = useMemo(() => {
     const subCategoriesValues: {
@@ -77,8 +79,18 @@ export const FoodsPage: React.FC = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Grid container spacing={1} sx={{ width: '100%' }}>
-        <Grid item md={2} xs={12}>
+      <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
+        <Grid
+          item
+          md={2}
+          xs={12}
+          sx={[
+            !matchesMD && {
+              marginTop: '2rem',
+              marginBottom: '1rem',
+            },
+          ]}
+        >
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-autowidth-label">
               Category
@@ -97,7 +109,16 @@ export const FoodsPage: React.FC = () => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item md={2} xs={12}>
+        <Grid
+          item
+          md={2}
+          xs={12}
+          sx={[
+            !matchesMD && {
+              marginBottom: '1rem',
+            },
+          ]}
+        >
           {selectedCategory.length > 1 && (
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-autowidth-label">
