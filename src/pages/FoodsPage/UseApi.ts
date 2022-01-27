@@ -1,4 +1,9 @@
-import { FoodCategory, FitnessTrackFoodItem, User } from '../../model/Model'
+import {
+  FoodCategory,
+  FitnessTrackFoodItem,
+  User,
+  FoodSubCategory,
+} from '../../model/Model'
 import { DataService } from '../../services/DataService'
 
 export class UseApi {
@@ -6,6 +11,9 @@ export class UseApi {
   private dataService: DataService
   // private setLoading: React.Dispatch<React.SetStateAction<boolean>>
   private setCategories: React.Dispatch<React.SetStateAction<FoodCategory[]>>
+  private setSubCategories: React.Dispatch<
+    React.SetStateAction<FoodSubCategory[]>
+  >
   private setFoodItems: React.Dispatch<
     React.SetStateAction<FitnessTrackFoodItem[]>
   >
@@ -13,12 +21,14 @@ export class UseApi {
   public constructor(
     user: User,
     setCategories: React.Dispatch<React.SetStateAction<FoodCategory[]>>,
+    setSubCategories: React.Dispatch<React.SetStateAction<FoodSubCategory[]>>,
     setFoodItems: React.Dispatch<React.SetStateAction<FitnessTrackFoodItem[]>>
     // setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   ) {
     this.user = user
     this.dataService = new DataService()
     this.setCategories = setCategories
+    this.setSubCategories = setSubCategories
     this.setFoodItems = setFoodItems
     // this.setLoading = setLoading
   }
@@ -27,6 +37,15 @@ export class UseApi {
     this.dataService.setUser(this.user)
     const data: FoodCategory[] = await this.dataService.getFoodCategories()
     this.setCategories(data)
+    // console.log(data)
+  }
+
+  public async fetchSubCategoryList(categoryId: string) {
+    this.dataService.setUser(this.user)
+    const data: FoodSubCategory[] = await this.dataService.getFoodSubCategories(
+      categoryId
+    )
+    this.setSubCategories(data)
     // console.log(data)
   }
 

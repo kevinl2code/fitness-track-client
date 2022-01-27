@@ -15,7 +15,7 @@ import { FoodsTable } from '../../components/FoodsTable'
 import {
   FoodCategory,
   FitnessTrackFoodItem,
-  SubCategoryListItem,
+  FoodSubCategory,
 } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { UseApi } from './UseApi'
@@ -26,23 +26,19 @@ import { UseApi } from './UseApi'
 
 export const FoodsPage: React.FC = () => {
   const [categories, setCategories] = useState<FoodCategory[]>([])
+  const [subCategories, setSubCategories] = useState<FoodSubCategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
   const user = useContext(UserContext)
-  const useApi = new UseApi(user?.user!, setCategories, setFoodItems)
+  const useApi = new UseApi(
+    user?.user!,
+    setCategories,
+    setSubCategories,
+    setFoodItems
+  )
   const { matchesMD } = useMediaQueries()
-
-  const subCategories = useMemo(() => {
-    const subCategoriesValues: {
-      [key: string]: SubCategoryListItem[]
-    } = {}
-    categories.forEach((category) => {
-      subCategoriesValues[category.categoryId] = category.subCategories
-    })
-    return subCategoriesValues
-  }, [categories])
 
   useEffect(() => {
     useApi.fetchCategoryList()
@@ -52,6 +48,7 @@ export const FoodsPage: React.FC = () => {
     setSelectedSubCategory('')
     setFoodItems([])
     setSelectedCategory(event.target.value)
+    useApi.fetchSubCategoryList(event.target.value)
   }
   const handleSubCategoryChange = (event: SelectChangeEvent) => {
     setSelectedSubCategory(event.target.value)
@@ -67,17 +64,15 @@ export const FoodsPage: React.FC = () => {
       </MenuItem>
     )
   })
-  const generatedSubCategories = subCategories[selectedCategory]?.map(
-    (subCategory, index) => {
-      const name = subCategory.name
-      const value = subCategory.subCategoryId
-      return (
-        <MenuItem value={value} key={`${index}-${value}`}>
-          {name}
-        </MenuItem>
-      )
-    }
-  )
+  const generatedSubCategories = subCategories?.map((subCategory, index) => {
+    const name = subCategory.name
+    const value = subCategory.subCategoryId
+    return (
+      <MenuItem value={value} key={`${index}-${value}`}>
+        {name}
+      </MenuItem>
+    )
+  })
 
   return (
     <>
@@ -147,7 +142,7 @@ export const FoodsPage: React.FC = () => {
             )}
           </Grid>
           <Grid item md={8} xs={12}>
-            {foodItems.length > 1 && (
+            {foodItems.length > 0 && (
               <FoodsTable
                 foodItems={foodItems}
                 isAdmin={user?.user.isAdmin!}

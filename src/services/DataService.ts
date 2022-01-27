@@ -160,6 +160,17 @@ export class DataService {
     const responseJSON = await requestResult.json()
     return responseJSON
   }
+  public async getFoodSubCategories(categoryId: string) {
+    const requestUrl = `${process.env.REACT_APP_API_FOODS}?GSI2PK=C_${categoryId}&GSI2SK=METADATA`
+    const requestResult = await fetch(requestUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+    })
+    const responseJSON = await requestResult.json()
+    return responseJSON
+  }
 
   public async getFoodItems(categoryId: string, subCategoryId: string) {
     const requestUrl = `${process.env.REACT_APP_API_FOODS}?GSI1PK=C_${categoryId}&GSI1SK=S_${subCategoryId}`

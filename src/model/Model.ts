@@ -74,8 +74,14 @@ export interface NutritionalLibraryItem {
 
 export type UserItem = Cycle | DailyEntry
 
-export type SubCategoryListItem = {
+export type FoodSubCategory = {
+  PK: 'SUBCATEGORIES'
+  SK: string
+  GSI2PK: string
+  GSI2SK: 'METADATA'
+  type: 'SUBCATEGORY'
   name: string
+  categoryId: string
   subCategoryId: string
 }
 
@@ -84,7 +90,6 @@ export type FoodCategory = {
   SK: string
   categoryId: string
   name: string
-  subCategories: SubCategoryListItem[]
   type: 'CATEGORY'
 }
 
