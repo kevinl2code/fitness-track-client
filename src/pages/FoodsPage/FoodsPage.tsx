@@ -10,6 +10,7 @@ import {
 
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { UserContext } from '../../app/App'
+import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
 import { FoodsTable } from '../../components/FoodsTable'
 import {
   Category,
@@ -28,6 +29,7 @@ export const FoodsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
+  const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
   const user = useContext(UserContext)
   const useApi = new UseApi(user?.user!, setCategories, setFoodItems)
   const { matchesMD } = useMediaQueries()
@@ -78,71 +80,79 @@ export const FoodsPage: React.FC = () => {
   )
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
-        <Grid
-          item
-          md={2}
-          xs={12}
-          sx={[
-            !matchesMD && {
-              marginTop: '2rem',
-              marginBottom: '1rem',
-            },
-          ]}
-        >
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-autowidth-label">
-              Category
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-autowidth-label"
-              id="demo-simple-select-autowidth"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              label="Category"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {generatedCategories}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid
-          item
-          md={2}
-          xs={12}
-          sx={[
-            !matchesMD && {
-              marginBottom: '1rem',
-            },
-          ]}
-        >
-          {selectedCategory.length > 1 && (
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-autowidth-label">
-                Sub-Category
-              </InputLabel>
+    <>
+      <AddFoodItemDialog
+        open={addFoodDialogOpen}
+        setAddFoodDialogOpen={setAddFoodDialogOpen}
+      />
+      <Box sx={{ width: '100%' }}>
+        <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
+          <Grid
+            item
+            md={2}
+            xs={12}
+            sx={[
+              !matchesMD && {
+                marginTop: '2rem',
+                marginBottom: '1rem',
+              },
+            ]}
+          >
+            <FormControl fullWidth variant="standard">
+              <InputLabel id="category">Category</InputLabel>
               <Select
-                labelId="demo-simple-select-autowidth-label"
-                id="demo-simple-select-autowidth"
-                value={selectedSubCategory}
-                onChange={handleSubCategoryChange}
-                label="Sub-Category"
+                labelId="category"
+                id="category"
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                label="Category"
               >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                {generatedSubCategories}
+                {generatedCategories}
               </Select>
             </FormControl>
-          )}
+          </Grid>
+          <Grid
+            item
+            md={2}
+            xs={12}
+            sx={[
+              !matchesMD && {
+                marginBottom: '1rem',
+              },
+            ]}
+          >
+            {selectedCategory.length > 1 && (
+              <FormControl fullWidth variant="standard">
+                <InputLabel id="subCategory">Sub-Category</InputLabel>
+                <Select
+                  labelId="subCategory"
+                  id="subCategory"
+                  value={selectedSubCategory}
+                  onChange={handleSubCategoryChange}
+                  label="Sub-Category"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {generatedSubCategories}
+                </Select>
+              </FormControl>
+            )}
+          </Grid>
+          <Grid item md={8} xs={12}>
+            {foodItems.length > 1 && (
+              <FoodsTable
+                foodItems={foodItems}
+                isAdmin={user?.user.isAdmin!}
+                setAddFoodDialogOpen={setAddFoodDialogOpen}
+              />
+            )}
+          </Grid>
         </Grid>
-        <Grid item md={8} xs={12}>
-          {foodItems.length > 1 && <FoodsTable foodItems={foodItems} />}
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   )
 }

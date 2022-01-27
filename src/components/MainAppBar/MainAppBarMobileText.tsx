@@ -22,7 +22,7 @@ export const MainAppBarMobileText: React.FC = () => {
       justifyContent="space-between"
       sx={{ height: '100%' }}
     >
-      <Typography variant="h2">{mainText[currentPath]}</Typography>
+      <Typography variant="h3">{mainText[currentPath]}</Typography>
     </Grid>
   )
 }
