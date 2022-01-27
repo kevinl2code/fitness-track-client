@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   Grid,
   InputLabel,
@@ -10,6 +11,7 @@ import {
 
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { UserContext } from '../../app/App'
+import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
 import { FoodsTable } from '../../components/FoodsTable'
 import {
@@ -26,15 +28,20 @@ import { UseApi } from './UseApi'
 
 export const FoodsPage: React.FC = () => {
   const [categories, setCategories] = useState<FoodCategory[]>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [subCategories, setSubCategories] = useState<FoodSubCategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
+  const [addFoodCategoryDialogOpen, setAddFoodCategoryDialogOpen] =
+    useState(false)
   const user = useContext(UserContext)
+  const isAdmin = user?.user.isAdmin!
   const useApi = new UseApi(
     user?.user!,
     setCategories,
+    setCategoriesLoading,
     setSubCategories,
     setFoodItems
   )
@@ -84,6 +91,12 @@ export const FoodsPage: React.FC = () => {
         useApi={useApi}
         setAddFoodDialogOpen={setAddFoodDialogOpen}
       />
+      <AddFoodCategoryDialog
+        open={addFoodCategoryDialogOpen}
+        setCategoriesLoading={setCategoriesLoading}
+        setAddFoodCategoryDialogOpen={setAddFoodCategoryDialogOpen}
+        useApi={useApi}
+      />
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
           <Grid
@@ -101,6 +114,7 @@ export const FoodsPage: React.FC = () => {
               <InputLabel id="category">Category</InputLabel>
               <Select
                 labelId="category"
+                disabled={categoriesLoading}
                 id="category"
                 value={selectedCategory}
                 onChange={handleCategoryChange}
@@ -112,6 +126,16 @@ export const FoodsPage: React.FC = () => {
                 {generatedCategories}
               </Select>
             </FormControl>
+            {isAdmin && (
+              <Button
+                fullWidth
+                color="error"
+                variant="text"
+                onClick={() => setAddFoodCategoryDialogOpen(true)}
+              >
+                Add Category
+              </Button>
+            )}
           </Grid>
           <Grid
             item
@@ -140,12 +164,17 @@ export const FoodsPage: React.FC = () => {
                 </Select>
               </FormControl>
             )}
+            {selectedCategory.length > 1 && isAdmin && (
+              <Button fullWidth color="error" variant="text">
+                Add Sub-Category
+              </Button>
+            )}
           </Grid>
           <Grid item md={8} xs={12}>
             {foodItems.length > 0 && (
               <FoodsTable
                 foodItems={foodItems}
-                isAdmin={user?.user.isAdmin!}
+                isAdmin={isAdmin}
                 setAddFoodDialogOpen={setAddFoodDialogOpen}
               />
             )}

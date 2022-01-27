@@ -9,8 +9,8 @@ import { DataService } from '../../services/DataService'
 export class UseApi {
   private user: User
   private dataService: DataService
-  // private setLoading: React.Dispatch<React.SetStateAction<boolean>>
   private setCategories: React.Dispatch<React.SetStateAction<FoodCategory[]>>
+  private setCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>
   private setSubCategories: React.Dispatch<
     React.SetStateAction<FoodSubCategory[]>
   >
@@ -21,22 +21,23 @@ export class UseApi {
   public constructor(
     user: User,
     setCategories: React.Dispatch<React.SetStateAction<FoodCategory[]>>,
+    setCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setSubCategories: React.Dispatch<React.SetStateAction<FoodSubCategory[]>>,
     setFoodItems: React.Dispatch<React.SetStateAction<FitnessTrackFoodItem[]>>
-    // setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   ) {
     this.user = user
     this.dataService = new DataService()
     this.setCategories = setCategories
+    this.setCategoriesLoading = setCategoriesLoading
     this.setSubCategories = setSubCategories
     this.setFoodItems = setFoodItems
-    // this.setLoading = setLoading
   }
 
   public async fetchCategoryList() {
     this.dataService.setUser(this.user)
     const data: FoodCategory[] = await this.dataService.getFoodCategories()
     this.setCategories(data)
+    this.setCategoriesLoading(false)
     // console.log(data)
   }
 

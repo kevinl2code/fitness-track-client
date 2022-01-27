@@ -3,48 +3,19 @@ import {
   Card,
   CardContent,
   Dialog,
-  FormControl,
   Grid,
-  InputLabel,
-  Link,
-  MenuItem,
-  Select,
   Typography,
 } from '@mui/material'
 import React from 'react'
-import {
-  Control,
-  Controller,
-  FieldValues,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form'
-import {
-  FitnessTrackFoodItem,
-  FoodItemUnits,
-  UserState,
-} from '../../../model/Model'
+import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { FoodCategory, UserState } from '../../../model/Model'
 import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { TextInput } from '../../form/TextInput'
 import { v4 } from 'uuid'
 
 interface IFormInput {
-  PK: string
-  SK: 'METADATA'
-  GSI1PK: string
-  GSI1SK: string
-  type: 'FOOD'
-  foodItemName: string
-  foodItemUnit: FoodItemUnits
-  servingSize: string
-  calories: string
-  protein: string
-  fat: string
-  carbohydrates: string
-  categoryId: string
-  subCategoryId: string
-  foodItemId: string
+  categoryName: string
 }
 
 interface GenerateTextInputProps {
@@ -60,33 +31,20 @@ interface GenerateTextInputProps {
   }
 }
 
-interface GenerateSelectInputProps {
-  name: string
-  menuItemValues: { name: string; value: string | number }[]
-  required: boolean
-  control: Control<FieldValues, object>
-  label?: string
-}
-
 interface Props {
   open: boolean
-  categoryId: string
-  subCategoryId: string
-  user: UserState
   useApi: UseApi
-  setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setAddFoodCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const AddFoodCategoryDialog: React.FC<Props> = ({
   open,
-  categoryId,
-  subCategoryId,
-  user,
   useApi,
-  setAddFoodDialogOpen,
+  setCategoriesLoading,
+  setAddFoodCategoryDialogOpen,
 }) => {
   const {
-    register,
     handleSubmit,
     reset,
     control,
@@ -95,7 +53,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
   const { matchesMD } = useMediaQueries()
   const handleCancel = () => {
     reset()
-    setAddFoodDialogOpen(false)
+    setAddFoodCategoryDialogOpen(false)
   }
   const generateTextInput = ({
     name,
@@ -131,98 +89,21 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     )
   }
 
-  const foodItemUnitValues = [
-    {
-      name: 'Grams',
-      value: 'GRAMS',
-    },
-    {
-      name: 'Ounces',
-      value: 'OUNCES',
-    },
-    {
-      name: 'Each',
-      value: 'EACH',
-    },
-  ]
-
-  const generateSelectInput = ({
-    name,
-    control,
-    required,
-    menuItemValues,
-    label,
-  }: GenerateSelectInputProps) => {
-    const menuItems = menuItemValues.map((value, index) => {
-      return (
-        <MenuItem value={value.value} key={`${index}-${value.value}`}>
-          {value.name}
-        </MenuItem>
-      )
-    })
-    return (
-      <Grid
-        item
-        xs={12}
-        container
-        direction={'column'}
-        sx={{
-          paddingLeft: '2rem',
-          paddingRight: '2rem',
-          paddingBottom: '1rem',
-        }}
-      >
-        <FormControl fullWidth variant="standard">
-          <InputLabel id={`${name}-input-label`}>{label}</InputLabel>
-          <Controller
-            name={name}
-            control={control}
-            defaultValue={''}
-            render={({ field: { onChange, value } }) => (
-              <Select
-                {...register}
-                variant="standard"
-                onChange={onChange}
-                required={required}
-                label={label}
-                value={value}
-                inputProps={{ 'aria-label': 'Without label' }}
-                sx={{ minWidth: '100%' }}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {menuItems}
-              </Select>
-            )}
-          />
-        </FormControl>
-      </Grid>
-    )
-  }
-
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const newFoodItemId = v4()
+    const categoryId = v4()
 
-    const newFoodItem: FitnessTrackFoodItem = {
-      PK: `F_${newFoodItemId}`,
-      SK: 'METADATA',
-      GSI1PK: `C_${categoryId}`,
-      GSI1SK: `S_${subCategoryId}`,
-      type: 'FOOD',
-      foodItemName: data.foodItemName,
-      foodItemUnit: data.foodItemUnit,
-      servingSize: parseInt(data.servingSize),
-      calories: parseInt(data.calories),
-      protein: parseInt(data.protein),
-      fat: parseInt(data.fat),
-      carbohydrates: parseInt(data.carbohydrates),
+    const newCategory: FoodCategory = {
+      PK: 'CATEGORIES',
+      SK: `C_${categoryId}`,
+      type: 'CATEGORY',
+      name: data.categoryName.toUpperCase(),
       categoryId: categoryId,
-      subCategoryId: subCategoryId,
-      foodItemId: newFoodItemId,
     }
-    console.log(newFoodItem)
-    return null
+    await useApi.createFoodCategory(newCategory)
+    setCategoriesLoading(true)
+    useApi.fetchCategoryList()
+    reset()
+    setAddFoodCategoryDialogOpen(false)
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>
@@ -236,60 +117,12 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <Grid container justifyContent="center">
               {generateTextInput({
-                name: 'foodItemName',
+                name: 'categoryName',
                 control: control,
                 required: true,
-                label: 'Food Name',
-                placeholder: 'Food Name',
+                label: 'Category Name',
+                placeholder: 'Category Name',
               })}
-              {generateSelectInput({
-                name: 'foodItemUnit',
-                menuItemValues: foodItemUnitValues,
-                required: true,
-                label: 'Food Units',
-                control: control,
-              })}
-              {generateTextInput({
-                name: 'servingSize',
-                control: control,
-                required: true,
-                type: 'number',
-                label: 'Serving Size',
-                placeholder: 'Serving Size',
-              })}
-              {generateTextInput({
-                name: 'calories',
-                control: control,
-                required: true,
-                type: 'number',
-                label: 'Calories',
-                placeholder: 'Calories',
-              })}
-              {generateTextInput({
-                name: 'protein',
-                control: control,
-                required: true,
-                type: 'number',
-                label: 'Protein',
-                placeholder: 'Protein',
-              })}
-              {generateTextInput({
-                name: 'fat',
-                control: control,
-                required: true,
-                type: 'number',
-                label: 'Fat',
-                placeholder: 'Fat',
-              })}
-              {generateTextInput({
-                name: 'carbohydrates',
-                control: control,
-                required: true,
-                type: 'number',
-                label: 'Carbohydrates',
-                placeholder: 'Carbohydrates',
-              })}
-
               <Button
                 variant="contained"
                 type="submit"
