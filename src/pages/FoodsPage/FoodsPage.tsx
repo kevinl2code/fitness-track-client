@@ -13,7 +13,7 @@ import { UserContext } from '../../app/App'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
 import { FoodsTable } from '../../components/FoodsTable'
 import {
-  Category,
+  FoodCategory,
   FitnessTrackFoodItem,
   SubCategoryListItem,
 } from '../../model/Model'
@@ -25,7 +25,7 @@ import { UseApi } from './UseApi'
 //https://www.ars.usda.gov/ARSUserFiles/80400530/pdf/1112/food_category_list.pdf
 
 export const FoodsPage: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([])
+  const [categories, setCategories] = useState<FoodCategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
@@ -83,6 +83,10 @@ export const FoodsPage: React.FC = () => {
     <>
       <AddFoodItemDialog
         open={addFoodDialogOpen}
+        user={user!}
+        categoryId={selectedCategory}
+        subCategoryId={selectedSubCategory}
+        useApi={useApi}
         setAddFoodDialogOpen={setAddFoodDialogOpen}
       />
       <Box sx={{ width: '100%' }}>

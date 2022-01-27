@@ -77,7 +77,7 @@ interface Props {
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const AddFoodItemDialog: React.FC<Props> = ({
+export const AddFoodCategoryDialog: React.FC<Props> = ({
   open,
   categoryId,
   subCategoryId,
@@ -229,7 +229,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
       <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
         <CardContent>
           <Typography variant="h4" align="center">
-            Create Food Item
+            Add Food Category
           </Typography>
         </CardContent>
         <CardContent>

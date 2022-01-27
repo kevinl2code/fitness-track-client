@@ -1,5 +1,13 @@
 import { config } from 'aws-sdk'
-import { Cycle, DailyEntry, EntryMeal, User, UserItem } from '../model/Model'
+import {
+  Cycle,
+  DailyEntry,
+  EntryMeal,
+  FitnessTrackFoodItem,
+  FoodCategory,
+  User,
+  UserItem,
+} from '../model/Model'
 
 config.update({
   region: process.env.REACT_APP_REGION,
@@ -163,5 +171,35 @@ export class DataService {
     })
     const responseJSON = await requestResult.json()
     return responseJSON
+  }
+
+  public async createFoodItem(newFoodItem: FitnessTrackFoodItem) {
+    const requestUrl = process.env.REACT_APP_API_FOODS!
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify(newFoodItem),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+    const resultJSON = await result.json()
+    // console.log(resultJSON)
+    return JSON.stringify(resultJSON.id)
+  }
+
+  public async createFoodCategory(newFoodCategory: FoodCategory) {
+    const requestUrl = process.env.REACT_APP_API_FOODS!
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify(newFoodCategory),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+    const resultJSON = await result.json()
+    // console.log(resultJSON)
+    return JSON.stringify(resultJSON.id)
   }
 }

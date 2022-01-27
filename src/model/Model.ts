@@ -79,7 +79,7 @@ export type SubCategoryListItem = {
   subCategoryId: string
 }
 
-export type Category = {
+export type FoodCategory = {
   PK: 'CATEGORIES'
   SK: string
   categoryId: string

@@ -7,6 +7,8 @@ interface Props {
   control: Control<FieldValues, object>
   label: string
   placeholder: string
+  required?: boolean
+  type?: string
   defaultValue?: string
   inputProps?: {
     position: 'start' | 'end'
@@ -19,6 +21,8 @@ export const TextInput: React.FC<Props> = ({
   control,
   label,
   placeholder,
+  required = false,
+  type,
   defaultValue,
   inputProps,
 }) => {
@@ -39,6 +43,8 @@ export const TextInput: React.FC<Props> = ({
             sx={{ minWidth: '100%' }}
             label={label}
             placeholder={placeholder}
+            required={required}
+            type={type}
             variant="standard"
             InputProps={
               inputProps

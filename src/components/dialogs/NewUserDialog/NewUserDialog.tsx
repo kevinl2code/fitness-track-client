@@ -31,11 +31,11 @@ interface IFormInput {
 }
 
 const steps = ['Current Weight', 'Goal Weight', 'Timeframe', 'Review']
-const vh = Math.max(
-  document.documentElement.clientHeight || 0,
-  window.innerHeight || 0
-)
-const dialogHeight = vh * 0.5
+// const vh = Math.max(
+//   document.documentElement.clientHeight || 0,
+//   window.innerHeight || 0
+// )
+// const dialogHeight = vh * 0.5
 
 export const NewUserDialog: React.FC<Props> = ({
   open,
