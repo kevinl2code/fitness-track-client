@@ -15,6 +15,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import React, { useEffect } from 'react'
 import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
 import { ActivityLevel, Cycle, DailyEntry } from '../../model/Model'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface IFormInput {
   weight: number
@@ -46,6 +47,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
+  const { matchesMD } = useMediaQueries()
   const isFirstDay = date === cycle?.startDate
   const weightDefaultValue = isFirstDay ? cycle.startingWeight : 0
   useEffect(() => {
@@ -68,7 +70,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
     BULK: 'gain some weight',
     MAINTAIN: 'maintain your weight',
   }
-  console.log(cycle?.cycleType!)
+
   const formHeaderText = {
     firstDay: `Today marks the first day of your plan to ${
       formHeaderSubText[cycle?.cycleType!]
@@ -78,7 +80,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   }
 
   return (
-    <Card variant="outlined">
+    <Card variant={matchesMD ? 'outlined' : 'elevation'} elevation={0}>
       <CardContent>
         <Typography>
           {isFirstDay ? formHeaderText.firstDay : formHeaderText.standard}
@@ -88,11 +90,19 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justifyContent="center">
-            <Grid item container alignItems="center" sx={{ padding: '2rem' }}>
-              <Grid item xs={8}>
+            <Grid
+              item
+              container
+              alignItems="center"
+              sx={[
+                { padding: '2rem' },
+                !matchesMD && { padding: '2rem 0 2rem 0' },
+              ]}
+            >
+              <Grid item md={8} xs={5}>
                 Weight
               </Grid>
-              <Grid item xs={4}>
+              <Grid item md={4} xs={7} container justifyContent="flex-end">
                 <Controller
                   name="weight"
                   control={control}
@@ -101,7 +111,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
                     field,
                     fieldState: { invalid, isTouched, isDirty, error },
                   }) => (
-                    <FormControl>
+                    <FormControl sx={{ width: '9ch' }}>
                       <TextField
                         {...field}
                         error={invalid}
@@ -124,12 +134,28 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
                 />
               </Grid>
             </Grid>
-            <Divider variant="middle" sx={{ minWidth: '85%' }} />
-            <Grid item container alignItems="center" sx={{ padding: '2rem' }}>
-              <Grid item xs={8}>
+            <Divider
+              variant="middle"
+              sx={[
+                { minWidth: '100%' },
+                matchesMD && {
+                  minWidth: '85%',
+                },
+              ]}
+            />
+            <Grid
+              item
+              container
+              alignItems="center"
+              sx={[
+                { padding: '2rem' },
+                !matchesMD && { padding: '2rem 0 2rem 0' },
+              ]}
+            >
+              <Grid item md={8} xs={5}>
                 Acivity Level
               </Grid>
-              <Grid item xs={4}>
+              <Grid item md={4} xs={7}>
                 <Controller
                   name="activityLevel"
                   control={control}
@@ -158,7 +184,11 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
                 />
               </Grid>
             </Grid>
-            <Button variant="contained" type="submit">
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ marginTop: '1rem' }}
+            >
               Submit
             </Button>
           </Grid>

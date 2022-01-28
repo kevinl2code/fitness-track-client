@@ -11,6 +11,7 @@ import {
   Grid,
   InputAdornment,
 } from '@mui/material'
+import { DateTime } from 'luxon'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { DailyEntry, EntryMeal } from '../../../model/Model'
@@ -53,7 +54,11 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
     <Dialog open={open} onClose={handleCloseDialog}>
       <DialogTitle>Edit Weight</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
-        <DialogContentText></DialogContentText>
+        <DialogContentText>
+          {`Edit weight on  ${DateTime.fromISO(entry?.sortKey).toFormat(
+            'MMM dd, yyyy'
+          )}`}
+        </DialogContentText>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justifyContent="center">
             <Grid item container alignItems="center" sx={{ padding: '2rem' }}>

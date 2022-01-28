@@ -1,4 +1,15 @@
-import { Card, Divider, Grid, LinearProgress } from '@mui/material'
+import {
+  Box,
+  Button,
+  Card,
+  Divider,
+  Grid,
+  IconButton,
+  LinearProgress,
+  Paper,
+  Typography,
+} from '@mui/material'
+import TodayIcon from '@mui/icons-material/Today'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
 import { DailyEntryCardItem } from '../../components/DailyEntryCardItem'
@@ -6,27 +17,22 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { UseApi } from './UseApi'
 import { DailyEntry } from '../../model/Model'
-import {
-  DailyEntryMealsTable,
-  DailyEntryCreateNew,
-  DailyEntryDetails,
-} from '../../components'
+import { DailyEntryMealsTable, DailyEntryCreateNew } from '../../components'
 import {
   UpdateDailyEntryWeightDialog,
   UpdateDailyEntryActivityLevelDialog,
   AddMealToDailyEntryDialog,
 } from '../../components/dialogs'
 import { CycleContext, UserContext } from '../../app/App'
-import { LocalizationProvider } from '@mui/lab'
-import DateAdapter from '@mui/lab/AdapterLuxon'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 const today = DateTime.now()
-// const testDate = new Date(today)
 
 export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const [pickerDate, setPickerDate] = useState<DateTime | null>(today)
+  const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [loading, setLoading] = useState(true)
   const [openMealDialog, setOpenMealDialog] = React.useState(false)
@@ -34,7 +40,6 @@ export const DailyEntriesPage: React.FC = () => {
     React.useState(false)
   const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
     React.useState(false)
-  // console.log(user?.user)
 
   const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
   const currentlySelectedDate = pickerDate?.toISODate()?.split('-')?.join('')
@@ -46,7 +51,8 @@ export const DailyEntriesPage: React.FC = () => {
     dailyEntry,
     setDailyEntry
   )
-  console.log(cycle)
+  const { matchesMD } = useMediaQueries()
+
   //Plan is to fetch the previous day and now allow the current day to set a weight thats more than 10lbs or so different.
 
   useEffect(() => {
@@ -54,9 +60,41 @@ export const DailyEntriesPage: React.FC = () => {
     useApi.fetchPageData(setLoading, setDailyEntry)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlySelectedDate])
-  // console.log(cycle)
+
   const weight = dailyEntry?.dailyEntryWeight || '-'
   const activityLevel = dailyEntry?.dailyEntryActivityLevel || '-'
+
+  const mobileDateViewStartPosition =
+    document.getElementById('dailyEntryPageMobileDateView')?.getClientRects()[0]
+      .top! - 1
+
+  const mobileDateView = (
+    <Paper
+      square
+      id="dailyEntryPageMobileDateView"
+      sx={{
+        width: '100%',
+        backgroundColor: 'primary.main',
+        border: 'none',
+        padding: '1rem 1rem 0 1rem',
+        position: 'sticky',
+        top: mobileDateViewStartPosition,
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
+    >
+      <Grid container justifyContent="space-between">
+        <Typography color={'white'} variant="h5">
+          {pickerDate?.toFormat('MMMM dd')}
+        </Typography>
+        <IconButton
+          aria-label="change-date"
+          onClick={() => setDatePickerOpen(true)}
+        >
+          <TodayIcon sx={{ color: 'white' }} />
+        </IconButton>
+      </Grid>
+    </Paper>
+  )
 
   const mainContent = dailyEntry ? (
     <>
@@ -119,25 +157,33 @@ export const DailyEntriesPage: React.FC = () => {
         useApi={useApi}
         setDialogOpenState={setOpenMealDialog}
       />
-      <Grid container>
-        <Grid item xs={4} container justifyContent="flex-start">
-          <Grid item xs={12} sx={{ marginBottom: '2rem' }}>
-            {/* <LocalizationProvider dateAdapter={DateAdapter}> */}
-            <DatePicker
-              value={pickerDate}
-              minDate={cycleStartDate}
-              onChange={(newValue) => {
-                setPickerDate(newValue)
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            {/* </LocalizationProvider> */}
-          </Grid>
-          <Grid item xs={9}>
-            <DailyEntryDetails dailyEntry={dailyEntry} />
-          </Grid>
+      {!matchesMD && mobileDateView}
+      <Grid container sx={[matchesMD && { marginTop: '2rem' }]}>
+        <Grid item xs={12} md={4} container justifyContent="flex-start">
+          {/* <Grid item xs={12} sx={{ marginBottom: '2rem' }}> */}
+          <DatePicker
+            value={pickerDate}
+            minDate={cycleStartDate}
+            open={datePickerOpen}
+            onOpen={() => setDatePickerOpen(true)}
+            onClose={() => setDatePickerOpen(false)}
+            onChange={(newValue) => {
+              setPickerDate(newValue)
+            }}
+            renderInput={
+              matchesMD
+                ? (params) => <TextField {...params} />
+                : ({ inputRef, inputProps, InputProps }) => (
+                    <Box ref={inputRef}>
+                      {/* <Typography>{pickerDate?.toISODate}</Typography> */}
+                      {/* {InputProps?.endAdornment} */}
+                    </Box>
+                  )
+            }
+          />
+          {/* </Grid> */}
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={12} md={8}>
           {loading ? <LinearProgress /> : mainContent}
         </Grid>
       </Grid>
