@@ -13,6 +13,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { UserContext } from '../../app/App'
 import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
+import { AddFoodSubCategoryDialog } from '../../components/dialogs/AddFoodSubCategoryDialog/AddFoodSubCategoryDialog'
 import { FoodsTable } from '../../components/FoodsTable'
 import {
   FoodCategory,
@@ -30,11 +31,14 @@ export const FoodsPage: React.FC = () => {
   const [categories, setCategories] = useState<FoodCategory[]>([])
   const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [subCategories, setSubCategories] = useState<FoodSubCategory[]>([])
+  const [subCategoriesLoading, setSubCategoriesLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
   const [addFoodCategoryDialogOpen, setAddFoodCategoryDialogOpen] =
+    useState(false)
+  const [addFoodSubCategoryDialogOpen, setAddFoodSubCategoryDialogOpen] =
     useState(false)
   const user = useContext(UserContext)
   const isAdmin = user?.user.isAdmin!
@@ -43,6 +47,7 @@ export const FoodsPage: React.FC = () => {
     setCategories,
     setCategoriesLoading,
     setSubCategories,
+    setSubCategoriesLoading,
     setFoodItems
   )
   const { matchesMD } = useMediaQueries()
@@ -95,6 +100,13 @@ export const FoodsPage: React.FC = () => {
         open={addFoodCategoryDialogOpen}
         setCategoriesLoading={setCategoriesLoading}
         setAddFoodCategoryDialogOpen={setAddFoodCategoryDialogOpen}
+        useApi={useApi}
+      />
+      <AddFoodSubCategoryDialog
+        open={addFoodSubCategoryDialogOpen}
+        setAddFoodSubCategoryDialogOpen={setAddFoodSubCategoryDialogOpen}
+        categoryId={selectedCategory}
+        setSubCategoriesLoading={setSubCategoriesLoading}
         useApi={useApi}
       />
       <Box sx={{ width: '100%' }}>
@@ -165,7 +177,12 @@ export const FoodsPage: React.FC = () => {
               </FormControl>
             )}
             {selectedCategory.length > 1 && isAdmin && (
-              <Button fullWidth color="error" variant="text">
+              <Button
+                fullWidth
+                color="error"
+                variant="text"
+                onClick={() => setAddFoodSubCategoryDialogOpen(true)}
+              >
                 Add Sub-Category
               </Button>
             )}

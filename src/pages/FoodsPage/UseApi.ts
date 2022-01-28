@@ -14,6 +14,7 @@ export class UseApi {
   private setSubCategories: React.Dispatch<
     React.SetStateAction<FoodSubCategory[]>
   >
+  private setSubCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>
   private setFoodItems: React.Dispatch<
     React.SetStateAction<FitnessTrackFoodItem[]>
   >
@@ -23,6 +24,7 @@ export class UseApi {
     setCategories: React.Dispatch<React.SetStateAction<FoodCategory[]>>,
     setCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setSubCategories: React.Dispatch<React.SetStateAction<FoodSubCategory[]>>,
+    setSubCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setFoodItems: React.Dispatch<React.SetStateAction<FitnessTrackFoodItem[]>>
   ) {
     this.user = user
@@ -30,6 +32,7 @@ export class UseApi {
     this.setCategories = setCategories
     this.setCategoriesLoading = setCategoriesLoading
     this.setSubCategories = setSubCategories
+    this.setSubCategoriesLoading = setSubCategoriesLoading
     this.setFoodItems = setFoodItems
   }
 
@@ -47,6 +50,7 @@ export class UseApi {
       categoryId
     )
     this.setSubCategories(data)
+    this.setSubCategoriesLoading(false)
     // console.log(data)
   }
 
@@ -75,6 +79,19 @@ export class UseApi {
     try {
       this.dataService.setUser(this.user)
       const result = await this.dataService.createFoodCategory(newFoodCategory)
+      console.log(result)
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(`Error while creating food category: ${error.message}`)
+      }
+    }
+  }
+  public async createFoodSubCategory(newFoodSubCategory: FoodSubCategory) {
+    try {
+      this.dataService.setUser(this.user)
+      const result = await this.dataService.createFoodSubCategory(
+        newFoodSubCategory
+      )
       console.log(result)
     } catch (error) {
       if (error instanceof Error) {

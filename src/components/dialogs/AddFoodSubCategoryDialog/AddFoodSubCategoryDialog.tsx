@@ -8,14 +8,14 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import { FoodCategory } from '../../../model/Model'
+import { FoodCategory, FoodSubCategory } from '../../../model/Model'
 import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { TextInput } from '../../form/TextInput'
 import { v4 } from 'uuid'
 
 interface IFormInput {
-  categoryName: string
+  subCategoryName: string
 }
 
 interface GenerateTextInputProps {
@@ -33,16 +33,18 @@ interface GenerateTextInputProps {
 
 interface Props {
   open: boolean
+  categoryId: string
   useApi: UseApi
-  setCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>
-  setAddFoodCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setSubCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setAddFoodSubCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const AddFoodCategoryDialog: React.FC<Props> = ({
+export const AddFoodSubCategoryDialog: React.FC<Props> = ({
   open,
+  categoryId,
   useApi,
-  setCategoriesLoading,
-  setAddFoodCategoryDialogOpen,
+  setSubCategoriesLoading,
+  setAddFoodSubCategoryDialogOpen,
 }) => {
   const {
     handleSubmit,
@@ -53,7 +55,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
   const { matchesMD } = useMediaQueries()
   const handleCancel = () => {
     reset()
-    setAddFoodCategoryDialogOpen(false)
+    setAddFoodSubCategoryDialogOpen(false)
   }
   const generateTextInput = ({
     name,
@@ -90,38 +92,41 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const categoryId = v4()
+    const subCategoryId = v4()
 
-    const newCategory: FoodCategory = {
-      PK: 'CATEGORIES',
-      SK: `C_${categoryId}`,
-      type: 'CATEGORY',
-      name: data.categoryName.toUpperCase(),
+    const newSubCategory: FoodSubCategory = {
+      PK: 'SUBCATEGORIES',
+      SK: `S_${subCategoryId}`,
+      GSI2PK: `C_${categoryId}`,
+      GSI2SK: 'METADATA',
+      type: 'SUBCATEGORY',
+      name: data.subCategoryName.toUpperCase(),
       categoryId: categoryId,
+      subCategoryId: subCategoryId,
     }
-    await useApi.createFoodCategory(newCategory)
-    setCategoriesLoading(true)
-    useApi.fetchCategoryList()
+    await useApi.createFoodSubCategory(newSubCategory)
+    setSubCategoriesLoading(true)
+    useApi.fetchSubCategoryList(categoryId)
     reset()
-    setAddFoodCategoryDialogOpen(false)
+    setAddFoodSubCategoryDialogOpen(false)
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>
       <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
         <CardContent>
           <Typography variant="h4" align="center">
-            Add Food Category
+            Add Food Sub-Category
           </Typography>
         </CardContent>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <Grid container justifyContent="center">
               {generateTextInput({
-                name: 'categoryName',
+                name: 'subCategoryName',
                 control: control,
                 required: true,
-                label: 'Category Name',
-                placeholder: 'Category Name',
+                label: 'Sub-Category Name',
+                placeholder: 'Sub-Category Name',
               })}
               <Button
                 variant="contained"

@@ -5,6 +5,7 @@ import {
   EntryMeal,
   FitnessTrackFoodItem,
   FoodCategory,
+  FoodSubCategory,
   User,
   UserItem,
 } from '../model/Model'
@@ -212,5 +213,19 @@ export class DataService {
     const resultJSON = await result.json()
     // console.log(resultJSON)
     return JSON.stringify(resultJSON.id)
+  }
+  public async createFoodSubCategory(newFoodSubCategory: FoodSubCategory) {
+    const requestUrl = process.env.REACT_APP_API_FOODS!
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify(newFoodSubCategory),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+    const resultJSON = await result.json()
+    // console.log(resultJSON)
+    return JSON.stringify(resultJSON.name)
   }
 }
