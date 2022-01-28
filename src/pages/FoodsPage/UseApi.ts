@@ -18,6 +18,7 @@ export class UseApi {
   private setFoodItems: React.Dispatch<
     React.SetStateAction<FitnessTrackFoodItem[]>
   >
+  private setFoodItemsLoading: React.Dispatch<React.SetStateAction<boolean>>
 
   public constructor(
     user: User,
@@ -25,7 +26,8 @@ export class UseApi {
     setCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setSubCategories: React.Dispatch<React.SetStateAction<FoodSubCategory[]>>,
     setSubCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setFoodItems: React.Dispatch<React.SetStateAction<FitnessTrackFoodItem[]>>
+    setFoodItems: React.Dispatch<React.SetStateAction<FitnessTrackFoodItem[]>>,
+    setFoodItemsLoading: React.Dispatch<React.SetStateAction<boolean>>
   ) {
     this.user = user
     this.dataService = new DataService()
@@ -34,6 +36,7 @@ export class UseApi {
     this.setSubCategories = setSubCategories
     this.setSubCategoriesLoading = setSubCategoriesLoading
     this.setFoodItems = setFoodItems
+    this.setFoodItemsLoading = setFoodItemsLoading
   }
 
   public async fetchCategoryList() {
@@ -62,6 +65,7 @@ export class UseApi {
     })
     const data = await this.dataService.getFoodItems(categoryId, subCategoryId)
     this.setFoodItems(data)
+    this.setFoodItemsLoading(false)
   }
 
   public async createFoodItem(foodItem: FitnessTrackFoodItem) {

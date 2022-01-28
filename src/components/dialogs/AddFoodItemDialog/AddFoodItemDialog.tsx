@@ -6,7 +6,6 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  Link,
   MenuItem,
   Select,
   Typography,
@@ -19,11 +18,7 @@ import {
   SubmitHandler,
   useForm,
 } from 'react-hook-form'
-import {
-  FitnessTrackFoodItem,
-  FoodItemUnits,
-  UserState,
-} from '../../../model/Model'
+import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
 import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { TextInput } from '../../form/TextInput'
@@ -72,7 +67,6 @@ interface Props {
   open: boolean
   categoryId: string
   subCategoryId: string
-  user: UserState
   useApi: UseApi
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -81,7 +75,6 @@ export const AddFoodItemDialog: React.FC<Props> = ({
   open,
   categoryId,
   subCategoryId,
-  user,
   useApi,
   setAddFoodDialogOpen,
 }) => {
@@ -210,7 +203,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
       GSI1PK: `C_${categoryId}`,
       GSI1SK: `S_${subCategoryId}`,
       type: 'FOOD',
-      foodItemName: data.foodItemName,
+      foodItemName: data.foodItemName.toUpperCase(),
       foodItemUnit: data.foodItemUnit,
       servingSize: parseInt(data.servingSize),
       calories: parseInt(data.calories),

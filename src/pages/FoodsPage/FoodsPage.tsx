@@ -1,19 +1,12 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material'
+import { Box, Grid, SelectChangeEvent } from '@mui/material'
 
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../app/App'
 import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
 import { AddFoodSubCategoryDialog } from '../../components/dialogs/AddFoodSubCategoryDialog/AddFoodSubCategoryDialog'
+import { FoodsCategorySelect } from '../../components/FoodsCategorySelect'
+import { FoodsSubCategorySelect } from '../../components/FoodsSubCategorySelect'
 import { FoodsTable } from '../../components/FoodsTable'
 import {
   FoodCategory,
@@ -34,6 +27,7 @@ export const FoodsPage: React.FC = () => {
   const [subCategoriesLoading, setSubCategoriesLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
+  const [foodItemsLoading, setFoodItemsLoading] = useState(true)
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
   const [addFoodCategoryDialogOpen, setAddFoodCategoryDialogOpen] =
@@ -48,7 +42,8 @@ export const FoodsPage: React.FC = () => {
     setCategoriesLoading,
     setSubCategories,
     setSubCategoriesLoading,
-    setFoodItems
+    setFoodItems,
+    setFoodItemsLoading
   )
   const { matchesMD } = useMediaQueries()
 
@@ -67,30 +62,13 @@ export const FoodsPage: React.FC = () => {
     useApi.fetchFoodItems(selectedCategory, event.target.value)
   }
 
-  const generatedCategories = categories.map((category, index) => {
-    const name = category.name
-    const value = category.categoryId
-    return (
-      <MenuItem value={value} key={`${index}-${value}`}>
-        {name}
-      </MenuItem>
-    )
-  })
-  const generatedSubCategories = subCategories?.map((subCategory, index) => {
-    const name = subCategory.name
-    const value = subCategory.subCategoryId
-    return (
-      <MenuItem value={value} key={`${index}-${value}`}>
-        {name}
-      </MenuItem>
-    )
-  })
+  const emptySubCategorySelected =
+    selectedSubCategory && foodItems.length === 0 ? true : false
 
   return (
     <>
       <AddFoodItemDialog
         open={addFoodDialogOpen}
-        user={user!}
         categoryId={selectedCategory}
         subCategoryId={selectedSubCategory}
         useApi={useApi}
@@ -111,91 +89,32 @@ export const FoodsPage: React.FC = () => {
       />
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
-          <Grid
-            item
-            md={2}
-            xs={12}
-            sx={[
-              !matchesMD && {
-                marginTop: '2rem',
-                marginBottom: '1rem',
-              },
-            ]}
-          >
-            <FormControl fullWidth variant="standard">
-              <InputLabel id="category">Category</InputLabel>
-              <Select
-                labelId="category"
-                disabled={categoriesLoading}
-                id="category"
-                value={selectedCategory}
-                onChange={handleCategoryChange}
-                label="Category"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {generatedCategories}
-              </Select>
-            </FormControl>
-            {isAdmin && (
-              <Button
-                fullWidth
-                color="error"
-                variant="text"
-                onClick={() => setAddFoodCategoryDialogOpen(true)}
-              >
-                Add Category
-              </Button>
-            )}
-          </Grid>
-          <Grid
-            item
-            md={2}
-            xs={12}
-            sx={[
-              !matchesMD && {
-                marginBottom: '1rem',
-              },
-            ]}
-          >
-            {selectedCategory.length > 1 && (
-              <FormControl fullWidth variant="standard">
-                <InputLabel id="subCategory">Sub-Category</InputLabel>
-                <Select
-                  labelId="subCategory"
-                  id="subCategory"
-                  value={selectedSubCategory}
-                  onChange={handleSubCategoryChange}
-                  label="Sub-Category"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {generatedSubCategories}
-                </Select>
-              </FormControl>
-            )}
-            {selectedCategory.length > 1 && isAdmin && (
-              <Button
-                fullWidth
-                color="error"
-                variant="text"
-                onClick={() => setAddFoodSubCategoryDialogOpen(true)}
-              >
-                Add Sub-Category
-              </Button>
-            )}
-          </Grid>
-          <Grid item md={8} xs={12}>
-            {foodItems.length > 0 && (
-              <FoodsTable
-                foodItems={foodItems}
-                isAdmin={isAdmin}
-                setAddFoodDialogOpen={setAddFoodDialogOpen}
-              />
-            )}
-          </Grid>
+          <FoodsCategorySelect
+            categories={categories}
+            categoriesLoading={categoriesLoading}
+            selectedCategory={selectedCategory}
+            setAddFoodCategoryDialogOpen={setAddFoodCategoryDialogOpen}
+            isAdmin={isAdmin}
+            handleCategoryChange={handleCategoryChange}
+          />
+          <FoodsSubCategorySelect
+            subCategories={subCategories}
+            subCategoriesLoading={subCategoriesLoading}
+            selectedCategory={selectedCategory}
+            selectedSubCategory={selectedSubCategory}
+            setAddFoodSubCategoryDialogOpen={setAddFoodSubCategoryDialogOpen}
+            handleSubCategoryChange={handleSubCategoryChange}
+            isAdmin={isAdmin}
+          />
+          <FoodsTable
+            foodItems={foodItems}
+            foodItemsLoading={foodItemsLoading}
+            emptySubCategorySelected={emptySubCategorySelected}
+            selectedSubCategory={selectedSubCategory}
+            isAdmin={isAdmin}
+            setAddFoodDialogOpen={setAddFoodDialogOpen}
+          />
+          {/* {emptySubCategorySelected && <h3>NOT FOUND</h3>} */}
         </Grid>
       </Box>
     </>
