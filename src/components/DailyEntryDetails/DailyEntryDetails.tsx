@@ -1,14 +1,15 @@
 import { Card, CardContent } from '@mui/material'
 import React from 'react'
-import { DailyEntry, Sex } from '../../model/Model'
+import { DailyEntry, Sex, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
 
 interface Props {
   dailyEntry: DailyEntry | null
+  user: UserState | null
 }
 
-export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry }) => {
-  if (!dailyEntry) {
+export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry, user }) => {
+  if (!dailyEntry || !user) {
     return null
   }
 

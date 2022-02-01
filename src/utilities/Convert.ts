@@ -12,3 +12,11 @@ export class Convert {
     return converted[format]
   }
 }
+
+export const formattedActivityLevel = {
+  SEDENTARY: 'Sedentary',
+  LIGHTLY_ACTIVE: 'Lightly Active',
+  MODERATELY_ACTIVE: 'Moderately Active',
+  VERY_ACTIVE: 'Very Active',
+  EXTRA_ACTIVE: 'Extra Active',
+}

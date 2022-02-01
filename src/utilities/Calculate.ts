@@ -28,7 +28,7 @@ export class Calculate {
       VERY_ACTIVE: bmr * 1.725,
       EXTRA_ACTIVE: bmr * 1.9,
     }
-    return tdeeByActivityLevel[activityLevel].toFixed(2)
+    return tdeeByActivityLevel[activityLevel].toFixed(0)
   }
 
   // https://blog.nasm.org/nutrition/how-much-protein-should-you-eat-per-day-for-weight-loss

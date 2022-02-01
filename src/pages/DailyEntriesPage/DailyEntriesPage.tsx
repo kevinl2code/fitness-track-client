@@ -12,7 +12,6 @@ import {
 import TodayIcon from '@mui/icons-material/Today'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
-import { DailyEntryCardItem } from '../../components/DailyEntryCardItem'
 import React, { useContext, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { UseApi } from './UseApi'
@@ -25,6 +24,9 @@ import {
 } from '../../components/dialogs'
 import { CycleContext, UserContext } from '../../app/App'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { DailyEntryMetricView } from '../../components/DailyEntryMetricView'
+import { formattedActivityLevel } from '../../utilities/Convert'
+import { DailyEntryGaugeChart } from '../../components/DailyEntryGaugeChart/DailyEntryGaugeChart'
 
 const today = DateTime.now()
 
@@ -62,7 +64,9 @@ export const DailyEntriesPage: React.FC = () => {
   }, [currentlySelectedDate])
 
   const weight = dailyEntry?.dailyEntryWeight || '-'
-  const activityLevel = dailyEntry?.dailyEntryActivityLevel || '-'
+  const activityLevel = dailyEntry?.dailyEntryActivityLevel
+    ? formattedActivityLevel[dailyEntry?.dailyEntryActivityLevel]
+    : '-'
 
   const mobileDateViewStartPosition =
     document.getElementById('dailyEntryPageMobileDateView')?.getClientRects()[0]
@@ -98,8 +102,13 @@ export const DailyEntriesPage: React.FC = () => {
 
   const mainContent = dailyEntry ? (
     <>
-      <Card variant="outlined" sx={{ marginBottom: '2rem' }}>
-        <DailyEntryCardItem
+      <DailyEntryGaugeChart dailyEntry={dailyEntry} user={user} />
+      <Grid
+        container
+        justifyContent="space-evenly"
+        sx={{ marginBottom: '1rem' }}
+      >
+        <DailyEntryMetricView
           fieldType="weight"
           fieldLabel="Weight"
           fieldValue={`${weight} lbs`}
@@ -108,8 +117,7 @@ export const DailyEntriesPage: React.FC = () => {
             setOpenUpdateWeightDialog(true)
           }}
         />
-        <Divider light />
-        <DailyEntryCardItem
+        <DailyEntryMetricView
           fieldType="activity"
           fieldLabel="Activity Level"
           fieldValue={activityLevel}
@@ -117,7 +125,7 @@ export const DailyEntriesPage: React.FC = () => {
             setOpenUpdateActivityLevelDialog(true)
           }}
         />
-      </Card>
+      </Grid>
       <DailyEntryMealsTable
         rows={dailyEntry?.dailyEntryMeals}
         useApi={useApi}
@@ -183,7 +191,7 @@ export const DailyEntriesPage: React.FC = () => {
           />
           {/* </Grid> */}
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={8} id="dailyEntryMainContentContainer">
           {loading ? <LinearProgress /> : mainContent}
         </Grid>
       </Grid>
