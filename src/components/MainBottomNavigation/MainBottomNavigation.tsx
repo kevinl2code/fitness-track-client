@@ -8,6 +8,7 @@ import React from 'react'
 import RestaurantIcon from '@mui/icons-material/Restaurant'
 import HomeIcon from '@mui/icons-material/Home'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../navigation'
 
@@ -27,19 +28,25 @@ export const MainBottomNavigation: React.FC = () => {
         }}
       >
         <BottomNavigationAction
-          label="Entries"
-          icon={<EventAvailableIcon />}
-          onClick={() => navigate(ROUTES.dailyEntries)}
-        />
-        <BottomNavigationAction
           label="Dashboard"
           icon={<HomeIcon />}
           onClick={() => navigate(ROUTES.dashboard)}
         />
         <BottomNavigationAction
+          label="Entries"
+          icon={<EventAvailableIcon />}
+          onClick={() => navigate(ROUTES.dailyEntries)}
+        />
+
+        <BottomNavigationAction
           label="Foods"
           icon={<RestaurantIcon />}
           onClick={() => navigate(ROUTES.foods)}
+        />
+        <BottomNavigationAction
+          label="More"
+          icon={<MoreVertIcon />}
+          onClick={() => navigate(ROUTES.more)}
         />
       </BottomNavigation>
     </Paper>

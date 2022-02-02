@@ -1,14 +1,13 @@
 import {
   Box,
-  Button,
-  Card,
-  Divider,
   Grid,
   IconButton,
   LinearProgress,
   Paper,
   Typography,
 } from '@mui/material'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import TodayIcon from '@mui/icons-material/Today'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
@@ -72,6 +71,25 @@ export const DailyEntriesPage: React.FC = () => {
     document.getElementById('dailyEntryPageMobileDateView')?.getClientRects()[0]
       .top! - 1
 
+  const stepDateBack = () => {
+    if (!pickerDate) {
+      return null
+    }
+    if (pickerDate.valueOf() === cycleStartDate.valueOf()) {
+      return null
+    }
+    setPickerDate(pickerDate?.minus({ days: 1 }))
+  }
+  const stepDateForward = () => {
+    if (!pickerDate) {
+      return null
+    }
+    if (pickerDate.valueOf() === today.valueOf()) {
+      return null
+    }
+    setPickerDate(pickerDate?.plus({ days: 1 }))
+  }
+
   const mobileDateView = (
     <Paper
       square
@@ -87,14 +105,18 @@ export const DailyEntriesPage: React.FC = () => {
       }}
     >
       <Grid container justifyContent="space-between">
-        <Typography color={'white'} variant="h5">
-          {pickerDate?.toFormat('MMMM dd')}
-        </Typography>
-        <IconButton
-          aria-label="change-date"
+        <IconButton aria-label="delete" size="small" onClick={stepDateBack}>
+          <NavigateBeforeIcon sx={{ color: 'white' }} />
+        </IconButton>
+        <Typography
+          color={'white'}
+          variant="h5"
           onClick={() => setDatePickerOpen(true)}
         >
-          <TodayIcon sx={{ color: 'white' }} />
+          {pickerDate?.toFormat('MMMM dd')}
+        </Typography>
+        <IconButton aria-label="delete" size="small" onClick={stepDateForward}>
+          <NavigateNextIcon sx={{ color: 'white' }} />
         </IconButton>
       </Grid>
     </Paper>
@@ -135,14 +157,16 @@ export const DailyEntriesPage: React.FC = () => {
       />{' '}
     </>
   ) : (
-    <DailyEntryCreateNew
-      date={currentlySelectedDate!}
-      cycle={cycle}
-      useApi={useApi}
-      sub={user?.sub!}
-      setLoading={setLoading}
-      setDailyEntry={setDailyEntry}
-    />
+    <>
+      <DailyEntryCreateNew
+        date={currentlySelectedDate!}
+        cycle={cycle}
+        useApi={useApi}
+        sub={user?.sub!}
+        setLoading={setLoading}
+        setDailyEntry={setDailyEntry}
+      />
+    </>
   )
 
   return (
@@ -172,6 +196,7 @@ export const DailyEntriesPage: React.FC = () => {
           <DatePicker
             value={pickerDate}
             minDate={cycleStartDate}
+            maxDate={today}
             open={datePickerOpen}
             onOpen={() => setDatePickerOpen(true)}
             onClose={() => setDatePickerOpen(false)}

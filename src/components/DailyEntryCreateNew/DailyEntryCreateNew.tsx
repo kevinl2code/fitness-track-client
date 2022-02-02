@@ -12,10 +12,11 @@ import {
   Typography,
 } from '@mui/material'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
 import { ActivityLevel, Cycle, DailyEntry } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { palette } from '@mui/system'
 
 interface IFormInput {
   weight: number
@@ -31,6 +32,12 @@ interface Props {
   setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
 }
 
+const indoorBike = `${process.env.PUBLIC_URL}/indoorbike.svg`
+const workingOut = `${process.env.PUBLIC_URL}/workingout.svg`
+const stabilityBall = `${process.env.PUBLIC_URL}/stabilityball.svg`
+const personalTrainer = `${process.env.PUBLIC_URL}/personaltrainer.svg`
+const images = [indoorBike, workingOut, stabilityBall, personalTrainer]
+
 export const DailyEntryCreateNew: React.FC<Props> = ({
   date,
   useApi,
@@ -39,6 +46,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   setLoading,
   setDailyEntry,
 }) => {
+  const [imageIndex, setImageIndex] = useState(Math.floor(Math.random() * 4))
   const {
     register,
     handleSubmit,
@@ -65,6 +73,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
     useApi.fetchPageData(setLoading, setDailyEntry)
   }
 
+  const selectedImage = images[imageIndex]
   const formHeaderSubText = {
     CUT: 'lose some weight',
     BULK: 'gain some weight',
@@ -74,35 +83,40 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   const formHeaderText = {
     firstDay: `Today marks the first day of your plan to ${
       formHeaderSubText[cycle?.cycleType!]
-    }.  Since your starting weight was already entered, you will only need to set your activity level.`,
-    standard:
-      'No entries exist for this day. Get started by adding your weight and activity level.',
+    }.  Set your activity level to get started!`,
+    standard: 'Get the day started by setting your weight and activity level!',
   }
 
   return (
-    <Card variant={matchesMD ? 'outlined' : 'elevation'} elevation={0}>
-      <CardContent>
-        <Typography>
+    <>
+      <Grid container direction="column" alignItems="center">
+        <Typography
+          textAlign="center"
+          variant="h6"
+          sx={{ color: 'primary.main', fontWeight: 700, marginBottom: '1rem' }}
+        >
           {isFirstDay ? formHeaderText.firstDay : formHeaderText.standard}
         </Typography>
-      </CardContent>
-      <Divider variant="middle" sx={{ minWidth: '85%' }} />
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container justifyContent="center">
+        <img
+          src={selectedImage}
+          alt="People being active"
+          style={{ width: '50%', height: 'auto' }}
+        />
+      </Grid>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container justifyContent="space-evenly">
+          <Grid item>
             <Grid
               item
               container
+              direction="column"
               alignItems="center"
               sx={[
                 { padding: '2rem' },
                 !matchesMD && { padding: '2rem 0 2rem 0' },
               ]}
             >
-              <Grid item md={8} xs={5}>
-                Weight
-              </Grid>
-              <Grid item md={4} xs={7} container justifyContent="flex-end">
+              <Grid item>
                 <Controller
                   name="weight"
                   control={control}
@@ -133,29 +147,21 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
                   rules={{ min: 50 }}
                 />
               </Grid>
+              <Grid item>Weight</Grid>
             </Grid>
-            <Divider
-              variant="middle"
-              sx={[
-                { minWidth: '100%' },
-                matchesMD && {
-                  minWidth: '85%',
-                },
-              ]}
-            />
+          </Grid>
+          <Grid item>
             <Grid
               item
               container
+              direction="column"
               alignItems="center"
               sx={[
                 { padding: '2rem' },
                 !matchesMD && { padding: '2rem 0 2rem 0' },
               ]}
             >
-              <Grid item md={8} xs={5}>
-                Acivity Level
-              </Grid>
-              <Grid item md={4} xs={7}>
+              <Grid item>
                 <Controller
                   name="activityLevel"
                   control={control}
@@ -170,30 +176,29 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
                       inputProps={{ 'aria-label': 'Without label' }}
                       sx={{ minWidth: '100%' }}
                     >
-                      <MenuItem value={'SEDENTARY'}>SEDENTARY</MenuItem>
+                      <MenuItem value={'SEDENTARY'}>Sedentary</MenuItem>
                       <MenuItem value={'LIGHTLY_ACTIVE'}>
-                        LIGHTLY ACTIVE
+                        Lightly Active
                       </MenuItem>
                       <MenuItem value={'MODERATELY_ACTIVE'}>
-                        MODERATELY ACTIVE
+                        Moderately Active
                       </MenuItem>
-                      <MenuItem value={'VERY_ACTIVE'}>VERY ACTIVE</MenuItem>
-                      <MenuItem value={'EXTRA_ACTIVE'}>EXTRA ACTIVE</MenuItem>
+                      <MenuItem value={'VERY_ACTIVE'}>Very Active</MenuItem>
+                      <MenuItem value={'EXTRA_ACTIVE'}>Extra Active</MenuItem>
                     </Select>
                   )}
                 />
               </Grid>
+              <Grid item>Acivity Level</Grid>
             </Grid>
-            <Button
-              variant="contained"
-              type="submit"
-              sx={{ marginTop: '1rem' }}
-            >
-              Submit
-            </Button>
           </Grid>
-        </form>
-      </CardContent>
-    </Card>
+        </Grid>
+        <Grid container justifyContent="center">
+          <Button variant="contained" type="submit" sx={{ marginTop: '1rem' }}>
+            Submit
+          </Button>
+        </Grid>
+      </form>
+    </>
   )
 }

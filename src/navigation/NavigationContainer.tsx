@@ -12,6 +12,7 @@ import { LoginPage } from '../pages/LoginPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
 import { FoodsPage } from '../pages/FoodsPage'
 import { AdminPage } from '../pages/AdminPage'
+import { MorePage } from '../pages/MorePage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -60,6 +61,7 @@ export const NavigationContainer: React.FC<Props> = ({
         <Route path={ROUTES.dailyEntries} element={<DailyEntriesPage />} />
         <Route path={ROUTES.foods} element={<FoodsPage />} />
         <Route path={ROUTES.admin} element={<AdminPage />} />
+        <Route path={ROUTES.more} element={<MorePage setUser={setAppUser} />} />
       </Route>
     </Routes>
   )

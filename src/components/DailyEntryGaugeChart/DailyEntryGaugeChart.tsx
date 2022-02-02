@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import { DailyEntry, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
@@ -10,6 +10,10 @@ interface Props {
   dailyEntry: DailyEntry
   user: UserState | null
 }
+const data = [
+  { name: 'Calories Consumed', value: 300 },
+  { name: 'Calories Expended', value: 3000 },
+]
 
 export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
   const { matchesMD, matchesSM } = useMediaQueries()
@@ -36,7 +40,6 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
     { name: 'Calories Consumed', value: caloriesConsumed },
     { name: 'Calories Expended', value: remainingCals },
   ]
-
   const innerRadius = matchesMD
     ? parentDivWidth * 0.2
     : matchesSM
@@ -64,7 +67,13 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
   }
 
   return (
-    <PieChart width={parentDivWidth} height={400}>
+    <PieChart
+      width={parentDivWidth}
+      height={400}
+      //Key is only being set to fix issue of animation not firing on first render.
+      //Active github issue https://github.com/recharts/recharts/issues/829
+      key={Math.random() * 100}
+    >
       <Pie
         data={data}
         cx="50%"
@@ -73,11 +82,12 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
         endAngle={-40}
         innerRadius={innerRadius}
         outerRadius={outerRadius}
+        onAnimationEnd={() => console.log('ran')}
         fill="#8884d8"
         paddingAngle={5}
         dataKey="value"
         labelLine={false}
-        label={renderCustomLabel}
+        label={(props) => renderCustomLabel(props)}
       >
         {data.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

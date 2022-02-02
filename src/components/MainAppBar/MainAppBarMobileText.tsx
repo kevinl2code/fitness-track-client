@@ -13,6 +13,7 @@ export const MainAppBarMobileText: React.FC = () => {
     'app/dailyEntries': 'Daily Entries',
     'app/dashboard': 'Dashboard',
     'app/admin': 'Admin',
+    'app/more': 'More',
   }
 
   return (

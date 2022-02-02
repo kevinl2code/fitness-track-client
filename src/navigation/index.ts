@@ -8,4 +8,5 @@ export const ROUTES = {
   forgot: 'forgot',
   foods: 'foods',
   admin: 'admin',
+  more: 'more',
 }
