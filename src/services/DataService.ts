@@ -63,7 +63,7 @@ export class DataService {
   public async getUserCycles(userId: string): Promise<Cycle[]> {
     if (this.user) {
       const requestUrl = `${process.env
-        .REACT_APP_API_USER!}?PK=${userId}&SK=CYCLE`
+        .REACT_APP_API_USER!}?GSI2PK=U_${userId}&SGSI2SK=CYCLES`
       const requestResult = await fetch(requestUrl, {
         method: 'GET',
         headers: {
@@ -80,7 +80,7 @@ export class DataService {
   public async getDailyEntriesForCycle(cycleId: string): Promise<DailyEntry[]> {
     if (this.user) {
       const requestUrl = `${process.env
-        .REACT_APP_API_USER!}?GSI1PK=C_${cycleId}`
+        .REACT_APP_API_USER!}?GSI1PK=C_${cycleId}&GSI1SK=DAILYENTRIES`
       const requestResult = await fetch(requestUrl, {
         method: 'GET',
         headers: {
@@ -95,10 +95,10 @@ export class DataService {
   }
 
   public async getDailyEntryByDate(
-    cycleId: string,
+    userId: string,
     date: string
   ): Promise<DailyEntry[]> {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?GSI1PK=C_${cycleId}&GSI1SK=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
     const requestResult = await fetch(requestUrl, {
       method: 'GET',
       headers: {
@@ -110,11 +110,11 @@ export class DataService {
   }
 
   public async updateDailyEntryMeals(
-    cycleId: string,
+    userId: string,
     date: string,
     updatedDailyEntry: EntryMeal[]
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?GSI1PK=C_${cycleId}&GSI1SK=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -129,11 +129,11 @@ export class DataService {
   }
 
   public async updateDailyEntryWeight(
-    cycleId: string,
+    userId: string,
     date: string,
     updatedDailyEntryWeight: number
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?GSI1PK=C_${cycleId}&GSI1SK=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -149,11 +149,11 @@ export class DataService {
   }
 
   public async updateDailyEntryActivityLevel(
-    cycleId: string,
+    userId: string,
     date: string,
     updatedDailyEntry: string
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?GSI1PK=C_${cycleId}&GSI1SK=${date}`
+    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {

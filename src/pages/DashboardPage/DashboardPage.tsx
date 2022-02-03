@@ -12,6 +12,8 @@ interface Props {
   setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
 }
 
+const workingOut = `${process.env.PUBLIC_URL}/workingout.svg`
+
 export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
   const [entries, setEntries] = useState<DailyEntry[] | null>(null)
   const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
@@ -43,32 +45,34 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
         <LinearProgress />
       ) : (
         <Grid container spacing={2} sx={{ width: '100%' }}>
-          <Grid item xs={12} md={4}>
-            {cycle && (
-              <DashboardSummaryCard
-                cycleType={cycle?.cycleType!}
-                duration={cycle?.duration!}
-                goalWeight={cycle?.goalWeight!}
-                entries={entries}
-                startDate={cycle?.startDate!}
-                startingWeight={cycle?.startingWeight!}
+          {!cycle || !entries ? (
+            <Grid item container justifyContent="center" alignItems="center">
+              <img
+                src={workingOut}
+                alt="People being active"
+                style={{ width: '50%', height: 'auto' }}
               />
-            )}
-          </Grid>
-          <Grid item xs={12} md={8} container justifyContent="flex-end">
-            {entries && user ? (
-              <DashboardWeightTrackerChart entries={entries} user={user} />
-            ) : (
-              <h1>No entries</h1>
-            )}
-          </Grid>
-          <Grid item xs={12}>
-            {entries && user ? (
-              <DashboardEntriesPanel entries={entries} user={user} />
-            ) : (
-              <h1>No entries</h1>
-            )}
-          </Grid>
+            </Grid>
+          ) : (
+            <>
+              <Grid item xs={12} md={4}>
+                <DashboardSummaryCard
+                  cycleType={cycle?.cycleType!}
+                  duration={cycle?.duration!}
+                  goalWeight={cycle?.goalWeight!}
+                  entries={entries}
+                  startDate={cycle?.startDate!}
+                  startingWeight={cycle?.startingWeight!}
+                />
+              </Grid>
+              <Grid item xs={12} md={8} container justifyContent="flex-end">
+                <DashboardWeightTrackerChart entries={entries} user={user!} />
+              </Grid>
+              <Grid item xs={12}>
+                <DashboardEntriesPanel entries={entries} user={user!} />
+              </Grid>
+            </>
+          )}
         </Grid>
       )}
     </>

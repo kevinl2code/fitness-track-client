@@ -40,8 +40,11 @@ export class UseApi {
       this.setOpenNewUserDialog(true)
     }
 
-    const entries = await this.dataService.getDailyEntriesForCycle(this.userId)
+    const entries = await this.dataService.getDailyEntriesForCycle(
+      currentlyActiveCycle?.cycleId!
+    )
 
+    console.log(entries)
     // const cycle = data.find((userItem) => {
     //   return userItem.sortKey.includes('cycle')
     // })
@@ -63,8 +66,9 @@ export class UseApi {
     // const entries = data.filter(
     //   (dataItem): dataItem is DailyEntry => dataItem && isDailyEntry(dataItem)
     // )
-
-    this.setEntries(entries)
+    if (entries.length > 0) {
+      this.setEntries(entries)
+    }
   }
 
   public async createNewUserCycle(newUserCycle: Cycle) {

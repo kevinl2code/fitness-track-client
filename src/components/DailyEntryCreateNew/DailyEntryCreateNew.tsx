@@ -64,9 +64,9 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const newDailyEntry: DailyEntry = {
       PK: sub,
-      SK: 'DAILYENTRY',
+      SK: date,
       GSI1PK: `C_${cycle?.cycleId!}`,
-      GSI1SK: date,
+      GSI1SK: 'DAILYENTRIES',
       type: 'DAILYENTRY',
       dailyEntryWeight: data.weight,
       dailyEntryMeals: [],

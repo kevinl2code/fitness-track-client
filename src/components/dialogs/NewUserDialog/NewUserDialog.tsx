@@ -82,9 +82,9 @@ export const NewUserDialog: React.FC<Props> = ({
     const newCycleId = v4()
     const newUserCycle: Cycle = {
       PK: user.sub,
-      SK: 'CYCLE',
-      GSI2PK: `C_${newCycleId}`,
-      GSI2SK: 'METADATA',
+      SK: `C_${newCycleId}`,
+      GSI2PK: `U_${user.sub}`,
+      GSI2SK: 'CYCLES',
       type: 'CYCLE',
       cycleType: cycleType,
       startingWeight: values.currentWeight,

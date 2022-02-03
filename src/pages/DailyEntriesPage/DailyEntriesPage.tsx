@@ -46,6 +46,7 @@ export const DailyEntriesPage: React.FC = () => {
   const isFirstDay = cycle?.startDate === currentlySelectedDate
   const useApi = new UseApi(
     user?.user!,
+    user?.sub!,
     cycle?.cycleId!,
     currentlySelectedDate,
     dailyEntry,
@@ -74,7 +75,10 @@ export const DailyEntriesPage: React.FC = () => {
     if (!pickerDate) {
       return null
     }
-    if (pickerDate.valueOf() === cycleStartDate.valueOf()) {
+    if (
+      pickerDate.endOf('day').valueOf() ===
+      cycleStartDate.endOf('day').valueOf()
+    ) {
       return null
     }
     setPickerDate(pickerDate?.minus({ days: 1 }))
@@ -83,7 +87,7 @@ export const DailyEntriesPage: React.FC = () => {
     if (!pickerDate) {
       return null
     }
-    if (pickerDate.valueOf() === today.valueOf()) {
+    if (pickerDate.endOf('day').valueOf() === today.endOf('day').valueOf()) {
       return null
     }
     setPickerDate(pickerDate?.plus({ days: 1 }))

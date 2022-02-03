@@ -72,7 +72,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
       height={400}
       //Key is only being set to fix issue of animation not firing on first render.
       //Active github issue https://github.com/recharts/recharts/issues/829
-      key={Math.random() * 100}
+      // key={Math.random() * 100}
     >
       <Pie
         data={data}

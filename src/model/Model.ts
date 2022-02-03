@@ -25,13 +25,13 @@ export type ActivityLevel =
   | 'EXTRA_ACTIVE'
 
 //PK should be the users ID -- cognito sub value
+//SK should be the entry date, written using ISO 8601(yyyymmdd) strings such as 20190823
 //GSI1PK should be in format C_cycleId
-//GSI1SK should be in format of an ISO DATE -- YYYYMMDD
 export interface DailyEntry {
   PK: string
-  SK: 'DAILYENTRY'
+  SK: string
   GSI1PK: string
-  GSI1SK: string
+  GSI1SK: 'DAILYENTRIES'
   type: 'DAILYENTRY'
   dailyEntryWeight: number
   dailyEntryMeals: EntryMeal[] | []
@@ -64,12 +64,13 @@ export enum CycleType {
 }
 
 //PK should be the users ID -- cognito sub value
-//GSI2PK should be in format C_cycleId
+//SK should be in format C_cycleId
+//GSI2PK should be in format U_userId
 export interface Cycle {
   PK: string
-  SK: 'CYCLE'
+  SK: string
   GSI2PK: string
-  GSI2SK: 'METADATA'
+  GSI2SK: 'CYCLES'
   type: 'CYCLE'
   cycleType: CycleType
   startingWeight: number
