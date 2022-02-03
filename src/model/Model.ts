@@ -24,12 +24,20 @@ export type ActivityLevel =
   | 'VERY_ACTIVE'
   | 'EXTRA_ACTIVE'
 
+//PK should be the users ID -- cognito sub value
+//GSI1PK should be in format C_cycleId
+//GSI1SK should be in format of an ISO DATE -- YYYYMMDD
 export interface DailyEntry {
-  userId: string
-  sortKey: string
+  PK: string
+  SK: 'DAILYENTRY'
+  GSI1PK: string
+  GSI1SK: string
+  type: 'DAILYENTRY'
   dailyEntryWeight: number
   dailyEntryMeals: EntryMeal[] | []
   dailyEntryActivityLevel: ActivityLevel
+  entryDate: string
+  cycleId: string
 }
 
 export type Sex = 'male' | 'female'
@@ -55,14 +63,23 @@ export enum CycleType {
   MAINTAIN = 'MAINTAIN',
 }
 
+//PK should be the users ID -- cognito sub value
+//GSI2PK should be in format C_cycleId
 export interface Cycle {
-  userId: string
-  sortKey: string
+  PK: string
+  SK: 'CYCLE'
+  GSI2PK: string
+  GSI2SK: 'METADATA'
+  type: 'CYCLE'
   cycleType: CycleType
   startingWeight: number
+  endingWeight: number | null
   goalWeight: number
   startDate: string
+  endingDate: string | null
   duration: number
+  isActive: boolean
+  cycleId: string
 }
 
 export interface NutritionalLibraryItem {
@@ -72,7 +89,7 @@ export interface NutritionalLibraryItem {
   servingSize: number
 }
 
-export type UserItem = Cycle | DailyEntry
+// export type UserItem = Cycle | DailyEntry
 
 export type FoodSubCategory = {
   PK: 'SUBCATEGORIES'

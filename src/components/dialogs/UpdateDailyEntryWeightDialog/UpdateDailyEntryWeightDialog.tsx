@@ -55,7 +55,7 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
       <DialogTitle>Edit Weight</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <DialogContentText>
-          {`Edit weight on  ${DateTime.fromISO(entry?.sortKey).toFormat(
+          {`Edit weight on  ${DateTime.fromISO(entry?.entryDate).toFormat(
             'MMM dd, yyyy'
           )}`}
         </DialogContentText>

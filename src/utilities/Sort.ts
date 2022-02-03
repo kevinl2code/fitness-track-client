@@ -1,13 +1,10 @@
-interface IObjectWithDate {
-  date: string
-  [key: string]: any
-}
+import { DailyEntry } from '../model/Model'
 
 export class Sort {
-  public byDate(arr: any[]) {
+  public dailyEntriesByDate(arr: DailyEntry[]) {
     return arr.sort((a, b) => {
-      const parsedDateA = Date.parse(a.date)
-      const parsedDateB = Date.parse(b.date)
+      const parsedDateA = Date.parse(a.entryDate)
+      const parsedDateB = Date.parse(b.entryDate)
       return parsedDateA - parsedDateB
     })
   }

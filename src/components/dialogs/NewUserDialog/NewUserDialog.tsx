@@ -13,6 +13,7 @@ import { DateTime } from 'luxon'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { v4 } from 'uuid'
 import { Cycle, UserState, CycleType } from '../../../model/Model'
 import { UseApi } from '../../../pages/DashboardPage/UseApi'
 import { AuthService } from '../../../services/AuthService'
@@ -78,14 +79,22 @@ export const NewUserDialog: React.FC<Props> = ({
     } else {
       cycleType = CycleType.MAINTAIN
     }
+    const newCycleId = v4()
     const newUserCycle: Cycle = {
-      userId: user.sub,
-      sortKey: 'cycle000',
+      PK: user.sub,
+      SK: 'CYCLE',
+      GSI2PK: `C_${newCycleId}`,
+      GSI2SK: 'METADATA',
+      type: 'CYCLE',
       cycleType: cycleType,
       startingWeight: values.currentWeight,
+      endingWeight: null,
       goalWeight: values.goalWeight,
       startDate: today,
+      endingDate: null,
       duration: values.timeFrame,
+      isActive: true,
+      cycleId: newCycleId,
     }
     await useApi.createNewUserCycle(newUserCycle)
     // console.log(newUserCycle)

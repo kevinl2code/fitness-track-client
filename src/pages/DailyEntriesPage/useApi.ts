@@ -6,12 +6,12 @@ export class UseApi {
   setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
   private dataService: DataService
   private user: User
-  private userId: string
+  private cycleId: string
   private currentlySelectedDate: string | undefined
 
   public constructor(
     user: User,
-    userId: string,
+    cycleId: string,
     currentlySelectedDate: string | undefined,
     dailyEntry: DailyEntry | null,
     setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
@@ -19,7 +19,7 @@ export class UseApi {
     this.dailyEntry = dailyEntry
     this.dataService = new DataService()
     this.user = user
-    this.userId = userId
+    this.cycleId = cycleId
     this.currentlySelectedDate = currentlySelectedDate
     this.setDailyEntry = setDailyEntry
   }
@@ -31,7 +31,7 @@ export class UseApi {
     if (this.currentlySelectedDate) {
       this.dataService.setUser(this.user)
       const data = await this.dataService.getDailyEntryByDate(
-        this.userId,
+        this.cycleId,
         this.currentlySelectedDate
       )
       setPageLoading(false)
@@ -60,7 +60,7 @@ export class UseApi {
         if (this.currentlySelectedDate) {
           this.dataService.setUser(this.user)
           const result = await this.dataService.updateDailyEntryMeals(
-            this.userId,
+            this.cycleId,
             this.currentlySelectedDate,
             newMeals
           )
@@ -80,7 +80,7 @@ export class UseApi {
         if (this.currentlySelectedDate) {
           this.dataService.setUser(this.user)
           const result = await this.dataService.updateDailyEntryMeals(
-            this.userId,
+            this.cycleId,
             this.currentlySelectedDate,
             [...this.dailyEntry.dailyEntryMeals, data]
           )
@@ -101,7 +101,7 @@ export class UseApi {
         if (this.currentlySelectedDate) {
           this.dataService.setUser(this.user)
           const result = await this.dataService.updateDailyEntryWeight(
-            this.userId,
+            this.cycleId,
             this.currentlySelectedDate,
             data
           )
@@ -121,7 +121,7 @@ export class UseApi {
         if (this.currentlySelectedDate) {
           this.dataService.setUser(this.user)
           const result = await this.dataService.updateDailyEntryActivityLevel(
-            this.userId,
+            this.cycleId,
             this.currentlySelectedDate,
             data
           )

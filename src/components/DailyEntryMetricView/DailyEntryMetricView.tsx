@@ -1,15 +1,5 @@
-import {
-  Button,
-  CardContent,
-  Grid,
-  IconButton,
-  Typography,
-} from '@mui/material'
+import { Button, Grid, Typography } from '@mui/material'
 import React from 'react'
-import MonitorWeightOutlinedIcon from '@mui/icons-material/MonitorWeightOutlined'
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun'
-import EditIcon from '@mui/icons-material/Edit'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 type CardFieldType = 'weight' | 'activity'
 

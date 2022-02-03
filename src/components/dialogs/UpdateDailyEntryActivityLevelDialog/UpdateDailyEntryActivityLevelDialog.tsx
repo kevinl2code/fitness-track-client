@@ -53,9 +53,9 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
       <DialogTitle>Edit Activity</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <DialogContentText>
-          {`Edit activity level on  ${DateTime.fromISO(entry?.sortKey).toFormat(
-            'MMM dd, yyyy'
-          )}`}
+          {`Edit activity level on  ${DateTime.fromISO(
+            entry?.entryDate
+          ).toFormat('MMM dd, yyyy')}`}
         </DialogContentText>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justifyContent="center">

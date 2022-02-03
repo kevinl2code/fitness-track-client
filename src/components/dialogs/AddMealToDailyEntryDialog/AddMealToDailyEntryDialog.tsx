@@ -57,7 +57,7 @@ export const AddMealToDailyEntryDialog: React.FC<Props> = ({
       <DialogTitle>Add Meal</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <DialogContentText>
-          {`Add a meal to daily entry for ${entry?.sortKey}`}
+          {`Add a meal to daily entry for ${entry?.entryDate}`}
         </DialogContentText>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justifyContent="center">

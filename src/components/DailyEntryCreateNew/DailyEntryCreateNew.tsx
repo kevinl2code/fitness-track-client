@@ -31,7 +31,7 @@ interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
   setDailyEntry: React.Dispatch<React.SetStateAction<DailyEntry | null>>
 }
-
+//https://undraw.co/search
 const indoorBike = `${process.env.PUBLIC_URL}/indoorbike.svg`
 const workingOut = `${process.env.PUBLIC_URL}/workingout.svg`
 const stabilityBall = `${process.env.PUBLIC_URL}/stabilityball.svg`
@@ -63,11 +63,16 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   }, [date, setValue, weightDefaultValue])
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const newDailyEntry: DailyEntry = {
-      userId: sub,
-      sortKey: date,
+      PK: sub,
+      SK: 'DAILYENTRY',
+      GSI1PK: `C_${cycle?.cycleId!}`,
+      GSI1SK: date,
+      type: 'DAILYENTRY',
       dailyEntryWeight: data.weight,
       dailyEntryMeals: [],
       dailyEntryActivityLevel: data.activityLevel,
+      entryDate: date,
+      cycleId: cycle?.cycleId!,
     }
     await useApi.createNewDailyEntry(newDailyEntry)
     useApi.fetchPageData(setLoading, setDailyEntry)

@@ -26,7 +26,7 @@ export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
           },
         ]}
       >
-        <Toolbar variant="dense" />
+        <Toolbar />
         <Outlet />
         {!matchesMD && <Toolbar />}
       </Box>

@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
-import TodayIcon from '@mui/icons-material/Today'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
 import React, { useContext, useEffect, useState } from 'react'
@@ -47,7 +46,7 @@ export const DailyEntriesPage: React.FC = () => {
   const isFirstDay = cycle?.startDate === currentlySelectedDate
   const useApi = new UseApi(
     user?.user!,
-    user?.sub!,
+    cycle?.cycleId!,
     currentlySelectedDate,
     dailyEntry,
     setDailyEntry

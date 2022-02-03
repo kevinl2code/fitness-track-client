@@ -27,7 +27,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   const { birthday, sex, height } = user
   const calculate = new Calculate()
   const sort = new Sort()
-  const sortedEntries: DailyEntry[] = sort.byDate(entries!)
+  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries!)
   const tooltipName = (name: 'actualValue' | 'projectedValue') =>
     name === 'actualValue' ? 'Actual Weight' : 'Projected Weight'
   const calculatedEntries: {
@@ -36,14 +36,14 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
     projectedValue: number
   }[] = [
     {
-      name: DateTime.fromISO(sortedEntries[0].sortKey).toFormat('MMM dd'),
+      name: DateTime.fromISO(sortedEntries[0].entryDate).toFormat('MMM dd'),
       actualValue: sortedEntries[0].dailyEntryWeight,
       projectedValue: sortedEntries[0].dailyEntryWeight,
     },
   ]
 
   sortedEntries.reduce((previousValue, currentValue, index) => {
-    const date = DateTime.fromISO(currentValue.sortKey).toFormat('MMM dd')
+    const date = DateTime.fromISO(currentValue.entryDate).toFormat('MMM dd')
     const bmr = calculate.BMR(
       height!,
       calculatedEntries[index - 1].projectedValue,

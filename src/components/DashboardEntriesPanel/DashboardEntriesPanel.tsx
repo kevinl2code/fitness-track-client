@@ -22,13 +22,13 @@ interface Props {
 
 export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
   const sort = new Sort()
-  const sortedEntries: DailyEntry[] = sort.byDate(entries!)
+  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries!)
   const calculate = new Calculate()
 
   const generatedRows = sortedEntries.map((entry, index) => {
     const {
       dailyEntryActivityLevel,
-      sortKey,
+      entryDate,
       dailyEntryWeight,
       dailyEntryMeals,
     } = entry
@@ -96,11 +96,11 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
 
     return (
       <TableRow
-        key={`${sortKey} + ${index}`}
+        key={`${entryDate} + ${index}`}
         // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
         <TableCell component="th" scope="row">
-          {DateTime.fromISO(sortKey).toFormat('MMM dd, yyyy')}
+          {DateTime.fromISO(entryDate).toFormat('MMM dd, yyyy')}
         </TableCell>
         <TableCell align="right">
           {renderActivity[dailyEntryActivityLevel]}

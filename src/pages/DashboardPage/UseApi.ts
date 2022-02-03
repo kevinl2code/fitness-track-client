@@ -29,29 +29,40 @@ export class UseApi {
 
   public async fetchPageData() {
     this.dataService.setUser(this.user)
-    const data = await this.dataService.getDailyEntries(this.userId)
-
-    const cycle = data.find((userItem) => {
-      return userItem.sortKey.includes('cycle')
+    const cycleData = await this.dataService.getUserCycles(this.userId)
+    const currentlyActiveCycle = cycleData.find((cycle) => {
+      return cycle.isActive === true
     })
-    if (cycle && isCycle(cycle)) {
-      this.setCycleContext(cycle)
+
+    if (currentlyActiveCycle) {
+      this.setCycleContext(currentlyActiveCycle)
     } else {
       this.setOpenNewUserDialog(true)
     }
 
-    function isCycle(obj: any): obj is Cycle {
-      return 'cycleType' in obj
-    }
-    function isDailyEntry(obj: any): obj is DailyEntry {
-      return 'dailyEntryWeight' in obj
-    }
+    const entries = await this.dataService.getDailyEntriesForCycle(this.userId)
+
+    // const cycle = data.find((userItem) => {
+    //   return userItem.sortKey.includes('cycle')
+    // })
+    // if (cycle && isCycle(cycle)) {
+    //   this.setCycleContext(cycle)
+    // } else {
+    //   this.setOpenNewUserDialog(true)
+    // }
+
+    // function isCycle(obj: any): obj is Cycle {
+    //   return 'cycleType' in obj
+    // }
+    // function isDailyEntry(obj: any): obj is DailyEntry {
+    //   return 'dailyEntryWeight' in obj
+    // }
 
     this.setLoading(false)
 
-    const entries = data.filter(
-      (dataItem): dataItem is DailyEntry => dataItem && isDailyEntry(dataItem)
-    )
+    // const entries = data.filter(
+    //   (dataItem): dataItem is DailyEntry => dataItem && isDailyEntry(dataItem)
+    // )
 
     this.setEntries(entries)
   }
