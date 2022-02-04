@@ -21,8 +21,9 @@ import {
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
 import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
-import { TextInput } from '../../form/TextInput'
 import { v4 } from 'uuid'
+import { FormTextInput } from '../../form/FormTextInput'
+import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 
 interface IFormInput {
   PK: string
@@ -40,19 +41,6 @@ interface IFormInput {
   categoryId: string
   subCategoryId: string
   foodItemId: string
-}
-
-interface GenerateTextInputProps {
-  name: string
-  control: Control<FieldValues, object>
-  label: string
-  placeholder: string
-  required: boolean
-  type?: string
-  inputProps?: {
-    position: 'start' | 'end'
-    icon: React.ReactNode
-  }
 }
 
 interface GenerateSelectInputProps {
@@ -90,7 +78,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
     reset()
     setAddFoodDialogOpen(false)
   }
-  const generateTextInput = ({
+  const generateFormTextInput = ({
     name,
     control,
     label,
@@ -98,7 +86,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
     required,
     type,
     inputProps,
-  }: GenerateTextInputProps) => {
+  }: FormTextInputProps) => {
     return (
       <Grid
         item
@@ -111,7 +99,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
           paddingBottom: '1rem',
         }}
       >
-        <TextInput
+        <FormTextInput
           control={control}
           label={label}
           required={required}
@@ -203,13 +191,13 @@ export const AddFoodItemDialog: React.FC<Props> = ({
       GSI1PK: `C_${categoryId}`,
       GSI1SK: `S_${subCategoryId}`,
       type: 'FOOD',
-      foodItemName: data.foodItemName.toUpperCase(),
+      foodItemName: data.foodItemName,
       foodItemUnit: data.foodItemUnit,
-      servingSize: parseInt(data.servingSize),
-      calories: parseInt(data.calories),
-      protein: parseInt(data.protein),
-      fat: parseInt(data.fat),
-      carbohydrates: parseInt(data.carbohydrates),
+      servingSize: parseFloat(data.servingSize),
+      calories: parseFloat(data.calories),
+      protein: parseFloat(data.protein),
+      fat: parseFloat(data.fat),
+      carbohydrates: parseFloat(data.carbohydrates),
       categoryId: categoryId,
       subCategoryId: subCategoryId,
       foodItemId: newFoodItemId,
@@ -231,7 +219,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <Grid container justifyContent="center">
-              {generateTextInput({
+              {generateFormTextInput({
                 name: 'foodItemName',
                 control: control,
                 required: true,
@@ -245,7 +233,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 label: 'Food Units',
                 control: control,
               })}
-              {generateTextInput({
+              {generateFormTextInput({
                 name: 'servingSize',
                 control: control,
                 required: true,
@@ -253,7 +241,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 label: 'Serving Size',
                 placeholder: 'Serving Size',
               })}
-              {generateTextInput({
+              {generateFormTextInput({
                 name: 'calories',
                 control: control,
                 required: true,
@@ -261,7 +249,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 label: 'Calories',
                 placeholder: 'Calories',
               })}
-              {generateTextInput({
+              {generateFormTextInput({
                 name: 'protein',
                 control: control,
                 required: true,
@@ -269,7 +257,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 label: 'Protein',
                 placeholder: 'Protein',
               })}
-              {generateTextInput({
+              {generateFormTextInput({
                 name: 'fat',
                 control: control,
                 required: true,
@@ -277,7 +265,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 label: 'Fat',
                 placeholder: 'Fat',
               })}
-              {generateTextInput({
+              {generateFormTextInput({
                 name: 'carbohydrates',
                 control: control,
                 required: true,

@@ -13,7 +13,7 @@ import {
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry, EntryMeal } from '../../../model/Model'
+import { DailyEntry, EntryConsumable } from '../../../model/Model'
 import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 
@@ -42,8 +42,10 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
     setDialogOpenState(false)
     reset()
   }
-
-  const onSubmit: SubmitHandler<Partial<EntryMeal>> = async (data: any) => {
+  //TODO Fix the generic, not sure why this is working
+  const onSubmit: SubmitHandler<Partial<EntryConsumable>> = async (
+    data: any
+  ) => {
     useApi.updateActivityLevel(data.activityLevel)
     setDialogOpenState(false)
   }

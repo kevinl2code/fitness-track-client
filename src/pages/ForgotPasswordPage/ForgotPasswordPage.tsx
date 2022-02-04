@@ -3,8 +3,8 @@ import React from 'react'
 import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthService } from '../../services/AuthService'
-import { TextInput } from '../../components/form/TextInput'
 import { Email } from '@mui/icons-material'
+import { FormTextInput } from '../../components/form/FormTextInput'
 
 interface IFormInput {
   userName: string
@@ -18,7 +18,7 @@ interface GenerateInputProps {
   placeholder: string
   inputProps?: {
     position: 'start' | 'end'
-    icon: React.ReactNode
+    child: React.ReactNode | string
   }
 }
 
@@ -56,7 +56,7 @@ export const ForgotPasswordPage: React.FC = () => {
           paddingBottom: '1rem',
         }}
       >
-        <TextInput
+        <FormTextInput
           control={control}
           label={label}
           name={name}
@@ -91,7 +91,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   placeholder: 'Enter your email',
                   inputProps: {
                     position: 'start',
-                    icon: <Email />,
+                    child: <Email />,
                   },
                 })}
 

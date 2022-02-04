@@ -1,5 +1,4 @@
 import { Card, CardContent, Typography, Button, Grid } from '@mui/material'
-import { TextInput } from '../../components/form/TextInput'
 import React, { useContext } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import AccountCircle from '@mui/icons-material/AccountCircle'
@@ -10,6 +9,7 @@ import { AuthService } from '../../services/AuthService'
 import { User } from '../../model/Model'
 
 import { CycleContext, UserContext } from '../../app/App'
+import { FormTextInput } from '../../components/form/FormTextInput'
 
 interface IFormInput {
   userName: string
@@ -69,12 +69,12 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
                   direction={'column'}
                   sx={{ padding: '2rem' }}
                 >
-                  <TextInput
+                  <FormTextInput
                     control={control}
                     label="Username"
                     name="userName"
                     placeholder="Type your username"
-                    inputProps={{ position: 'start', icon: <AccountCircle /> }}
+                    inputProps={{ position: 'start', child: <AccountCircle /> }}
                   />
                 </Grid>
                 <Grid
@@ -88,12 +88,12 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
                     paddingBottom: '2rem',
                   }}
                 >
-                  <TextInput
+                  <FormTextInput
                     control={control}
                     label="Password"
                     name="password"
                     placeholder="Type your password"
-                    inputProps={{ position: 'start', icon: <LockIcon /> }}
+                    inputProps={{ position: 'start', child: <LockIcon /> }}
                   />
                   <Link to={ROUTES.forgot} style={{ textDecoration: 'none' }}>
                     Forgot password?

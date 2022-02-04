@@ -1,6 +1,5 @@
 export { DailyEntryMetricView } from './DailyEntryMetricView'
 export { DailyEntryCreateNew } from './DailyEntryCreateNew'
 export { DailyEntryDetails } from './DailyEntryDetails'
-export { DailyEntryMealsTable } from './DailyEntryMealsTable'
 export { MainAppBar } from './MainAppBar'
 export { MainDrawer } from './MainDrawer'

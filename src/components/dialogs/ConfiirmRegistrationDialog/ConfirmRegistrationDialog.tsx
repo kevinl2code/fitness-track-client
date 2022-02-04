@@ -12,7 +12,7 @@ import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { AuthService } from '../../../services/AuthService'
-import { TextInput } from '../../form/TextInput'
+import { FormTextInput } from '../../form/FormTextInput'
 
 interface Props {
   open: boolean
@@ -72,12 +72,12 @@ export const ConfirmRegistrationDialog: React.FC<Props> = ({
                   paddingBottom: '1rem',
                 }}
               >
-                <TextInput
+                <FormTextInput
                   control={control}
                   label="Username"
                   name="username"
                   placeholder="Username"
-                  inputProps={{ position: 'start', icon: <AccountCircle /> }}
+                  inputProps={{ position: 'start', child: <AccountCircle /> }}
                 />
               </Grid>
             </Grid>
@@ -93,12 +93,12 @@ export const ConfirmRegistrationDialog: React.FC<Props> = ({
                   paddingBottom: '1rem',
                 }}
               >
-                <TextInput
+                <FormTextInput
                   control={control}
                   label="Verification Code"
                   name="code"
                   placeholder="Verification Code"
-                  inputProps={{ position: 'start', icon: <AccountCircle /> }}
+                  inputProps={{ position: 'start', child: <AccountCircle /> }}
                 />
               </Grid>
             </Grid>

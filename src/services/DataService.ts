@@ -2,7 +2,7 @@ import { config } from 'aws-sdk'
 import {
   Cycle,
   DailyEntry,
-  EntryMeal,
+  EntryConsumable,
   FitnessTrackFoodItem,
   FoodCategory,
   FoodSubCategory,
@@ -109,10 +109,10 @@ export class DataService {
     return responseJSON
   }
 
-  public async updateDailyEntryMeals(
+  public async updateDailyEntryConsumables(
     userId: string,
     date: string,
-    updatedDailyEntry: EntryMeal[]
+    updatedDailyEntry: EntryConsumable[]
   ) {
     const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
     const requestOptions: RequestInit = {
@@ -120,12 +120,12 @@ export class DataService {
       headers: {
         Authorization: this.getUserIdToken(),
       },
-      body: JSON.stringify({ dailyEntryMeals: updatedDailyEntry }),
+      body: JSON.stringify({ dailyEntryConsumables: updatedDailyEntry }),
     }
     const result = await fetch(requestUrl, requestOptions)
 
     const resultJSON = await result.json()
-    return resultJSON.Attributes.dailyEntryMeals
+    return resultJSON.Attributes.dailyEntryConsumables
   }
 
   public async updateDailyEntryWeight(

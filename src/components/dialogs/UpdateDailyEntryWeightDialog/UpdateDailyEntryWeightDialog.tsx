@@ -14,7 +14,7 @@ import {
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry, EntryMeal } from '../../../model/Model'
+import { DailyEntry, EntryConsumable } from '../../../model/Model'
 import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
 
 interface Props {
@@ -42,7 +42,7 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
     reset()
   }
 
-  const onSubmit: SubmitHandler<EntryMeal> = async (data: any) => {
+  const onSubmit: SubmitHandler<EntryConsumable> = async (data: any) => {
     if (typeof data === 'object' && 'weight' in data) {
       data.weight = parseInt(data?.weight)
     }

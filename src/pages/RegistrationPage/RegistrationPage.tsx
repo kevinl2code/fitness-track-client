@@ -8,10 +8,10 @@ import AccountCircle from '@mui/icons-material/AccountCircle'
 import LockIcon from '@mui/icons-material/Lock'
 import { Link } from 'react-router-dom'
 import { AuthService } from '../../services/AuthService'
-import { TextInput } from '../../components/form/TextInput'
 import { Email } from '@mui/icons-material'
 import { CognitoGender } from '../../model/Model'
 import { ConfirmRegistrationDialog } from '../../components/dialogs/ConfiirmRegistrationDialog/ConfirmRegistrationDialog'
+import { FormTextInput } from '../../components/form/FormTextInput'
 
 interface IFormInput {
   username: string
@@ -32,7 +32,7 @@ interface GenerateInputProps {
   placeholder: string
   inputProps?: {
     position: 'start' | 'end'
-    icon: React.ReactNode
+    child: React.ReactNode | string
   }
 }
 
@@ -90,7 +90,7 @@ export const RegistrationPage: React.FC = () => {
           paddingBottom: '1rem',
         }}
       >
-        <TextInput
+        <FormTextInput
           control={control}
           label={label}
           name={name}
@@ -125,7 +125,7 @@ export const RegistrationPage: React.FC = () => {
                     placeholder: 'First Name',
                     inputProps: {
                       position: 'start',
-                      icon: <AccountCircle />,
+                      child: <AccountCircle />,
                     },
                   })}
                   {generateInput({
@@ -135,7 +135,7 @@ export const RegistrationPage: React.FC = () => {
                     placeholder: 'Last Name',
                     inputProps: {
                       position: 'start',
-                      icon: <AccountCircle />,
+                      child: <AccountCircle />,
                     },
                   })}
                   <Grid
@@ -149,12 +149,12 @@ export const RegistrationPage: React.FC = () => {
                       paddingBottom: '1rem',
                     }}
                   >
-                    <TextInput
+                    <FormTextInput
                       control={control}
                       label="Sex"
                       name="gender"
                       placeholder="Sex"
-                      inputProps={{ position: 'start', icon: <WcIcon /> }}
+                      inputProps={{ position: 'start', child: <WcIcon /> }}
                     />
                   </Grid>
                   <Grid
@@ -168,14 +168,14 @@ export const RegistrationPage: React.FC = () => {
                       paddingBottom: '1rem',
                     }}
                   >
-                    <TextInput
+                    <FormTextInput
                       control={control}
                       label="Height"
                       name="height"
                       placeholder="Height"
                       inputProps={{
                         position: 'start',
-                        icon: <AlignHorizontalLeftIcon />,
+                        child: <AlignHorizontalLeftIcon />,
                       }}
                     />
                   </Grid>
@@ -190,12 +190,12 @@ export const RegistrationPage: React.FC = () => {
                       paddingBottom: '1rem',
                     }}
                   >
-                    <TextInput
+                    <FormTextInput
                       control={control}
                       label="Birthday"
                       name="birthdate"
                       placeholder="yyyy-mm-dd"
-                      inputProps={{ position: 'start', icon: <EventIcon /> }}
+                      inputProps={{ position: 'start', child: <EventIcon /> }}
                     />
                   </Grid>
                   {generateInput({
@@ -205,7 +205,7 @@ export const RegistrationPage: React.FC = () => {
                     placeholder: 'Username',
                     inputProps: {
                       position: 'start',
-                      icon: <AccountCircle />,
+                      child: <AccountCircle />,
                     },
                   })}
                   {generateInput({
@@ -215,7 +215,7 @@ export const RegistrationPage: React.FC = () => {
                     placeholder: 'Password',
                     inputProps: {
                       position: 'start',
-                      icon: <LockIcon />,
+                      child: <LockIcon />,
                     },
                   })}
                   {generateInput({
@@ -225,7 +225,7 @@ export const RegistrationPage: React.FC = () => {
                     placeholder: 'Confirm Password',
                     inputProps: {
                       position: 'start',
-                      icon: <LockIcon />,
+                      child: <LockIcon />,
                     },
                   })}
                   {generateInput({
@@ -235,7 +235,7 @@ export const RegistrationPage: React.FC = () => {
                     placeholder: 'Email',
                     inputProps: {
                       position: 'start',
-                      icon: <Email />,
+                      child: <Email />,
                     },
                   })}
 

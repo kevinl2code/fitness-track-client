@@ -16,20 +16,20 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import React from 'react'
-import { EntryMeal } from '../../model/Model'
+import { EntryConsumable } from '../../model/Model'
 import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface Props {
-  rows: EntryMeal[] | []
+  rows: EntryConsumable[] | []
   useApi: UseApi
-  handleOpenAddMealDialog: () => void
+  handleOpenAddConsumableDialog: () => void
 }
 
-export const DailyEntryMealsTable: React.FC<Props> = ({
+export const DailyEntryConsumablesTable: React.FC<Props> = ({
   rows,
   useApi,
-  handleOpenAddMealDialog,
+  handleOpenAddConsumableDialog,
 }) => {
   const { matchesMD } = useMediaQueries()
   const generatedRows = rows?.map((row, index) => (
@@ -43,7 +43,7 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
       <TableCell align="right">{row.calories}</TableCell>
       <TableCell align="right">{row.protein}</TableCell>
       <TableCell align="right">
-        <IconButton onClick={() => useApi.deleteMeal(index, rows)}>
+        <IconButton onClick={() => useApi.deleteConsumable(index, rows)}>
           <DeleteIcon />
         </IconButton>
       </TableCell>
@@ -73,11 +73,11 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
             item
             xs={7}
           >
-            <Typography>Add Meal</Typography>
+            <Typography>Add Consumable</Typography>
             <IconButton
               color="primary"
-              aria-label="add meal"
-              onClick={handleOpenAddMealDialog}
+              aria-label="add consumable"
+              onClick={handleOpenAddConsumableDialog}
             >
               <AddCircleIcon fontSize="large" />
             </IconButton>
@@ -88,7 +88,7 @@ export const DailyEntryMealsTable: React.FC<Props> = ({
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell width="50%">Meal</TableCell>
+                  <TableCell width="50%">Consumable</TableCell>
                   <TableCell width="20%" align="right">
                     Calories
                   </TableCell>

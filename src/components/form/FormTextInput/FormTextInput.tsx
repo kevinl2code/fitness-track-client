@@ -2,21 +2,21 @@ import { FormControl, TextField, InputAdornment } from '@mui/material'
 import React from 'react'
 import { Control, Controller, FieldValues } from 'react-hook-form'
 
-interface Props {
+export interface FormTextInputProps {
   name: string
   control: Control<FieldValues, object>
   label: string
   placeholder: string
   required?: boolean
   type?: string
-  defaultValue?: string
+  defaultValue?: string | number
   inputProps?: {
     position: 'start' | 'end'
-    icon: React.ReactNode
+    child: React.ReactNode | string
   }
 }
 
-export const TextInput: React.FC<Props> = ({
+export const FormTextInput: React.FC<FormTextInputProps> = ({
   name,
   control,
   label,
@@ -47,11 +47,19 @@ export const TextInput: React.FC<Props> = ({
             type={type}
             variant="standard"
             InputProps={
-              inputProps
+              inputProps && inputProps.position === 'start'
                 ? {
                     startAdornment: (
                       <InputAdornment position={inputProps.position}>
-                        {inputProps.icon}
+                        {inputProps.child}
+                      </InputAdornment>
+                    ),
+                  }
+                : inputProps && inputProps.position === 'end'
+                ? {
+                    endAdornment: (
+                      <InputAdornment position={inputProps.position}>
+                        {inputProps.child}
                       </InputAdornment>
                     ),
                   }

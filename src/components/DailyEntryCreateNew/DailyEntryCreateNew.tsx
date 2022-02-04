@@ -69,7 +69,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
       GSI1SK: 'DAILYENTRIES',
       type: 'DAILYENTRY',
       dailyEntryWeight: data.weight,
-      dailyEntryMeals: [],
+      dailyEntryConsumables: [],
       dailyEntryActivityLevel: data.activityLevel,
       entryDate: date,
       cycleId: cycle?.cycleId!,

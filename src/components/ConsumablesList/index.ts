@@ -1,0 +1,1 @@
+export { ConsumablesList } from './ConsumablesList'

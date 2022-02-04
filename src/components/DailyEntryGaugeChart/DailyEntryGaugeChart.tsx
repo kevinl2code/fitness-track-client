@@ -24,16 +24,20 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
     return null
   }
   const calculate = new Calculate()
-  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryMeals } =
+  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
     dailyEntry
   const { birthday, sex, height } = user
   const age = calculate.age(birthday)
 
   const bmr = calculate.BMR(height, dailyEntryWeight, age, sex)
   const tdee = calculate.TDEE(bmr!, dailyEntryActivityLevel)
-  const confirmedMeals = dailyEntryMeals?.length > 0 ? dailyEntryMeals : null
+  const confirmedConsumables =
+    dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
   const caloriesConsumed =
-    confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
+    confirmedConsumables?.reduce(
+      (acc, consumable) => acc + consumable.calories,
+      0
+    ) || 0
   const remainingCals = parseInt(tdee) - caloriesConsumed
 
   const data = [

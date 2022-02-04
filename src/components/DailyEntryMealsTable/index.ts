@@ -1,1 +1,0 @@
-export { DailyEntryMealsTable } from './DailyEntryMealsTable'

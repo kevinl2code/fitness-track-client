@@ -30,15 +30,22 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
       dailyEntryActivityLevel,
       entryDate,
       dailyEntryWeight,
-      dailyEntryMeals,
+      dailyEntryConsumables,
     } = entry
     const { birthday, sex, height } = user
-    const confirmedMeals = dailyEntryMeals.length > 0 ? dailyEntryMeals : null
+    const confirmedConsumables =
+      dailyEntryConsumables.length > 0 ? dailyEntryConsumables : null
     const caloriesConsumed =
-      confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
+      confirmedConsumables?.reduce(
+        (acc, consumable) => acc + consumable.calories,
+        0
+      ) || 0
 
     const proteinConsumed =
-      confirmedMeals?.reduce((acc, meal) => acc + meal.protein, 0) || 0
+      confirmedConsumables?.reduce(
+        (acc, consumable) => acc + consumable.protein,
+        0
+      ) || 0
 
     const proteinRequired = calculate.proteinRequiredForWeightLoss(
       dailyEntryWeight,

@@ -55,12 +55,15 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
       .split('.')[0]
 
     //TODO - MAKE SURE THIS WORKS FOR GAINING AND MAINTAINING WEIGHT
-    const confirmedMeals =
-      previousValue.dailyEntryMeals.length > 0
-        ? previousValue.dailyEntryMeals
+    const confirmedConsumables =
+      previousValue.dailyEntryConsumables.length > 0
+        ? previousValue.dailyEntryConsumables
         : null
     const previousDaysCalories =
-      confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
+      confirmedConsumables?.reduce(
+        (acc, consumable) => acc + consumable.calories,
+        0
+      ) || 0
     const caloriesRelativeToTDEE = parseInt(tdee) - previousDaysCalories
 
     const expectedWeightChange = caloriesRelativeToTDEE / 3500

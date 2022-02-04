@@ -11,10 +11,12 @@ export interface UserAttribute {
   Value: string
 }
 
-export interface EntryMeal {
+export interface EntryConsumable {
   name: string
   calories: number
   protein: number
+  fat: number
+  carbohydrates: number
 }
 
 export type ActivityLevel =
@@ -34,7 +36,7 @@ export interface DailyEntry {
   GSI1SK: 'DAILYENTRIES'
   type: 'DAILYENTRY'
   dailyEntryWeight: number
-  dailyEntryMeals: EntryMeal[] | []
+  dailyEntryConsumables: EntryConsumable[] | []
   dailyEntryActivityLevel: ActivityLevel
   entryDate: string
   cycleId: string

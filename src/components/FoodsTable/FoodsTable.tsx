@@ -105,7 +105,7 @@ export const FoodsTable: React.FC<Props> = ({
                 {isAdmin && (
                   <IconButton
                     color="primary"
-                    aria-label="add meal"
+                    aria-label="add consumable"
                     onClick={() => setAddFoodDialogOpen(true)}
                   >
                     <AddCircleIcon fontSize="large" />

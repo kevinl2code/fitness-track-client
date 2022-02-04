@@ -14,17 +14,18 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { UseApi } from './UseApi'
 import { DailyEntry } from '../../model/Model'
-import { DailyEntryMealsTable, DailyEntryCreateNew } from '../../components'
+import { DailyEntryCreateNew } from '../../components'
 import {
   UpdateDailyEntryWeightDialog,
   UpdateDailyEntryActivityLevelDialog,
-  AddMealToDailyEntryDialog,
+  AddConsumableToDailyEntryDialog,
 } from '../../components/dialogs'
 import { CycleContext, UserContext } from '../../app/App'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { DailyEntryMetricView } from '../../components/DailyEntryMetricView'
 import { formattedActivityLevel } from '../../utilities/Convert'
 import { DailyEntryGaugeChart } from '../../components/DailyEntryGaugeChart/DailyEntryGaugeChart'
+import { DailyEntryConsumablesTable } from '../../components/DailyEntryConsumablesTable/DailyEntryConsumablesTable'
 
 const today = DateTime.now()
 
@@ -35,7 +36,7 @@ export const DailyEntriesPage: React.FC = () => {
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [loading, setLoading] = useState(true)
-  const [openMealDialog, setOpenMealDialog] = React.useState(false)
+  const [openConsumableDialog, setOpenConsumableDialog] = React.useState(false)
   const [openUpdateWeightDialog, setOpenUpdateWeightDialog] =
     React.useState(false)
   const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
@@ -151,11 +152,11 @@ export const DailyEntriesPage: React.FC = () => {
           }}
         />
       </Grid>
-      <DailyEntryMealsTable
-        rows={dailyEntry?.dailyEntryMeals}
+      <DailyEntryConsumablesTable
+        rows={dailyEntry?.dailyEntryConsumables}
         useApi={useApi}
-        handleOpenAddMealDialog={() => {
-          setOpenMealDialog(true)
+        handleOpenAddConsumableDialog={() => {
+          setOpenConsumableDialog(true)
         }}
       />{' '}
     </>
@@ -186,11 +187,11 @@ export const DailyEntriesPage: React.FC = () => {
         useApi={useApi}
         setDialogOpenState={setOpenUpdateActivityLevelDialog}
       />
-      <AddMealToDailyEntryDialog
+      <AddConsumableToDailyEntryDialog
         entry={dailyEntry!}
-        open={openMealDialog}
+        open={openConsumableDialog}
         useApi={useApi}
-        setDialogOpenState={setOpenMealDialog}
+        setDialogOpenState={setOpenConsumableDialog}
       />
       {!matchesMD && mobileDateView}
       <Grid container sx={[matchesMD && { marginTop: '2rem' }]}>

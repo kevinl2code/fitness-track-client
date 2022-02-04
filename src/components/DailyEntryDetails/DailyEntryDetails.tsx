@@ -14,7 +14,7 @@ export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry, user }) => {
   }
 
   const calculate = new Calculate()
-  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryMeals } =
+  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
     dailyEntry
   const fakeUser = {
     height: 74,
@@ -30,13 +30,20 @@ export const DailyEntryDetails: React.FC<Props> = ({ dailyEntry, user }) => {
   )
   const tdee = calculate.TDEE(bmr!, dailyEntryActivityLevel)
 
-  const confirmedMeals = dailyEntryMeals?.length > 0 ? dailyEntryMeals : null
+  const confirmedConsumables =
+    dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
 
   const caloriesConsumed =
-    confirmedMeals?.reduce((acc, meal) => acc + meal.calories, 0) || 0
+    confirmedConsumables?.reduce(
+      (acc, consumable) => acc + consumable.calories,
+      0
+    ) || 0
 
   const proteinConsumed =
-    confirmedMeals?.reduce((acc, meal) => acc + meal.protein, 0) || 0
+    confirmedConsumables?.reduce(
+      (acc, consumable) => acc + consumable.protein,
+      0
+    ) || 0
 
   const proteinRequired = calculate.proteinRequiredForWeightLoss(
     dailyEntryWeight,

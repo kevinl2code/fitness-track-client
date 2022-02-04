@@ -1,4 +1,4 @@
-import { DailyEntry, EntryMeal, User } from '../../model/Model'
+import { DailyEntry, EntryConsumable, User } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 
 export class UseApi {
@@ -53,46 +53,55 @@ export class UseApi {
     }
   }
 
-  public async deleteMeal(mealIndex: number, rows: EntryMeal[]) {
-    const newMeals =
-      rows.filter((meal, index) => {
-        return index !== mealIndex
+  public async deleteConsumable(
+    consumableIndex: number,
+    rows: EntryConsumable[]
+  ) {
+    const newConsumables =
+      rows.filter((consumable, index) => {
+        return index !== consumableIndex
       }) ?? []
     if (this.dailyEntry) {
       try {
         if (this.currentlySelectedDate) {
           this.dataService.setUser(this.user)
-          const result = await this.dataService.updateDailyEntryMeals(
+          const result = await this.dataService.updateDailyEntryConsumables(
             this.userId,
             this.currentlySelectedDate,
-            newMeals
+            newConsumables
           )
-          this.setDailyEntry({ ...this.dailyEntry, dailyEntryMeals: result })
+          this.setDailyEntry({
+            ...this.dailyEntry,
+            dailyEntryConsumables: result,
+          })
         }
       } catch (error) {
         if (error instanceof Error) {
-          alert(`Error deleting meals: ${error.message}`)
+          alert(`Error deleting consumables: ${error.message}`)
         }
       }
     }
   }
 
-  public async addMeal(data: any) {
+  public async addConsumable(data: any) {
     if (this.dailyEntry) {
       try {
         if (this.currentlySelectedDate) {
           this.dataService.setUser(this.user)
-          const result = await this.dataService.updateDailyEntryMeals(
+          const result = await this.dataService.updateDailyEntryConsumables(
             this.userId,
             this.currentlySelectedDate,
-            [...this.dailyEntry.dailyEntryMeals, data]
+            [...this.dailyEntry.dailyEntryConsumables, data]
           )
           console.log(result)
-          this.setDailyEntry({ ...this.dailyEntry, dailyEntryMeals: result })
+          this.setDailyEntry({
+            ...this.dailyEntry,
+            dailyEntryConsumables: result,
+          })
         }
       } catch (error) {
         if (error instanceof Error) {
-          alert(`Error adding meal: ${error.message}`)
+          alert(`Error adding consumable: ${error.message}`)
         }
       }
     }

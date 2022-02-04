@@ -11,24 +11,12 @@ import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { FoodCategory } from '../../../model/Model'
 import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
-import { TextInput } from '../../form/TextInput'
 import { v4 } from 'uuid'
+import { FormTextInput } from '../../form/FormTextInput'
+import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 
 interface IFormInput {
   categoryName: string
-}
-
-interface GenerateTextInputProps {
-  name: string
-  control: Control<FieldValues, object>
-  label: string
-  placeholder: string
-  required: boolean
-  type?: string
-  inputProps?: {
-    position: 'start' | 'end'
-    icon: React.ReactNode
-  }
 }
 
 interface Props {
@@ -55,7 +43,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     reset()
     setAddFoodCategoryDialogOpen(false)
   }
-  const generateTextInput = ({
+  const generateFormTextInput = ({
     name,
     control,
     label,
@@ -63,7 +51,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     required,
     type,
     inputProps,
-  }: GenerateTextInputProps) => {
+  }: FormTextInputProps) => {
     return (
       <Grid
         item
@@ -76,7 +64,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
           paddingBottom: '1rem',
         }}
       >
-        <TextInput
+        <FormTextInput
           control={control}
           label={label}
           required={required}
@@ -116,7 +104,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <Grid container justifyContent="center">
-              {generateTextInput({
+              {generateFormTextInput({
                 name: 'categoryName',
                 control: control,
                 required: true,
