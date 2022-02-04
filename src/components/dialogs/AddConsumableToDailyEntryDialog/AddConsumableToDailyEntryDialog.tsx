@@ -2,17 +2,12 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-  TextField,
   DialogActions,
   Button,
-  Divider,
-  FormControl,
   Grid,
-  InputAdornment,
 } from '@mui/material'
 import React, { useState } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { DailyEntry, EntryConsumable } from '../../../model/Model'
 import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
@@ -38,6 +33,7 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
     reset,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm()
   const { matchesMD } = useMediaQueries()
@@ -49,11 +45,18 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
 
   const onSubmit: SubmitHandler<EntryConsumable> = async (data: any) => {
     if (typeof data === 'object' && 'calories' in data) {
-      data.calories = parseInt(data.calories)
+      data.calories = parseFloat(data.calories)
     }
     if (typeof data === 'object' && 'protein' in data) {
-      data.protein = parseInt(data.protein)
+      data.protein = parseFloat(data.protein)
     }
+    if (typeof data === 'object' && 'fat' in data) {
+      data.fat = parseFloat(data.fat)
+    }
+    if (typeof data === 'object' && 'carbohydrates' in data) {
+      data.carbohydrates = parseFloat(data.carbohydrates)
+    }
+    // console.log(data)
     useApi.addConsumable(data)
     handleCloseDialog()
   }
@@ -89,20 +92,45 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
         )}
         {entryMethod === 'CUSTOM' && (
           <form onSubmit={handleSubmit(onSubmit)}>
-            {<AddCustomConsumableForm control={control} />}
+            <AddCustomConsumableForm control={control} />
+            <Grid container justifyContent="center">
+              <Button
+                variant="contained"
+                type="submit"
+                sx={[
+                  { marginTop: '1rem', marginBottom: '1rem' },
+                  matchesMD && { marginTop: 0 },
+                ]}
+              >
+                Submit
+              </Button>
+            </Grid>
           </form>
         )}
         {entryMethod === 'CATALOG' && (
           <form onSubmit={handleSubmit(onSubmit)}>
-            {<AddFoodCatalogConsumableForm />}
+            <AddFoodCatalogConsumableForm
+              control={control}
+              setValue={setValue}
+              reset={reset}
+            />
+            <Grid container justifyContent="center">
+              <Button
+                variant="contained"
+                type="submit"
+                sx={[
+                  { marginTop: '1rem', marginBottom: '1rem' },
+                  matchesMD && { marginTop: 0 },
+                ]}
+              >
+                Submit
+              </Button>
+            </Grid>
           </form>
         )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCloseDialog}>Cancel</Button>
-        <Button type="submit" onClick={handleSubmit(onSubmit)}>
-          Confirm
-        </Button>
       </DialogActions>
     </Dialog>
   )

@@ -94,7 +94,12 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
 
   return (
     <>
-      <Grid container direction="column" alignItems="center">
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        sx={[!matchesMD && { marginTop: '2rem' }]}
+      >
         <Typography
           textAlign="center"
           variant="h6"

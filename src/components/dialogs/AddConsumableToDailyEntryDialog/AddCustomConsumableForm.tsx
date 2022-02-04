@@ -49,6 +49,7 @@ export const AddCustomConsumableForm: React.FC<Props> = ({ control }) => {
         name: 'name',
         control: control,
         required: true,
+        defaultValue: '',
         label: 'Consumable Name',
         placeholder: 'Consumable Name',
       })}
@@ -56,6 +57,8 @@ export const AddCustomConsumableForm: React.FC<Props> = ({ control }) => {
         name: 'calories',
         control: control,
         required: true,
+
+        defaultValue: 0,
         type: 'number',
         label: 'Calories',
         placeholder: 'Calories',

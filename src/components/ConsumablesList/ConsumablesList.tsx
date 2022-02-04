@@ -1,14 +1,10 @@
 import {
   Grid,
   Paper,
-  Typography,
-  TextField,
-  InputAdornment,
   List,
   ListItemText,
   ListItem,
   ListItemButton,
-  Divider,
   IconButton,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
@@ -16,6 +12,8 @@ import ClearIcon from '@mui/icons-material/Clear'
 import React, { useState } from 'react'
 import { FitnessTrackFoodItem } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { FormattedTextField } from '../FormattedTextField/FormattedTextField'
+import { UseFormReset, FieldValues } from 'react-hook-form'
 
 interface Props {
   emptySubCategorySelected: boolean
@@ -24,10 +22,12 @@ interface Props {
   foodItemsLoading: boolean
   selectedFoodItem: FitnessTrackFoodItem | null
   filterText: string
+  reset: UseFormReset<FieldValues>
   setFilterText: React.Dispatch<React.SetStateAction<string>>
   setSelectedFoodItem: React.Dispatch<
     React.SetStateAction<FitnessTrackFoodItem | null>
   >
+  setQuantity: (value: React.SetStateAction<string>) => void
 }
 
 export const ConsumablesList: React.FC<Props> = ({
@@ -37,8 +37,10 @@ export const ConsumablesList: React.FC<Props> = ({
   foodItemsLoading,
   selectedFoodItem,
   filterText,
+  reset,
   setFilterText,
   setSelectedFoodItem,
+  setQuantity,
 }) => {
   const { matchesMD } = useMediaQueries()
   const filteredListItems = foodItems.filter((foodItem) => {
@@ -58,72 +60,50 @@ export const ConsumablesList: React.FC<Props> = ({
   })
 
   return (
-    <Grid item md={8} xs={12}>
+    <Grid
+      item
+      md={8}
+      xs={12}
+      sx={{
+        marginBottom: '1rem',
+      }}
+    >
       {selectedSubCategory.length > 0 && !foodItemsLoading && (
         <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
           <Grid container>
             {selectedFoodItem ? (
-              <Grid
-                container
-                item
-                xs={12}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Grid container justifyContent="flex-end" item>
-                  <TextField
-                    variant="standard"
-                    id="outlined-start-adornment"
-                    sx={{ width: '100%' }}
-                    label="Consumable"
-                    value={selectedFoodItem.foodItemName}
-                    onChange={(event) => setFilterText(event.target.value)}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={() => {
-                              setFilterText('')
-                              setSelectedFoodItem(null)
-                            }}
-                          >
-                            <ClearIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-              </Grid>
+              <FormattedTextField
+                label="Consumable"
+                value={selectedFoodItem.foodItemName}
+                onChange={(event) => setFilterText(event.target.value)}
+                inputProps={{
+                  position: 'end',
+                  child: (
+                    <IconButton
+                      aria-label="remove-selected-consumable"
+                      onClick={() => {
+                        setFilterText('')
+                        reset()
+                        setQuantity('')
+                        setSelectedFoodItem(null)
+                      }}
+                    >
+                      <ClearIcon />
+                    </IconButton>
+                  ),
+                }}
+              />
             ) : (
               <>
-                <Grid
-                  container
-                  item
-                  xs={12}
-                  justifyContent="space-between"
-                  alignItems="center"
-                  // sx={{ backgroundColor: '#81d4fa' }}
-                >
-                  <Grid container justifyContent="flex-end" item>
-                    <TextField
-                      variant="standard"
-                      id="outlined-start-adornment"
-                      sx={{ width: '100%' }}
-                      label="Consumable"
-                      value={filterText}
-                      onChange={(event) => setFilterText(event.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <SearchIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
+                <FormattedTextField
+                  label="Consumable"
+                  value={filterText}
+                  onChange={(event) => setFilterText(event.target.value)}
+                  inputProps={{
+                    position: 'start',
+                    child: <SearchIcon />,
+                  }}
+                />
                 <Grid item xs={12}>
                   <List>{generatedList}</List>
                 </Grid>

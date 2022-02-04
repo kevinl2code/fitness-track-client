@@ -6,14 +6,15 @@ export interface FormTextInputProps {
   name: string
   control: Control<FieldValues, object>
   label: string
-  placeholder: string
+  placeholder?: string
   required?: boolean
-  type?: string
+  type?: 'text' | 'number'
   defaultValue?: string | number
   inputProps?: {
     position: 'start' | 'end'
     child: React.ReactNode | string
   }
+  disabled?: boolean
 }
 
 export const FormTextInput: React.FC<FormTextInputProps> = ({
@@ -25,6 +26,7 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
   type,
   defaultValue,
   inputProps,
+  disabled = false,
 }) => {
   return (
     <Controller
@@ -46,6 +48,7 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
             required={required}
             type={type}
             variant="standard"
+            disabled={disabled}
             InputProps={
               inputProps && inputProps.position === 'start'
                 ? {
