@@ -1,13 +1,4 @@
-import {
-  Box,
-  Grid,
-  IconButton,
-  LinearProgress,
-  Paper,
-  Typography,
-} from '@mui/material'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
+import { Box, Grid, LinearProgress } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
 import React, { useContext, useEffect, useState } from 'react'
@@ -26,13 +17,16 @@ import { DailyEntryMetricView } from '../../components/DailyEntryMetricView'
 import { formattedActivityLevel } from '../../utilities/Convert'
 import { DailyEntryGaugeChart } from '../../components/DailyEntryGaugeChart/DailyEntryGaugeChart'
 import { DailyEntryConsumablesTable } from '../../components/DailyEntryConsumablesTable/DailyEntryConsumablesTable'
+import { Calculate } from '../../utilities/Calculate'
+import { MobileDateView } from '../../components/MobileDateView'
 
 const today = DateTime.now()
 
 export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
+
   const cycle = useContext(CycleContext)
-  const [pickerDate, setPickerDate] = useState<DateTime | null>(today)
+  const [pickerDate, setPickerDate] = useState<DateTime>(today)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [loading, setLoading] = useState(true)
@@ -54,77 +48,42 @@ export const DailyEntriesPage: React.FC = () => {
     setDailyEntry
   )
   const { matchesMD } = useMediaQueries()
-
-  //Plan is to fetch the previous day and now allow the current day to set a weight thats more than 10lbs or so different.
-
+  const calculate = new Calculate()
   useEffect(() => {
     setLoading(true)
     useApi.fetchPageData(setLoading, setDailyEntry)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlySelectedDate])
+  //Plan is to fetch the previous day and now allow the current day to set a weight thats more than 10lbs or so different.
+  if (!user) {
+    return null
+  }
+  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
+    { ...dailyEntry } || {}
+  const start = DateTime.fromISO(cycle?.startDate!)
+  const currentDay = pickerDate
+  const daysSinceStart = Math.floor(currentDay.diff(start, 'days').days)
+  const daysRemaining = cycle?.duration! - daysSinceStart
+  const poundsToGo = dailyEntry?.dailyEntryWeight! - cycle?.goalWeight!
+  const caloriesToGo = poundsToGo * 3500
+  const deficitPerDay = caloriesToGo / daysRemaining
+  const { birthday, sex, height } = user
+  const age = calculate.age(birthday)
+  // const bmr = calculate.BMR(height, dailyEntryWeight, age, sex)
+  // const tdee = calculate.TDEE(bmr!, dailyEntryActivityLevel)
+  // const confirmedConsumables =
+  //   dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
+  // const caloriesConsumed =
+  //   confirmedConsumables?.reduce(
+  //     (acc, consumable) => acc + consumable.calories,
+  //     0
+  //   ) || 0
+  // const remainingCals = parseInt(tdee) - caloriesConsumed
 
-  const weight = dailyEntry?.dailyEntryWeight || '-'
+  const displayWeight = dailyEntry?.dailyEntryWeight || '-'
   const activityLevel = dailyEntry?.dailyEntryActivityLevel
     ? formattedActivityLevel[dailyEntry?.dailyEntryActivityLevel]
     : '-'
-
-  const mobileDateViewStartPosition =
-    document.getElementById('dailyEntryPageMobileDateView')?.getClientRects()[0]
-      .top! - 1
-
-  const stepDateBack = () => {
-    if (!pickerDate) {
-      return null
-    }
-    if (
-      pickerDate.endOf('day').valueOf() ===
-      cycleStartDate.endOf('day').valueOf()
-    ) {
-      return null
-    }
-    setPickerDate(pickerDate?.minus({ days: 1 }))
-  }
-  const stepDateForward = () => {
-    if (!pickerDate) {
-      return null
-    }
-    if (pickerDate.endOf('day').valueOf() === today.endOf('day').valueOf()) {
-      return null
-    }
-    setPickerDate(pickerDate?.plus({ days: 1 }))
-  }
-
-  const mobileDateView = (
-    <Paper
-      square
-      id="dailyEntryPageMobileDateView"
-      sx={{
-        width: '100%',
-        backgroundColor: 'primary.main',
-        border: 'none',
-        padding: '1rem 1rem 0 1rem',
-        position: 'sticky',
-        top: mobileDateViewStartPosition,
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-      }}
-    >
-      <Grid container justifyContent="space-between">
-        <IconButton aria-label="delete" size="small" onClick={stepDateBack}>
-          <NavigateBeforeIcon sx={{ color: 'white' }} />
-        </IconButton>
-        <Typography
-          color={'white'}
-          variant="h5"
-          onClick={() => setDatePickerOpen(true)}
-        >
-          {pickerDate?.toFormat('MMMM dd')}
-        </Typography>
-        <IconButton aria-label="delete" size="small" onClick={stepDateForward}>
-          <NavigateNextIcon sx={{ color: 'white' }} />
-        </IconButton>
-      </Grid>
-    </Paper>
-  )
 
   const mainContent = dailyEntry ? (
     <>
@@ -137,7 +96,7 @@ export const DailyEntriesPage: React.FC = () => {
         <DailyEntryMetricView
           fieldType="weight"
           fieldLabel="Weight"
-          fieldValue={`${weight} lbs`}
+          fieldValue={`${displayWeight} lbs`}
           canEdit={isFirstDay ? false : true}
           openDialog={() => {
             setOpenUpdateWeightDialog(true)
@@ -193,7 +152,14 @@ export const DailyEntriesPage: React.FC = () => {
         useApi={useApi}
         setDialogOpenState={setOpenConsumableDialog}
       />
-      {!matchesMD && mobileDateView}
+      {!matchesMD && (
+        <MobileDateView
+          pickerDate={pickerDate}
+          minDate={cycleStartDate}
+          setPickerDate={setPickerDate}
+          setDatePickerOpen={setDatePickerOpen}
+        />
+      )}
       <Grid container sx={[matchesMD && { marginTop: '2rem' }]}>
         <Grid item xs={12} md={4} container justifyContent="flex-start">
           {/* <Grid item xs={12} sx={{ marginBottom: '2rem' }}> */}
@@ -205,7 +171,9 @@ export const DailyEntriesPage: React.FC = () => {
             onOpen={() => setDatePickerOpen(true)}
             onClose={() => setDatePickerOpen(false)}
             onChange={(newValue) => {
-              setPickerDate(newValue)
+              if (newValue) {
+                setPickerDate(newValue)
+              }
             }}
             renderInput={
               matchesMD
