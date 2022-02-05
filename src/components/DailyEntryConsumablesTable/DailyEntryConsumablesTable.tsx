@@ -109,7 +109,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
   return (
     <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
       <Grid container>
-        <Grid
+        {/* <Grid
           container
           item
           xs={12}
@@ -122,7 +122,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
               Food Details
             </Typography>
           </Grid>
-          <Grid
+          {/* <Grid
             container
             justifyContent="flex-end"
             alignItems="center"
@@ -137,8 +137,8 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
             >
               <AddCircleIcon fontSize="large" />
             </IconButton>
-          </Grid>
-        </Grid>
+          </Grid> */}
+        {/* </Grid> */}
         <Grid item xs={12}>
           <TableContainer component={Paper} elevation={0}>
             <Table aria-label="simple table">

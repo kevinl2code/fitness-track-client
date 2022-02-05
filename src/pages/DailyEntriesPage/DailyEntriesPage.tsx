@@ -1,4 +1,4 @@
-import { Box, Grid, LinearProgress } from '@mui/material'
+import { Box, Button, Grid, LinearProgress } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
 import React, { useContext, useEffect, useState } from 'react'
@@ -87,11 +87,28 @@ export const DailyEntriesPage: React.FC = () => {
 
   const mainContent = dailyEntry ? (
     <>
-      <DailyEntryGaugeChart dailyEntry={dailyEntry} user={user} />
+      <Grid container justifyContent="center">
+        <DailyEntryGaugeChart dailyEntry={dailyEntry} user={user} />
+      </Grid>
+      <Grid
+        container
+        justifyContent="center"
+        sx={{ marginTop: '1rem', marginBottom: '2rem' }}
+      >
+        <Button
+          variant="contained"
+          sx={{ width: '50%' }}
+          onClick={() => {
+            setOpenConsumableDialog(true)
+          }}
+        >
+          Add Food
+        </Button>
+      </Grid>
       <Grid
         container
         justifyContent="space-evenly"
-        sx={{ marginBottom: '1rem' }}
+        sx={{ marginBottom: '1rem', top: '-100px' }}
       >
         <DailyEntryMetricView
           fieldType="weight"
