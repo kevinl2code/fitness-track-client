@@ -4,6 +4,7 @@ import {
   MenuItem,
   InputAdornment,
   InputLabel,
+  FormHelperText,
 } from '@mui/material'
 import React from 'react'
 import {
@@ -58,7 +59,7 @@ export const FormSelectInput: React.FC<FormSelectInputProps> = ({
         field: { onChange, value },
         fieldState: { invalid, isTouched, isDirty, error },
       }) => (
-        <FormControl sx={{ width: '100%' }}>
+        <FormControl sx={{ width: '100%' }} error={error && true}>
           <InputLabel
             id={`${label}-select-label`}
             sx={{ left: '-13px', top: '7px' }}
@@ -91,6 +92,11 @@ export const FormSelectInput: React.FC<FormSelectInputProps> = ({
             </MenuItem>
             {menuItems}
           </Select>
+          {error && (
+            <FormHelperText sx={{ marginLeft: '0px' }}>
+              {error.message}
+            </FormHelperText>
+          )}
         </FormControl>
       )}
     />

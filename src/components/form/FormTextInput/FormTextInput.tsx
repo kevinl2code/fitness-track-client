@@ -1,4 +1,4 @@
-import { FormControl, TextField, InputAdornment } from '@mui/material'
+import { FormControl, TextField } from '@mui/material'
 import React from 'react'
 import { Control, Controller, FieldValues } from 'react-hook-form'
 
@@ -7,12 +7,12 @@ export interface FormTextInputProps {
   control: Control<FieldValues, object>
   label: string
   placeholder?: string
+  helperText?: string
   required?: boolean
   type?: 'text' | 'number'
   defaultValue?: string | number
   inputProps?: {
-    position: 'start' | 'end'
-    child: React.ReactNode | string
+    [key: string]: any
   }
   disabled?: boolean
 }
@@ -41,7 +41,7 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
           <TextField
             {...field}
             error={invalid}
-            // helperText={invalid && 'Username is required'}
+            helperText={error?.message}
             sx={{ minWidth: '100%' }}
             label={label}
             placeholder={placeholder}
@@ -49,25 +49,7 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
             type={type}
             variant="standard"
             disabled={disabled}
-            InputProps={
-              inputProps && inputProps.position === 'start'
-                ? {
-                    startAdornment: (
-                      <InputAdornment position={inputProps.position}>
-                        {inputProps.child}
-                      </InputAdornment>
-                    ),
-                  }
-                : inputProps && inputProps.position === 'end'
-                ? {
-                    endAdornment: (
-                      <InputAdornment position={inputProps.position}>
-                        {inputProps.child}
-                      </InputAdornment>
-                    ),
-                  }
-                : undefined
-            }
+            InputProps={inputProps}
           />
         </FormControl>
       )}

@@ -1,19 +1,28 @@
-import { Card, CardContent, Typography, Grid, Button } from '@mui/material'
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Button,
+  InputAdornment,
+} from '@mui/material'
 import WcIcon from '@mui/icons-material/Wc'
 import EventIcon from '@mui/icons-material/Event'
 import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LockIcon from '@mui/icons-material/Lock'
 import { Link } from 'react-router-dom'
 import { AuthService } from '../../services/AuthService'
-import { Email } from '@mui/icons-material'
+import { CollectionsBookmarkRounded, Email } from '@mui/icons-material'
 import { CognitoGender } from '../../model/Model'
 import { ConfirmRegistrationDialog } from '../../components/dialogs/ConfiirmRegistrationDialog/ConfirmRegistrationDialog'
 import { FormTextInput } from '../../components/form/FormTextInput'
 import { FormSelectInput } from '../../components/form/FormSelectInput'
 import { FormSelectInputProps } from '../../components/form/FormSelectInput/FormSelectInput'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 interface IFormInput {
   username: string
@@ -32,11 +41,88 @@ interface GenerateInputProps {
   control: Control<FieldValues, object>
   label: string
   placeholder: string
+  helperText?: string
   inputProps?: {
-    position: 'start' | 'end'
-    child: React.ReactNode | string
+    [key: string]: any
   }
 }
+
+const validationSchema = yup.object({
+  givenName: yup
+    .string()
+    .matches(/^[a-z ,.'-]+$/i, 'Please enter valid name')
+    .max(40)
+    .required(),
+  familyName: yup
+    .string()
+    .matches(/^[a-z ,.'-]+$/i, 'Please enter valid name')
+    .max(40)
+    .required(),
+  gender: yup
+    .string()
+    .typeError('Selection required')
+    .matches(/^male$|^female$/g, 'Selection required'),
+  height: yup
+    .number()
+    .typeError('Height in inches required')
+    .min(21, 'Must be over 21 inches')
+    .max(103, 'Must be under 103 inches')
+    .required()
+    .positive()
+    .integer()
+    .required(),
+  birthdate: yup
+    .string()
+    .matches(
+      /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/i,
+      'Must be in format yyyy-mm-dd'
+    )
+    .test(
+      'valid-birthdate',
+      'Birthday must result in valid age',
+      function (value) {
+        if (!value) {
+          return false
+        }
+        const year = parseInt(value.slice(0, 4))
+        if (year > 1920 && year < 2012) {
+          return true
+        } else {
+          return false
+        }
+      }
+    )
+    .required(),
+  username: yup
+    .string()
+    .min(4, 'Must be at least 4 characters')
+    .matches(/^[a-z]/i, 'Username must begin with a letter')
+    .matches(
+      /^[a-z][a-z\d]+$/i,
+      'Username can only consist of letters and numbers'
+    )
+    .max(15, 'Username cannot exceed 15 characters')
+    .required(),
+  password: yup
+    .string()
+    .min(8, 'Must be at least 8 characters')
+    .matches(/^\S*$/, 'Cannot contain spaces')
+    .matches(
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])/,
+      'Must include a number and both upper and lowercase letters'
+    )
+    .required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .test('passwords-match', 'Passwords must match', function (value) {
+      return this.parent.password === value
+    })
+    .required('Password confirmation required'),
+  email: yup
+    .string()
+    .email('Must be in valid email format')
+    .required('Email is required'),
+})
 
 export const RegistrationPage: React.FC = () => {
   const [openConfirmRegistrationDialog, setOpenConfirmRegistrationDialog] =
@@ -46,16 +132,19 @@ export const RegistrationPage: React.FC = () => {
     register,
     handleSubmit,
     control,
+    getValues,
     formState: { errors },
-  } = useForm()
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  })
   const authService = new AuthService()
-  // const user = useContext(UserContext)
 
   const handleOpenConfirmRegistrationDialog = () => {
     setOpenConfirmRegistrationDialog(true)
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    console.log(data)
     const result = await authService.signUp(
       data.username,
       data.password,
@@ -78,6 +167,7 @@ export const RegistrationPage: React.FC = () => {
     control,
     label,
     placeholder,
+    helperText,
     inputProps,
   }: GenerateInputProps) => {
     return (
@@ -97,6 +187,7 @@ export const RegistrationPage: React.FC = () => {
           label={label}
           name={name}
           placeholder={placeholder}
+          helperText={helperText}
           inputProps={inputProps}
         />
       </Grid>
@@ -127,6 +218,7 @@ export const RegistrationPage: React.FC = () => {
           control={control}
           register={register}
           placeholder={placeholder}
+          // required={true}
           label={label}
           name={name}
           values={values}
@@ -139,14 +231,14 @@ export const RegistrationPage: React.FC = () => {
   const genderValues = [
     {
       name: 'Male',
-      value: 'Male',
+      value: 'male',
     },
     {
       name: 'Female',
-      value: 'Female',
+      value: 'female',
     },
   ]
-
+  console.log(getValues())
   return (
     <>
       <ConfirmRegistrationDialog
@@ -170,8 +262,11 @@ export const RegistrationPage: React.FC = () => {
                     label: 'First Name',
                     placeholder: 'First Name',
                     inputProps: {
-                      position: 'start',
-                      child: <AccountCircle />,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      ),
                     },
                   })}
                   {generateInput({
@@ -180,29 +275,13 @@ export const RegistrationPage: React.FC = () => {
                     label: 'Last Name',
                     placeholder: 'Last Name',
                     inputProps: {
-                      position: 'start',
-                      child: <AccountCircle />,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      ),
                     },
                   })}
-                  {/* <Grid
-                    item
-                    xs={12}
-                    container
-                    direction={'column'}
-                    sx={{
-                      paddingLeft: '2rem',
-                      paddingRight: '2rem',
-                      paddingBottom: '1rem',
-                    }}
-                  >
-                    <FormTextInput
-                      control={control}
-                      label="Sex"
-                      name="gender"
-                      placeholder="Sex"
-                      inputProps={{ position: 'start', child: <WcIcon /> }}
-                    />
-                  </Grid> */}
                   {generateSelectInput({
                     name: 'gender',
                     control: control,
@@ -229,8 +308,11 @@ export const RegistrationPage: React.FC = () => {
                       name="height"
                       placeholder="Height"
                       inputProps={{
-                        position: 'start',
-                        child: <AlignHorizontalLeftIcon />,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <AlignHorizontalLeftIcon />
+                          </InputAdornment>
+                        ),
                       }}
                     />
                   </Grid>
@@ -250,7 +332,13 @@ export const RegistrationPage: React.FC = () => {
                       label="Birthday"
                       name="birthdate"
                       placeholder="yyyy-mm-dd"
-                      inputProps={{ position: 'start', child: <EventIcon /> }}
+                      inputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <EventIcon />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </Grid>
                   {generateInput({
@@ -259,8 +347,11 @@ export const RegistrationPage: React.FC = () => {
                     label: 'Username',
                     placeholder: 'Username',
                     inputProps: {
-                      position: 'start',
-                      child: <AccountCircle />,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      ),
                     },
                   })}
                   {generateInput({
@@ -269,8 +360,11 @@ export const RegistrationPage: React.FC = () => {
                     label: 'Password',
                     placeholder: 'Password',
                     inputProps: {
-                      position: 'start',
-                      child: <LockIcon />,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockIcon />
+                        </InputAdornment>
+                      ),
                     },
                   })}
                   {generateInput({
@@ -279,8 +373,11 @@ export const RegistrationPage: React.FC = () => {
                     label: 'Confirm Password',
                     placeholder: 'Confirm Password',
                     inputProps: {
-                      position: 'start',
-                      child: <LockIcon />,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockIcon />
+                        </InputAdornment>
+                      ),
                     },
                   })}
                   {generateInput({
@@ -289,8 +386,11 @@ export const RegistrationPage: React.FC = () => {
                     label: 'Email',
                     placeholder: 'Email',
                     inputProps: {
-                      position: 'start',
-                      child: <Email />,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Email />
+                        </InputAdornment>
+                      ),
                     },
                   })}
 
