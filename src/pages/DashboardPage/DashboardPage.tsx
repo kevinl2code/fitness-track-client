@@ -7,6 +7,7 @@ import { DashboardSummaryCard } from '../../components/DashboardSummaryCard'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { Cycle, DailyEntry } from '../../model/Model'
 import { UseApi } from './UseApi'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface Props {
   setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
@@ -20,6 +21,7 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
   const [loading, setLoading] = useState(true)
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
+  const { matchesMD } = useMediaQueries()
   const useApi = new UseApi(
     user?.user!,
     user?.sub!,
@@ -55,16 +57,18 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
             </Grid>
           ) : (
             <>
-              <Grid item xs={12} md={4}>
-                <DashboardSummaryCard
-                  cycleType={cycle?.cycleType!}
-                  duration={cycle?.duration!}
-                  goalWeight={cycle?.goalWeight!}
-                  entries={entries}
-                  startDate={cycle?.startDate!}
-                  startingWeight={cycle?.startingWeight!}
-                />
-              </Grid>
+              {matchesMD && (
+                <Grid item xs={12} md={4}>
+                  <DashboardSummaryCard
+                    cycleType={cycle?.cycleType!}
+                    duration={cycle?.duration!}
+                    goalWeight={cycle?.goalWeight!}
+                    entries={entries}
+                    startDate={cycle?.startDate!}
+                    startingWeight={cycle?.startingWeight!}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12} md={8} container justifyContent="flex-end">
                 <DashboardWeightTrackerChart entries={entries} user={user!} />
               </Grid>

@@ -14,6 +14,7 @@ import { format } from 'util'
 import { DailyEntry, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
 import { Sort } from '../../utilities/Sort'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface Props {
   entries: DailyEntry[]
@@ -24,6 +25,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   entries,
   user,
 }) => {
+  const { matchesMD } = useMediaQueries()
   const { birthday, sex, height } = user
   const calculate = new Calculate()
   const sort = new Sort()
@@ -116,9 +118,15 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
       >
         <Line type="monotone" dataKey="actualValue" stroke="#8884d8" />
         <Line type="monotone" dataKey="projectedValue" stroke="green" />
-        <CartesianGrid stroke="#ccc" />
-        <XAxis dataKey="name" />
-        <YAxis domain={[domainMin, domainMax]} padding={{ bottom: 10 }} />
+        {/* <CartesianGrid stroke="#ccc" /> */}
+        <XAxis
+          dataKey="name"
+          // interval="preserveStart"
+          interval={0}
+          angle={30}
+          dx={20}
+        />
+        <YAxis domain={[domainMin, domainMax]} padding={{ bottom: 10 }} hide />
         <Tooltip
           formatter={(val: number, name: 'actualValue' | 'projectedValue') => [
             (Math.round(val * 10) / 10).toFixed(1),
@@ -131,7 +139,8 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
 
   return (
     <Paper
-      elevation={2}
+      elevation={0}
+      variant={matchesMD ? 'outlined' : 'elevation'}
       sx={{
         padding: '0 2rem 1rem 1rem',
         borderRadius: '2rem',

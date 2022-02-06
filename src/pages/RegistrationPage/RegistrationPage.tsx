@@ -12,6 +12,8 @@ import { Email } from '@mui/icons-material'
 import { CognitoGender } from '../../model/Model'
 import { ConfirmRegistrationDialog } from '../../components/dialogs/ConfiirmRegistrationDialog/ConfirmRegistrationDialog'
 import { FormTextInput } from '../../components/form/FormTextInput'
+import { FormSelectInput } from '../../components/form/FormSelectInput'
+import { FormSelectInputProps } from '../../components/form/FormSelectInput/FormSelectInput'
 
 interface IFormInput {
   username: string
@@ -100,6 +102,50 @@ export const RegistrationPage: React.FC = () => {
       </Grid>
     )
   }
+  const generateSelectInput = ({
+    name,
+    values,
+    control,
+    startAdornment,
+    register,
+    label,
+    placeholder,
+  }: FormSelectInputProps) => {
+    return (
+      <Grid
+        item
+        xs={12}
+        container
+        direction={'column'}
+        sx={{
+          paddingLeft: '2rem',
+          paddingRight: '2rem',
+          paddingBottom: '1rem',
+        }}
+      >
+        <FormSelectInput
+          control={control}
+          register={register}
+          placeholder={placeholder}
+          label={label}
+          name={name}
+          values={values}
+          startAdornment={startAdornment}
+        />
+      </Grid>
+    )
+  }
+
+  const genderValues = [
+    {
+      name: 'Male',
+      value: 'Male',
+    },
+    {
+      name: 'Female',
+      value: 'Female',
+    },
+  ]
 
   return (
     <>
@@ -138,7 +184,7 @@ export const RegistrationPage: React.FC = () => {
                       child: <AccountCircle />,
                     },
                   })}
-                  <Grid
+                  {/* <Grid
                     item
                     xs={12}
                     container
@@ -156,7 +202,16 @@ export const RegistrationPage: React.FC = () => {
                       placeholder="Sex"
                       inputProps={{ position: 'start', child: <WcIcon /> }}
                     />
-                  </Grid>
+                  </Grid> */}
+                  {generateSelectInput({
+                    name: 'gender',
+                    control: control,
+                    startAdornment: <WcIcon />,
+                    register: register,
+                    label: 'Sex',
+                    placeholder: 'Sex',
+                    values: genderValues,
+                  })}
                   <Grid
                     item
                     xs={12}
