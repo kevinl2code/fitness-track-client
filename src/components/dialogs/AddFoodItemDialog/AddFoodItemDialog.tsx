@@ -227,7 +227,6 @@ export const AddFoodItemDialog: React.FC<Props> = ({
     useApi.fetchFoodItems(categoryId, subCategoryId)
     reset()
     setAddFoodDialogOpen(false)
-    console.log(newFoodItem)
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>

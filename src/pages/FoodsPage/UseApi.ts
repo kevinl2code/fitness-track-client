@@ -44,7 +44,6 @@ export class UseApi {
     const data: FoodCategory[] = await this.dataService.getFoodCategories()
     this.setCategories(data)
     this.setCategoriesLoading(false)
-    // console.log(data)
   }
 
   public async fetchSubCategoryList(categoryId: string) {
@@ -54,15 +53,10 @@ export class UseApi {
     )
     this.setSubCategories(data)
     this.setSubCategoriesLoading(false)
-    // console.log(data)
   }
 
   public async fetchFoodItems(categoryId: string, subCategoryId: string) {
     this.dataService.setUser(this.user)
-    console.log({
-      catId: categoryId,
-      subCatId: subCategoryId,
-    })
     const data = await this.dataService.getFoodItems(categoryId, subCategoryId)
     this.setFoodItems(data)
     this.setFoodItemsLoading(false)
@@ -72,7 +66,6 @@ export class UseApi {
     try {
       this.dataService.setUser(this.user)
       const result = await this.dataService.createFoodItem(foodItem)
-      console.log(result)
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error while creating food item: ${error.message}`)
@@ -83,7 +76,6 @@ export class UseApi {
     try {
       this.dataService.setUser(this.user)
       const result = await this.dataService.createFoodCategory(newFoodCategory)
-      console.log(result)
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error while creating food category: ${error.message}`)
@@ -96,7 +88,6 @@ export class UseApi {
       const result = await this.dataService.createFoodSubCategory(
         newFoodSubCategory
       )
-      console.log(result)
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error while creating food category: ${error.message}`)
@@ -108,7 +99,6 @@ export class UseApi {
     try {
       this.dataService.setUser(this.user)
       const result = await this.dataService.updateFoodItem(updatedFoodItem)
-      console.log(result)
     } catch (error) {
       if (error instanceof Error) {
         alert(`Error while editing food item: ${error.message}`)

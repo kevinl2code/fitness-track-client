@@ -102,11 +102,20 @@ export const EditFoodItemDialog: React.FC<Props> = ({
     register,
     handleSubmit,
     reset,
+    setValue,
     control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
+  setValue('foodItemName', foodItem?.foodItemName)
+  setValue('foodItemUnit', foodItem?.foodItemUnit)
+  setValue('servingSize', foodItem?.servingSize)
+  setValue('calories', foodItem?.calories)
+  setValue('protein', foodItem?.protein)
+  setValue('fat', foodItem?.fat)
+  setValue('carbohydrates', foodItem?.carbohydrates)
+  setValue('foodItemReference', foodItem?.foodItemReference || '')
   const { matchesMD } = useMediaQueries()
   const handleCancel = () => {
     reset()
@@ -119,13 +128,11 @@ export const EditFoodItemDialog: React.FC<Props> = ({
   if (!foodItem) {
     return null
   }
-
   const generateFormTextInput = ({
     name,
     control,
     label,
     placeholder,
-    defaultValue,
     required,
     type,
     inputProps,
@@ -147,7 +154,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
           label={label}
           required={required}
           type={type}
-          defaultValue={defaultValue}
           name={name}
           placeholder={placeholder}
           inputProps={inputProps}
@@ -175,7 +181,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
     name,
     values,
     control,
-    defaultValue,
     register,
     label,
     placeholder,
@@ -198,7 +203,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
           placeholder={placeholder}
           label={label}
           name={name}
-          defaultValue={defaultValue}
           values={values}
         />
       </Grid>
@@ -225,13 +229,12 @@ export const EditFoodItemDialog: React.FC<Props> = ({
       foodItemId: foodItem.foodItemId,
     }
     await useApi.updateFoodItem(updatedFoodItem)
+    // reset()
     useApi.fetchFoodItems(foodItem.categoryId, foodItem.subCategoryId)
-    reset()
     setEditFoodDialogOpen({
       open: false,
       foodItem: null,
     })
-    console.log(updatedFoodItem)
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>
@@ -248,14 +251,12 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'foodItemName',
                   control: control,
-                  defaultValue: foodItem.foodItemName,
                   label: 'Food Name',
                   placeholder: 'Food Name',
                 })}
                 {generateSelectInput({
                   name: 'foodItemUnit',
                   values: foodItemUnitValues,
-                  defaultValue: foodItem.foodItemUnit,
                   label: 'Food Units',
                   control: control,
                   register: register,
@@ -263,7 +264,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'servingSize',
                   control: control,
-                  defaultValue: foodItem.servingSize,
                   type: 'number',
                   label: 'Serving Size',
                   placeholder: 'Serving Size',
@@ -271,7 +271,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'calories',
                   control: control,
-                  defaultValue: foodItem.calories,
                   type: 'number',
                   label: 'Calories',
                   placeholder: 'Calories',
@@ -279,7 +278,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'protein',
                   control: control,
-                  defaultValue: foodItem.protein,
                   type: 'number',
                   label: 'Protein',
                   placeholder: 'Protein',
@@ -287,7 +285,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'fat',
                   control: control,
-                  defaultValue: foodItem.fat,
                   type: 'number',
                   label: 'Fat',
                   placeholder: 'Fat',
@@ -295,7 +292,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'carbohydrates',
                   control: control,
-                  defaultValue: foodItem.carbohydrates,
                   type: 'number',
                   label: 'Carbohydrates',
                   placeholder: 'Carbohydrates',
@@ -303,7 +299,6 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'foodItemReference',
                   control: control,
-                  defaultValue: foodItem.foodItemReference ?? '',
                   type: 'text',
                   label: 'Reference Link',
                   placeholder: 'Reference Link',
@@ -317,7 +312,7 @@ export const EditFoodItemDialog: React.FC<Props> = ({
                     matchesMD && { marginTop: 0 },
                   ]}
                 >
-                  Create
+                  Update
                 </Button>
                 <Grid item xs={12} container justifyContent="center">
                   <Button

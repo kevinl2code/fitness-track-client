@@ -84,12 +84,12 @@ export const FoodsTable: React.FC<Props> = ({
           <>
             <TableCell size="small" padding="none">
               <IconButton
-                onClick={() =>
+                onClick={() => {
                   setEditFoodDialogOpen({
                     open: true,
                     foodItem: foodItem,
                   })
-                }
+                }}
               >
                 <EditIcon />
               </IconButton>
