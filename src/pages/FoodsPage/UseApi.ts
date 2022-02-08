@@ -105,4 +105,15 @@ export class UseApi {
       }
     }
   }
+
+  public async deleteFoodItem(foodItemId: string) {
+    try {
+      this.dataService.setUser(this.user)
+      const result = await this.dataService.deleteFoodItem(foodItemId)
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(`Error while editing food item: ${error.message}`)
+      }
+    }
+  }
 }

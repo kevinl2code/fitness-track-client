@@ -1,10 +1,12 @@
 import { Box, Grid, SelectChangeEvent } from '@mui/material'
 
 import React, { useContext, useEffect, useState } from 'react'
+import { isNullOrUndefined } from 'util'
 import { UserContext } from '../../app/App'
 import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
 import { AddFoodSubCategoryDialog } from '../../components/dialogs/AddFoodSubCategoryDialog/AddFoodSubCategoryDialog'
+import { ConfirmDeleteDialog } from '../../components/dialogs/ConfirmDeleteDialog'
 import { EditFoodItemDialog } from '../../components/dialogs/EditFoodItemDialog'
 import { FoodsCategorySelect } from '../../components/FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../../components/FoodsSubCategorySelect'
@@ -38,6 +40,16 @@ export const FoodsPage: React.FC = () => {
     open: false,
     foodItem: null,
   })
+  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState<{
+    open: boolean
+    deleteItem: {
+      name: string
+      id: string
+    } | null
+  }>({
+    open: false,
+    deleteItem: null,
+  })
   const [addFoodCategoryDialogOpen, setAddFoodCategoryDialogOpen] =
     useState(false)
   const [addFoodSubCategoryDialogOpen, setAddFoodSubCategoryDialogOpen] =
@@ -70,11 +82,22 @@ export const FoodsPage: React.FC = () => {
     useApi.fetchFoodItems(selectedCategory, event.target.value)
   }
 
+  const handleDelete = async () => {
+    await useApi.deleteFoodItem(confirmDeleteDialogOpen.deleteItem?.id!)
+    await useApi.fetchFoodItems(selectedCategory, selectedSubCategory)
+  }
+
   const emptySubCategorySelected =
     selectedSubCategory && foodItems.length === 0 ? true : false
 
   return (
     <>
+      <ConfirmDeleteDialog
+        open={confirmDeleteDialogOpen.open}
+        deleteItem={confirmDeleteDialogOpen.deleteItem}
+        handleDelete={handleDelete}
+        setConfirmDeleteDialogOpen={setConfirmDeleteDialogOpen}
+      />
       <AddFoodItemDialog
         open={addFoodDialogOpen}
         categoryId={selectedCategory}
@@ -128,6 +151,7 @@ export const FoodsPage: React.FC = () => {
             isAdmin={isAdmin}
             setAddFoodDialogOpen={setAddFoodDialogOpen}
             setEditFoodDialogOpen={setEditFoodDialogOpen}
+            setConfirmDeleteDialogOpen={setConfirmDeleteDialogOpen}
           />
           {/* {emptySubCategorySelected && <h3>NOT FOUND</h3>} */}
         </Grid>

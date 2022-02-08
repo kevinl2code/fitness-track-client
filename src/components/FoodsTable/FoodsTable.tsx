@@ -34,6 +34,15 @@ interface Props {
       foodItem: FitnessTrackFoodItem | null
     }>
   >
+  setConfirmDeleteDialogOpen: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean
+      deleteItem: {
+        name: string
+        id: string
+      } | null
+    }>
+  >
 }
 
 export const FoodsTable: React.FC<Props> = ({
@@ -44,6 +53,7 @@ export const FoodsTable: React.FC<Props> = ({
   foodItemsLoading,
   setAddFoodDialogOpen,
   setEditFoodDialogOpen,
+  setConfirmDeleteDialogOpen,
 }) => {
   const [filterText, setFilterText] = useState('')
   const { matchesMD } = useMediaQueries()
@@ -95,7 +105,17 @@ export const FoodsTable: React.FC<Props> = ({
               </IconButton>
             </TableCell>
             <TableCell size="small" padding="none">
-              <IconButton onClick={() => null}>
+              <IconButton
+                onClick={() => {
+                  setConfirmDeleteDialogOpen({
+                    open: true,
+                    deleteItem: {
+                      id: foodItemId,
+                      name: foodItemName,
+                    },
+                  })
+                }}
+              >
                 <DeleteIcon />
               </IconButton>
             </TableCell>

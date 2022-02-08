@@ -217,6 +217,19 @@ export class DataService {
     return JSON.stringify(resultJSON.id)
   }
 
+  public async deleteFoodItem(foodItemId: string) {
+    const requestUrl = `${process.env
+      .REACT_APP_API_FOODS!}?PK=F_${foodItemId}&SK=METADATA`
+    const requestResult = await fetch(requestUrl, {
+      method: 'DELETE',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+    })
+    const responseJSON = await requestResult.json()
+    return responseJSON
+  }
+
   public async updateFoodItem(updatedFoodItem: FitnessTrackFoodItem) {
     const requestUrl = `${process.env.REACT_APP_API_FOODS}?PK=${updatedFoodItem.PK}&SK=${updatedFoodItem.SK}`
     const requestOptions: RequestInit = {
