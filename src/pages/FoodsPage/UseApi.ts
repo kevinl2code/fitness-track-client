@@ -103,4 +103,16 @@ export class UseApi {
       }
     }
   }
+
+  public async updateFoodItem(updatedFoodItem: FitnessTrackFoodItem) {
+    try {
+      this.dataService.setUser(this.user)
+      const result = await this.dataService.updateFoodItem(updatedFoodItem)
+      console.log(result)
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(`Error while editing food item: ${error.message}`)
+      }
+    }
+  }
 }

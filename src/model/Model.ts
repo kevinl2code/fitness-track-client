@@ -131,6 +131,7 @@ export interface FitnessTrackFoodItem {
   protein: number
   fat: number
   carbohydrates: number
+  foodItemReference: string
   categoryId: string
   subCategoryId: string
   foodItemId: string

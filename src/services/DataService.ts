@@ -217,6 +217,21 @@ export class DataService {
     return JSON.stringify(resultJSON.id)
   }
 
+  public async updateFoodItem(updatedFoodItem: FitnessTrackFoodItem) {
+    const requestUrl = `${process.env.REACT_APP_API_FOODS}?PK=${updatedFoodItem.PK}&SK=${updatedFoodItem.SK}`
+    const requestOptions: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify({ ...updatedFoodItem }),
+    }
+    const result = await fetch(requestUrl, requestOptions)
+    const resultJSON = await result.json()
+    // console.log(resultJSON)
+    return JSON.stringify(resultJSON.PK)
+  }
+
   public async createFoodCategory(newFoodCategory: FoodCategory) {
     const requestUrl = process.env.REACT_APP_API_FOODS!
     const requestOptions: RequestInit = {

@@ -84,7 +84,11 @@ export const FormSelectInput: React.FC<FormSelectInputProps> = ({
             inputProps={{ 'aria-label': 'Without label' }}
             sx={{ minWidth: '100%' }}
             startAdornment={
-              <InputAdornment position="start">{startAdornment}</InputAdornment>
+              startAdornment && (
+                <InputAdornment position="start">
+                  {startAdornment}
+                </InputAdornment>
+              )
             }
           >
             <MenuItem value="">

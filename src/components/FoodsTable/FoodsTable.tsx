@@ -13,11 +13,13 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { FitnessTrackFoodItem } from '../../model/Model'
 import SearchIcon from '@mui/icons-material/Search'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 interface Props {
   isAdmin: boolean
@@ -26,6 +28,12 @@ interface Props {
   foodItems: FitnessTrackFoodItem[]
   foodItemsLoading: boolean
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setEditFoodDialogOpen: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean
+      foodItem: FitnessTrackFoodItem | null
+    }>
+  >
 }
 
 export const FoodsTable: React.FC<Props> = ({
@@ -35,9 +43,29 @@ export const FoodsTable: React.FC<Props> = ({
   foodItems,
   foodItemsLoading,
   setAddFoodDialogOpen,
+  setEditFoodDialogOpen,
 }) => {
+  const [filterText, setFilterText] = useState('')
   const { matchesMD } = useMediaQueries()
-  const generatedRows = foodItems.map((foodItem, index) => {
+
+  const sortedFoodItems = foodItems.sort((a, b) => {
+    const nameA = a.foodItemName.toUpperCase()
+    const nameB = b.foodItemName.toUpperCase()
+    if (nameA < nameB) {
+      return -1
+    }
+    if (nameA > nameB) {
+      return 1
+    }
+    return 0
+  })
+
+  const filteredFoodItems = sortedFoodItems.filter((foodItem) => {
+    return foodItem.foodItemName
+      .toLowerCase()
+      .includes(filterText.toLowerCase())
+  })
+  const generatedRows = filteredFoodItems.map((foodItem, index) => {
     const { foodItemId, calories, protein, carbohydrates, fat, foodItemName } =
       foodItem
     return (
@@ -52,6 +80,27 @@ export const FoodsTable: React.FC<Props> = ({
         <TableCell align="right">{protein}</TableCell>
         <TableCell align="right">{fat}</TableCell>
         <TableCell align="right">{carbohydrates}</TableCell>
+        {isAdmin && (
+          <>
+            <TableCell size="small" padding="none">
+              <IconButton
+                onClick={() =>
+                  setEditFoodDialogOpen({
+                    open: true,
+                    foodItem: foodItem,
+                  })
+                }
+              >
+                <EditIcon />
+              </IconButton>
+            </TableCell>
+            <TableCell size="small" padding="none">
+              <IconButton onClick={() => null}>
+                <DeleteIcon />
+              </IconButton>
+            </TableCell>
+          </>
+        )}
       </TableRow>
     )
   })
@@ -94,6 +143,7 @@ export const FoodsTable: React.FC<Props> = ({
                   variant="standard"
                   id="outlined-start-adornment"
                   sx={{ m: 1, width: '15ch' }}
+                  onChange={(event) => setFilterText(event.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -130,6 +180,12 @@ export const FoodsTable: React.FC<Props> = ({
                         <TableCell align="right">Protein</TableCell>
                         <TableCell align="right">Fat</TableCell>
                         <TableCell align="right">Carbs</TableCell>
+                        {isAdmin && (
+                          <>
+                            <TableCell align="right">{''}</TableCell>
+                            <TableCell align="right">{''}</TableCell>
+                          </>
+                        )}
                       </TableRow>
                     </TableHead>
                     <TableBody>{generatedRows}</TableBody>

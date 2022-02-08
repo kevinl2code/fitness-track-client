@@ -13,7 +13,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
 import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
-import { v4 } from 'uuid'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormSelectInput } from '../../form/FormSelectInput'
@@ -40,18 +39,18 @@ interface IFormInput {
 
 interface Props {
   open: boolean
-  categoryId: string
-  subCategoryId: string
+  foodItem: FitnessTrackFoodItem | null
   useApi: UseApi
-  setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setEditFoodDialogOpen: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean
+      foodItem: FitnessTrackFoodItem | null
+    }>
+  >
 }
 
 const validationSchema = yup.object({
-  foodItemName: yup
-    .string()
-    .matches(/^[a-z]+$/i, 'Please enter valid name')
-    .max(40)
-    .required(),
+  foodItemName: yup.string().max(80).required(),
   foodItemUnit: yup
     .string()
     .typeError('Selection required')
@@ -61,7 +60,6 @@ const validationSchema = yup.object({
     .typeError('Serving size required')
     .min(1, 'Must be over 1')
     .max(2000, 'Must be under 2000')
-    .positive()
     .integer()
     .required('Serving size required'),
   calories: yup
@@ -69,28 +67,24 @@ const validationSchema = yup.object({
     .typeError('Calories required')
     .min(0, 'Must be at least 0')
     .max(10000, 'Must be 10000 or less')
-    .positive()
     .required('Calories required'),
   protein: yup
     .number()
     .typeError('Protein required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Protein required'),
   fat: yup
     .number()
     .typeError('Fat required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Fat required'),
   carbohydrates: yup
     .number()
     .typeError('Carbohydrates required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Carbohydrates required'),
   foodItemReference: yup
     .string()
@@ -98,12 +92,11 @@ const validationSchema = yup.object({
     .required('Reference URL required'),
 })
 
-export const AddFoodItemDialog: React.FC<Props> = ({
+export const EditFoodItemDialog: React.FC<Props> = ({
   open,
-  categoryId,
-  subCategoryId,
+  foodItem,
   useApi,
-  setAddFoodDialogOpen,
+  setEditFoodDialogOpen,
 }) => {
   const {
     register,
@@ -117,13 +110,22 @@ export const AddFoodItemDialog: React.FC<Props> = ({
   const { matchesMD } = useMediaQueries()
   const handleCancel = () => {
     reset()
-    setAddFoodDialogOpen(false)
+    setEditFoodDialogOpen({
+      open: false,
+      foodItem: null,
+    })
   }
+
+  if (!foodItem) {
+    return null
+  }
+
   const generateFormTextInput = ({
     name,
     control,
     label,
     placeholder,
+    defaultValue,
     required,
     type,
     inputProps,
@@ -145,6 +147,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
           label={label}
           required={required}
           type={type}
+          defaultValue={defaultValue}
           name={name}
           placeholder={placeholder}
           inputProps={inputProps}
@@ -203,14 +206,12 @@ export const AddFoodItemDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const newFoodItemId = v4()
-
-    const newFoodItem: FitnessTrackFoodItem = {
-      PK: `F_${newFoodItemId}`,
-      SK: 'METADATA',
-      GSI1PK: `C_${categoryId}`,
-      GSI1SK: `S_${subCategoryId}`,
-      type: 'FOOD',
+    const updatedFoodItem: FitnessTrackFoodItem = {
+      PK: foodItem.PK,
+      SK: foodItem.SK,
+      GSI1PK: foodItem.GSI1PK,
+      GSI1SK: foodItem.GSI1SK,
+      type: foodItem.type,
       foodItemName: data.foodItemName,
       foodItemUnit: data.foodItemUnit,
       servingSize: parseFloat(data.servingSize),
@@ -219,15 +220,18 @@ export const AddFoodItemDialog: React.FC<Props> = ({
       fat: parseFloat(data.fat),
       carbohydrates: parseFloat(data.carbohydrates),
       foodItemReference: data.foodItemReference,
-      categoryId: categoryId,
-      subCategoryId: subCategoryId,
-      foodItemId: newFoodItemId,
+      categoryId: foodItem.categoryId,
+      subCategoryId: foodItem.subCategoryId,
+      foodItemId: foodItem.foodItemId,
     }
-    await useApi.createFoodItem(newFoodItem)
-    useApi.fetchFoodItems(categoryId, subCategoryId)
+    await useApi.updateFoodItem(updatedFoodItem)
+    useApi.fetchFoodItems(foodItem.categoryId, foodItem.subCategoryId)
     reset()
-    setAddFoodDialogOpen(false)
-    console.log(newFoodItem)
+    setEditFoodDialogOpen({
+      open: false,
+      foodItem: null,
+    })
+    console.log(updatedFoodItem)
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>
@@ -235,7 +239,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
         <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
           <CardContent>
             <Typography variant="h4" align="center">
-              Create Food Item
+              Edit Food Item
             </Typography>
           </CardContent>
           <CardContent>
@@ -244,13 +248,14 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'foodItemName',
                   control: control,
+                  defaultValue: foodItem.foodItemName,
                   label: 'Food Name',
                   placeholder: 'Food Name',
                 })}
                 {generateSelectInput({
                   name: 'foodItemUnit',
                   values: foodItemUnitValues,
-                  defaultValue: '',
+                  defaultValue: foodItem.foodItemUnit,
                   label: 'Food Units',
                   control: control,
                   register: register,
@@ -258,6 +263,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'servingSize',
                   control: control,
+                  defaultValue: foodItem.servingSize,
                   type: 'number',
                   label: 'Serving Size',
                   placeholder: 'Serving Size',
@@ -265,6 +271,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'calories',
                   control: control,
+                  defaultValue: foodItem.calories,
                   type: 'number',
                   label: 'Calories',
                   placeholder: 'Calories',
@@ -272,6 +279,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'protein',
                   control: control,
+                  defaultValue: foodItem.protein,
                   type: 'number',
                   label: 'Protein',
                   placeholder: 'Protein',
@@ -279,6 +287,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'fat',
                   control: control,
+                  defaultValue: foodItem.fat,
                   type: 'number',
                   label: 'Fat',
                   placeholder: 'Fat',
@@ -286,6 +295,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'carbohydrates',
                   control: control,
+                  defaultValue: foodItem.carbohydrates,
                   type: 'number',
                   label: 'Carbohydrates',
                   placeholder: 'Carbohydrates',
@@ -293,6 +303,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 {generateFormTextInput({
                   name: 'foodItemReference',
                   control: control,
+                  defaultValue: foodItem.foodItemReference ?? '',
                   type: 'text',
                   label: 'Reference Link',
                   placeholder: 'Reference Link',

@@ -5,6 +5,7 @@ import { UserContext } from '../../app/App'
 import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
 import { AddFoodSubCategoryDialog } from '../../components/dialogs/AddFoodSubCategoryDialog/AddFoodSubCategoryDialog'
+import { EditFoodItemDialog } from '../../components/dialogs/EditFoodItemDialog'
 import { FoodsCategorySelect } from '../../components/FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../../components/FoodsSubCategorySelect'
 import { FoodsTable } from '../../components/FoodsTable'
@@ -30,6 +31,13 @@ export const FoodsPage: React.FC = () => {
   const [foodItemsLoading, setFoodItemsLoading] = useState(true)
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
+  const [editFoodDialogOpen, setEditFoodDialogOpen] = useState<{
+    open: boolean
+    foodItem: FitnessTrackFoodItem | null
+  }>({
+    open: false,
+    foodItem: null,
+  })
   const [addFoodCategoryDialogOpen, setAddFoodCategoryDialogOpen] =
     useState(false)
   const [addFoodSubCategoryDialogOpen, setAddFoodSubCategoryDialogOpen] =
@@ -87,6 +95,12 @@ export const FoodsPage: React.FC = () => {
         setSubCategoriesLoading={setSubCategoriesLoading}
         useApi={useApi}
       />
+      <EditFoodItemDialog
+        open={editFoodDialogOpen.open}
+        foodItem={editFoodDialogOpen.foodItem}
+        setEditFoodDialogOpen={setEditFoodDialogOpen}
+        useApi={useApi}
+      />
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
           <FoodsCategorySelect
@@ -113,6 +127,7 @@ export const FoodsPage: React.FC = () => {
             selectedSubCategory={selectedSubCategory}
             isAdmin={isAdmin}
             setAddFoodDialogOpen={setAddFoodDialogOpen}
+            setEditFoodDialogOpen={setEditFoodDialogOpen}
           />
           {/* {emptySubCategorySelected && <h3>NOT FOUND</h3>} */}
         </Grid>

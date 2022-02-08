@@ -1,4 +1,13 @@
-import { Card, Grid, MenuItem, Paper, Select, Typography } from '@mui/material'
+import {
+  Card,
+  Grid,
+  MenuItem,
+  Paper,
+  Select,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material'
 import { DateTime } from 'luxon'
 import React from 'react'
 import {
@@ -25,11 +34,20 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   entries,
   user,
 }) => {
+  const [alignment, setAlignment] = React.useState('week')
   const { matchesMD } = useMediaQueries()
   const { birthday, sex, height } = user
   const calculate = new Calculate()
   const sort = new Sort()
   const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries!)
+
+  const handleToggleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newAlignment: string
+  ) => {
+    setAlignment(newAlignment)
+  }
+
   const tooltipName = (name: 'actualValue' | 'projectedValue') =>
     name === 'actualValue' ? 'Actual Weight' : 'Projected Weight'
   const calculatedEntries: {
@@ -163,6 +181,19 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
         // className={classes.chartContainer}
       >
         {renderLineChart}
+      </Grid>
+      <Grid container justifyContent="center">
+        {' '}
+        <ToggleButtonGroup
+          color="primary"
+          value={alignment}
+          exclusive
+          onChange={handleToggleChange}
+        >
+          <ToggleButton value="week">7 Days</ToggleButton>
+          <ToggleButton value="month">30 Days</ToggleButton>
+          <ToggleButton value="overall">Overall</ToggleButton>
+        </ToggleButtonGroup>
       </Grid>
     </Paper>
   )

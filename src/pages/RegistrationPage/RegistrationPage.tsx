@@ -67,7 +67,6 @@ const validationSchema = yup.object({
     .typeError('Height in inches required')
     .min(21, 'Must be over 21 inches')
     .max(103, 'Must be under 103 inches')
-    .required()
     .positive()
     .integer()
     .required(),
