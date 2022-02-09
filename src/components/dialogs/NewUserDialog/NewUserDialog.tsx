@@ -12,11 +12,9 @@ import {
 import { DateTime } from 'luxon'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 import { v4 } from 'uuid'
 import { Cycle, UserState, CycleType } from '../../../model/Model'
 import { UseApi } from '../../../pages/DashboardPage/UseApi'
-import { AuthService } from '../../../services/AuthService'
 import { NewUserDialogForm } from './NewUserDialogForm'
 
 interface Props {
@@ -116,7 +114,7 @@ export const NewUserDialog: React.FC<Props> = ({
     >
       <DialogTitle
         sx={{ textAlign: 'center' }}
-      >{`Welcome ${user.firstName}`}</DialogTitle>
+      >{`Welcome ${user?.firstName}`}</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <DialogContentText></DialogContentText>
         <Box sx={{ width: '100%' }}>

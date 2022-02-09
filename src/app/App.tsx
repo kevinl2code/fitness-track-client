@@ -31,6 +31,7 @@ function App() {
       dataService.setUser(user)
       await authService.getAWSTemporaryCreds(user.cognitoUser)
       const userInfo = await authService.currentUserInfo()
+
       setUserContext({
         user: {
           userName: userInfo.username,

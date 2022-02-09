@@ -30,7 +30,7 @@ export class UseApi {
   public async fetchPageData() {
     this.dataService.setUser(this.user)
     const cycleData = await this.dataService.getUserCycles(this.userId)
-    const currentlyActiveCycle = cycleData.find((cycle) => {
+    const currentlyActiveCycle = cycleData?.find((cycle) => {
       return cycle.isActive === true
     })
 
@@ -44,28 +44,8 @@ export class UseApi {
       currentlyActiveCycle?.cycleId!
     )
 
-    console.log(entries)
-    // const cycle = data.find((userItem) => {
-    //   return userItem.sortKey.includes('cycle')
-    // })
-    // if (cycle && isCycle(cycle)) {
-    //   this.setCycleContext(cycle)
-    // } else {
-    //   this.setOpenNewUserDialog(true)
-    // }
-
-    // function isCycle(obj: any): obj is Cycle {
-    //   return 'cycleType' in obj
-    // }
-    // function isDailyEntry(obj: any): obj is DailyEntry {
-    //   return 'dailyEntryWeight' in obj
-    // }
-
     this.setLoading(false)
 
-    // const entries = data.filter(
-    //   (dataItem): dataItem is DailyEntry => dataItem && isDailyEntry(dataItem)
-    // )
     if (entries.length > 0) {
       this.setEntries(entries)
     }

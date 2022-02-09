@@ -1,5 +1,5 @@
 import { LinearProgress, Grid } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { CycleContext, UserContext } from '../../app/App'
 import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
@@ -22,18 +22,23 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const { matchesMD } = useMediaQueries()
-  const useApi = new UseApi(
-    user?.user!,
-    user?.sub!,
-    setEntries,
-    setLoading,
-    setOpenNewUserDialog,
-    setCycleContext
+  let useApi: UseApi | null = useMemo(
+    () =>
+      new UseApi(
+        user?.user!,
+        user?.sub!,
+        setEntries,
+        setLoading,
+        setOpenNewUserDialog,
+        setCycleContext
+      ),
+    [setCycleContext, user?.sub, user?.user]
   )
-
   useEffect(() => {
-    useApi.fetchPageData()
-  }, [])
+    if (user) {
+      useApi?.fetchPageData()
+    }
+  }, [useApi, user])
 
   return (
     <>

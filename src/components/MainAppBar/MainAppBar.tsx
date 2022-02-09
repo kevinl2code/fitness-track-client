@@ -30,11 +30,12 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
     setAnchorEl(event.currentTarget)
   }
   const { matchesMD } = useMediaQueries()
-  const handleLogoutClick = (route: string) => {
-    authService.logOut()
+  const handleLogoutClick = async (route: string) => {
+    await authService.logOut()
     setAppUser(null)
     navigate(route)
     handleClose()
+    window.location.reload()
   }
 
   const handleClose = () => {

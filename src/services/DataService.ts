@@ -39,10 +39,15 @@ export class DataService {
       },
       body: JSON.stringify(dailyEntry),
     }
-    const result = await fetch(requestUrl, requestOptions)
-    const resultJSON = await result.json()
-    // console.log(resultJSON)
-    return JSON.stringify(resultJSON.id)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      return JSON.stringify(resultJSON.id)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error)
+      }
+    }
   }
 
   public async createUserCycle(cycle: Cycle) {
@@ -60,20 +65,26 @@ export class DataService {
     return JSON.stringify(resultJSON.id)
   }
 
-  public async getUserCycles(userId: string): Promise<Cycle[]> {
-    if (this.user) {
-      const requestUrl = `${process.env
-        .REACT_APP_API_USER!}?GSI2PK=U_${userId}&SGSI2SK=CYCLES`
-      const requestResult = await fetch(requestUrl, {
-        method: 'GET',
-        headers: {
-          Authorization: this.getUserIdToken(),
-        },
-      })
-      const responseJSON = await requestResult.json()
-      return responseJSON
-    } else {
-      return []
+  public async getUserCycles(userId: string): Promise<Cycle[] | undefined> {
+    try {
+      if (this.user) {
+        const requestUrl = `${process.env
+          .REACT_APP_API_USER!}?GSI2PK=U_${userId}&SGSI2SK=CYCLES`
+        const requestResult = await fetch(requestUrl, {
+          method: 'GET',
+          headers: {
+            Authorization: this.getUserIdToken(),
+          },
+        })
+        const responseJSON = await requestResult.json()
+        return responseJSON
+      } else {
+        return []
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error)
+      }
     }
   }
 
