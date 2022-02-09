@@ -22,7 +22,7 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const { matchesMD } = useMediaQueries()
-  let useApi: UseApi | null = useMemo(
+  const useApi = useMemo(
     () =>
       new UseApi(
         user?.user!,

@@ -1,6 +1,6 @@
 import { Box, Grid, SelectChangeEvent } from '@mui/material'
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { isNullOrUndefined } from 'util'
 import { UserContext } from '../../app/App'
 import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
@@ -56,20 +56,26 @@ export const FoodsPage: React.FC = () => {
     useState(false)
   const user = useContext(UserContext)
   const isAdmin = user?.user.isAdmin!
-  const useApi = new UseApi(
-    user?.user!,
-    setCategories,
-    setCategoriesLoading,
-    setSubCategories,
-    setSubCategoriesLoading,
-    setFoodItems,
-    setFoodItemsLoading
+  const useApi = useMemo(
+    () =>
+      new UseApi(
+        user?.user!,
+        setCategories,
+        setCategoriesLoading,
+        setSubCategories,
+        setSubCategoriesLoading,
+        setFoodItems,
+        setFoodItemsLoading
+      ),
+    [user?.user]
   )
   const { matchesMD } = useMediaQueries()
 
   useEffect(() => {
-    useApi.fetchCategoryList()
-  }, [])
+    if (user) {
+      useApi.fetchCategoryList()
+    }
+  }, [useApi, user])
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setSelectedSubCategory('')

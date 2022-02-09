@@ -38,7 +38,10 @@ export class UseApi {
         this.currentlySelectedDate
       )
       setPageLoading(false)
-      data.length > 0 ? setDailyEntry(data[0]) : setDailyEntry(null)
+      if (!data) {
+        return null
+      }
+      data?.length > 0 ? setDailyEntry(data[0]) : setDailyEntry(null)
     }
   }
 

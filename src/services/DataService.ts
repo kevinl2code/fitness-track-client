@@ -108,7 +108,7 @@ export class DataService {
   public async getDailyEntryByDate(
     userId: string,
     date: string
-  ): Promise<DailyEntry[]> {
+  ): Promise<DailyEntry[] | undefined> {
     const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
     const requestResult = await fetch(requestUrl, {
       method: 'GET',
@@ -116,8 +116,14 @@ export class DataService {
         Authorization: this.getUserIdToken(),
       },
     })
-    const responseJSON = await requestResult.json()
-    return responseJSON
+    try {
+      const responseJSON = await requestResult.json()
+      return responseJSON
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error)
+      }
+    }
   }
 
   public async updateDailyEntryConsumables(

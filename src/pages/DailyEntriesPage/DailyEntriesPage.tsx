@@ -19,6 +19,8 @@ import { DailyEntryGaugeChart } from '../../components/DailyEntryGaugeChart/Dail
 import { DailyEntryConsumablesTable } from '../../components/DailyEntryConsumablesTable/DailyEntryConsumablesTable'
 import { Calculate } from '../../utilities/Calculate'
 import { MobileDateView } from '../../components/MobileDateView'
+import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
+import { DailyEntryMissedDay } from '../../components/DailyEntryMissedDay/DailyEntryMissedDay'
 
 const today = DateTime.now()
 
@@ -85,69 +87,38 @@ export const DailyEntriesPage: React.FC = () => {
     ? formattedActivityLevel[dailyEntry?.dailyEntryActivityLevel]
     : '-'
 
-  const mainContent = dailyEntry ? (
-    <>
-      <Grid container justifyContent="center">
-        <DailyEntryGaugeChart dailyEntry={dailyEntry} user={user} />
-      </Grid>
-      <Grid
-        container
-        justifyContent="center"
-        sx={{ marginTop: '1rem', marginBottom: '2rem' }}
-      >
-        <Button
-          variant="contained"
-          sx={{ width: '50%' }}
-          onClick={() => {
-            setOpenConsumableDialog(true)
-          }}
-        >
-          Add Food
-        </Button>
-      </Grid>
-      <Grid
-        container
-        justifyContent="space-evenly"
-        sx={{ marginBottom: '1rem', top: '-100px' }}
-      >
-        <DailyEntryMetricView
-          fieldType="weight"
-          fieldLabel="Weight"
-          fieldValue={`${displayWeight} lbs`}
-          canEdit={isFirstDay ? false : true}
-          openDialog={() => {
-            setOpenUpdateWeightDialog(true)
-          }}
-        />
-        <DailyEntryMetricView
-          fieldType="activity"
-          fieldLabel="Activity Level"
-          fieldValue={activityLevel}
-          openDialog={() => {
-            setOpenUpdateActivityLevelDialog(true)
-          }}
-        />
-      </Grid>
-      <DailyEntryConsumablesTable
-        rows={dailyEntry?.dailyEntryConsumables}
-        useApi={useApi}
-        handleOpenAddConsumableDialog={() => {
-          setOpenConsumableDialog(true)
-        }}
-      />{' '}
-    </>
-  ) : (
-    <>
-      <DailyEntryCreateNew
-        date={currentlySelectedDate!}
-        cycle={cycle}
-        useApi={useApi}
-        sub={user?.sub!}
-        setLoading={setLoading}
-        setDailyEntry={setDailyEntry}
-      />
-    </>
+  const isEditable =
+    pickerDate.minus({ days: 1 }).startOf('day').valueOf() ===
+      today.minus({ days: 1 }).startOf('day').valueOf() ||
+    pickerDate.startOf('day').valueOf() ===
+      today.minus({ days: 1 }).startOf('day').valueOf()
+
+  const mainContent = dailyEntry && (
+    <DailyEntryMainView
+      dailyEntry={dailyEntry}
+      user={user}
+      displayWeight={displayWeight}
+      isFirstDay={isFirstDay}
+      isEditable={isEditable}
+      useApi={useApi}
+      activityLevel={activityLevel}
+      setOpenConsumableDialog={setOpenConsumableDialog}
+      setOpenUpdateWeightDialog={setOpenUpdateWeightDialog}
+      setOpenUpdateActivityLevelDialog={setOpenUpdateActivityLevelDialog}
+    />
   )
+  const newDayNoEntry = isEditable && !dailyEntry && (
+    <DailyEntryCreateNew
+      date={currentlySelectedDate!}
+      cycle={cycle}
+      useApi={useApi}
+      sub={user?.sub!}
+      setLoading={setLoading}
+      setDailyEntry={setDailyEntry}
+    />
+  )
+
+  const missedDay = !isEditable && !dailyEntry && <DailyEntryMissedDay />
 
   return (
     <>
@@ -206,7 +177,10 @@ export const DailyEntriesPage: React.FC = () => {
           {/* </Grid> */}
         </Grid>
         <Grid item xs={12} md={8} id="dailyEntryMainContentContainer">
-          {loading ? <LinearProgress /> : mainContent}
+          {loading && <LinearProgress />}
+          {!loading && mainContent}
+          {!loading && newDayNoEntry}
+          {!loading && missedDay}
         </Grid>
       </Grid>
     </>
