@@ -46,7 +46,7 @@ export class UseApi {
 
     this.setLoading(false)
 
-    if (entries.length > 0) {
+    if (entries && entries.length > 0) {
       this.setEntries(entries)
     }
   }

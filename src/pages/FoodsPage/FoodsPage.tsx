@@ -1,7 +1,6 @@
 import { Box, Grid, SelectChangeEvent } from '@mui/material'
 
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { isNullOrUndefined } from 'util'
 import { UserContext } from '../../app/App'
 import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
@@ -18,14 +17,13 @@ import {
 } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { UseApi } from './UseApi'
-// import meatImage from '../../../public/meat.jpg'
-// import { MyFoodsTile } from '../../components/MyFoodsTile'
+import { useQuery } from 'react-query'
+import { DataService } from '../../services/DataService'
 
 //https://www.ars.usda.gov/ARSUserFiles/80400530/pdf/1112/food_category_list.pdf
 
 export const FoodsPage: React.FC = () => {
   const [categories, setCategories] = useState<FoodCategory[]>([])
-  const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [subCategories, setSubCategories] = useState<FoodSubCategory[]>([])
   const [subCategoriesLoading, setSubCategoriesLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -60,8 +58,6 @@ export const FoodsPage: React.FC = () => {
     () =>
       new UseApi(
         user?.user!,
-        setCategories,
-        setCategoriesLoading,
         setSubCategories,
         setSubCategoriesLoading,
         setFoodItems,
@@ -71,11 +67,18 @@ export const FoodsPage: React.FC = () => {
   )
   const { matchesMD } = useMediaQueries()
 
+  const dataService = new DataService()
+
+  dataService.setUser(user?.user!)
+  const { isLoading, isError, data, error } = useQuery('categoryList', () =>
+    dataService.getFoodCategories()
+  )
+
+  console.log({ isLoading: isLoading, data: data, error: error })
+
   useEffect(() => {
-    if (user) {
-      useApi.fetchCategoryList()
-    }
-  }, [useApi, user])
+    setCategories(data)
+  }, [data])
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setSelectedSubCategory('')
@@ -113,9 +116,8 @@ export const FoodsPage: React.FC = () => {
       />
       <AddFoodCategoryDialog
         open={addFoodCategoryDialogOpen}
-        setCategoriesLoading={setCategoriesLoading}
         setAddFoodCategoryDialogOpen={setAddFoodCategoryDialogOpen}
-        useApi={useApi}
+        dataService={dataService}
       />
       <AddFoodSubCategoryDialog
         open={addFoodSubCategoryDialogOpen}
@@ -134,7 +136,7 @@ export const FoodsPage: React.FC = () => {
         <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
           <FoodsCategorySelect
             categories={categories}
-            categoriesLoading={categoriesLoading}
+            categoriesLoading={isLoading}
             selectedCategory={selectedCategory}
             setAddFoodCategoryDialogOpen={setAddFoodCategoryDialogOpen}
             isAdmin={isAdmin}
@@ -159,7 +161,6 @@ export const FoodsPage: React.FC = () => {
             setEditFoodDialogOpen={setEditFoodDialogOpen}
             setConfirmDeleteDialogOpen={setConfirmDeleteDialogOpen}
           />
-          {/* {emptySubCategorySelected && <h3>NOT FOUND</h3>} */}
         </Grid>
       </Box>
     </>

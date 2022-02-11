@@ -15,6 +15,7 @@ config.update({
 
 export class DataService {
   private user: User | undefined
+  private userIdToken: string | undefined
 
   private getUserIdToken() {
     if (this.user) {
@@ -28,6 +29,7 @@ export class DataService {
   }
   public setUser(user: User) {
     this.user = user
+    this.userIdToken = this.getUserIdToken()
   }
 
   public async createDailyEntry(dailyEntry: DailyEntry) {
@@ -42,11 +44,10 @@ export class DataService {
     try {
       const result = await fetch(requestUrl, requestOptions)
       const resultJSON = await result.json()
+      console.log(resultJSON)
       return JSON.stringify(resultJSON.id)
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error)
-      }
+      console.log({ dataServiceError: error })
     }
   }
 
@@ -59,10 +60,14 @@ export class DataService {
       },
       body: JSON.stringify(cycle),
     }
-    const result = await fetch(requestUrl, requestOptions)
-    const resultJSON = await result.json()
-    // console.log(resultJSON)
-    return JSON.stringify(resultJSON.id)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return JSON.stringify(resultJSON.id)
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async getUserCycles(userId: string): Promise<Cycle[] | undefined> {
@@ -77,31 +82,37 @@ export class DataService {
           },
         })
         const responseJSON = await requestResult.json()
+        console.log(responseJSON)
         return responseJSON
       } else {
         return []
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error)
-      }
+      console.log({ dataServiceError: error })
     }
   }
 
-  public async getDailyEntriesForCycle(cycleId: string): Promise<DailyEntry[]> {
-    if (this.user) {
-      const requestUrl = `${process.env
-        .REACT_APP_API_USER!}?GSI1PK=C_${cycleId}&GSI1SK=DAILYENTRIES`
-      const requestResult = await fetch(requestUrl, {
-        method: 'GET',
-        headers: {
-          Authorization: this.getUserIdToken(),
-        },
-      })
-      const responseJSON = await requestResult.json()
-      return responseJSON
-    } else {
-      return []
+  public async getDailyEntriesForCycle(
+    cycleId: string
+  ): Promise<DailyEntry[] | undefined> {
+    try {
+      if (this.user) {
+        const requestUrl = `${process.env
+          .REACT_APP_API_USER!}?GSI1PK=C_${cycleId}&GSI1SK=DAILYENTRIES`
+        const requestResult = await fetch(requestUrl, {
+          method: 'GET',
+          headers: {
+            Authorization: this.getUserIdToken(),
+          },
+        })
+        const responseJSON = await requestResult.json()
+        console.log(responseJSON)
+        return responseJSON
+      } else {
+        return []
+      }
+    } catch (error) {
+      console.log({ dataServiceError: error })
     }
   }
 
@@ -118,11 +129,10 @@ export class DataService {
     })
     try {
       const responseJSON = await requestResult.json()
+      console.log(responseJSON)
       return responseJSON
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error)
-      }
+      console.log({ dataServiceError: error })
     }
   }
 
@@ -131,18 +141,23 @@ export class DataService {
     date: string,
     updatedDailyEntry: EntryConsumable[]
   ) {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
-    const requestOptions: RequestInit = {
-      method: 'PUT',
-      headers: {
-        Authorization: this.getUserIdToken(),
-      },
-      body: JSON.stringify({ dailyEntryConsumables: updatedDailyEntry }),
-    }
-    const result = await fetch(requestUrl, requestOptions)
+    try {
+      const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
+      const requestOptions: RequestInit = {
+        method: 'PUT',
+        headers: {
+          Authorization: this.getUserIdToken(),
+        },
+        body: JSON.stringify({ dailyEntryConsumables: updatedDailyEntry }),
+      }
+      const result = await fetch(requestUrl, requestOptions)
 
-    const resultJSON = await result.json()
-    return resultJSON.Attributes.dailyEntryConsumables
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return resultJSON.Attributes.dailyEntryConsumables
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async updateDailyEntryWeight(
@@ -158,11 +173,15 @@ export class DataService {
       },
       body: JSON.stringify({ dailyEntryWeight: updatedDailyEntryWeight }),
     }
-    console.log(requestOptions)
-    const result = await fetch(requestUrl, requestOptions)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
 
-    const resultJSON = await result.json()
-    return resultJSON.Attributes.dailyEntryWeight
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return resultJSON.Attributes.dailyEntryWeight
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async updateDailyEntryActivityLevel(
@@ -178,45 +197,67 @@ export class DataService {
       },
       body: JSON.stringify({ dailyEntryActivityLevel: updatedDailyEntry }),
     }
-    const result = await fetch(requestUrl, requestOptions)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
 
-    const resultJSON = await result.json()
-    return resultJSON.Attributes.dailyEntryActivityLevel
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return resultJSON.Attributes.dailyEntryActivityLevel
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async getFoodCategories() {
     const requestUrl = `${process.env.REACT_APP_API_FOODS}?PK=CATEGORIES`
-    const requestResult = await fetch(requestUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: this.getUserIdToken(),
-      },
-    })
-    const responseJSON = await requestResult.json()
-    return responseJSON
+
+    try {
+      const requestResult = await fetch(requestUrl, {
+        method: 'GET',
+        headers: {
+          Authorization: this.getUserIdToken(),
+        },
+      })
+      const responseJSON = await requestResult.json()
+      console.log(responseJSON)
+      return responseJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
   public async getFoodSubCategories(categoryId: string) {
     const requestUrl = `${process.env.REACT_APP_API_FOODS}?GSI2PK=C_${categoryId}&GSI2SK=METADATA`
-    const requestResult = await fetch(requestUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: this.getUserIdToken(),
-      },
-    })
-    const responseJSON = await requestResult.json()
-    return responseJSON
+
+    try {
+      const requestResult = await fetch(requestUrl, {
+        method: 'GET',
+        headers: {
+          Authorization: this.getUserIdToken(),
+        },
+      })
+      const responseJSON = await requestResult.json()
+      console.log(responseJSON)
+      return responseJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async getFoodItems(categoryId: string, subCategoryId: string) {
     const requestUrl = `${process.env.REACT_APP_API_FOODS}?GSI1PK=C_${categoryId}&GSI1SK=S_${subCategoryId}`
-    const requestResult = await fetch(requestUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: this.getUserIdToken(),
-      },
-    })
-    const responseJSON = await requestResult.json()
-    return responseJSON
+    try {
+      const requestResult = await fetch(requestUrl, {
+        method: 'GET',
+        headers: {
+          Authorization: this.getUserIdToken(),
+        },
+      })
+      const responseJSON = await requestResult.json()
+      console.log(responseJSON)
+      return responseJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async createFoodItem(newFoodItem: FitnessTrackFoodItem) {
@@ -228,23 +269,32 @@ export class DataService {
       },
       body: JSON.stringify(newFoodItem),
     }
-    const result = await fetch(requestUrl, requestOptions)
-    const resultJSON = await result.json()
-    // console.log(resultJSON)
-    return JSON.stringify(resultJSON.id)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return JSON.stringify(resultJSON.id)
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async deleteFoodItem(foodItemId: string) {
     const requestUrl = `${process.env
       .REACT_APP_API_FOODS!}?PK=F_${foodItemId}&SK=METADATA`
-    const requestResult = await fetch(requestUrl, {
-      method: 'DELETE',
-      headers: {
-        Authorization: this.getUserIdToken(),
-      },
-    })
-    const responseJSON = await requestResult.json()
-    return responseJSON
+    try {
+      const requestResult = await fetch(requestUrl, {
+        method: 'DELETE',
+        headers: {
+          Authorization: this.getUserIdToken(),
+        },
+      })
+      const responseJSON = await requestResult.json()
+      console.log(responseJSON)
+      return responseJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async updateFoodItem(updatedFoodItem: FitnessTrackFoodItem) {
@@ -256,25 +306,34 @@ export class DataService {
       },
       body: JSON.stringify({ ...updatedFoodItem }),
     }
-    const result = await fetch(requestUrl, requestOptions)
-    const resultJSON = await result.json()
-    // console.log(resultJSON)
-    return JSON.stringify(resultJSON.PK)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return JSON.stringify(resultJSON)
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 
   public async createFoodCategory(newFoodCategory: FoodCategory) {
+    const userIdToken = this.getUserIdToken()
     const requestUrl = process.env.REACT_APP_API_FOODS!
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
-        Authorization: this.getUserIdToken(),
+        Authorization: userIdToken,
       },
       body: JSON.stringify(newFoodCategory),
     }
-    const result = await fetch(requestUrl, requestOptions)
-    const resultJSON = await result.json()
-    // console.log(resultJSON)
-    return JSON.stringify(resultJSON.id)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return JSON.stringify(resultJSON)
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
   public async createFoodSubCategory(newFoodSubCategory: FoodSubCategory) {
     const requestUrl = process.env.REACT_APP_API_FOODS!
@@ -285,9 +344,13 @@ export class DataService {
       },
       body: JSON.stringify(newFoodSubCategory),
     }
-    const result = await fetch(requestUrl, requestOptions)
-    const resultJSON = await result.json()
-    // console.log(resultJSON)
-    return JSON.stringify(resultJSON.name)
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      console.log(resultJSON)
+      return JSON.stringify(resultJSON.name)
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
   }
 }

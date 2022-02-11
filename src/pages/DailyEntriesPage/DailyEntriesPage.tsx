@@ -87,6 +87,8 @@ export const DailyEntriesPage: React.FC = () => {
     ? formattedActivityLevel[dailyEntry?.dailyEntryActivityLevel]
     : '-'
 
+  const userAWOL = false
+
   const isEditable =
     pickerDate.minus({ days: 1 }).startOf('day').valueOf() ===
       today.minus({ days: 1 }).startOf('day').valueOf() ||

@@ -6,6 +6,7 @@ import {
   UseFormReset,
   UseFormSetValue,
 } from 'react-hook-form'
+import { useQuery } from 'react-query'
 import { UserContext } from '../../../app/App'
 import {
   FitnessTrackFoodItem,
@@ -13,6 +14,7 @@ import {
   FoodSubCategory,
 } from '../../../model/Model'
 import { UseApi } from '../../../pages/FoodsPage/UseApi'
+import { DataService } from '../../../services/DataService'
 import { ConsumablesList } from '../../ConsumablesList'
 import { FoodsCategorySelect } from '../../FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../../FoodsSubCategorySelect'
@@ -32,7 +34,6 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
   setValue,
 }) => {
   const [categories, setCategories] = useState<FoodCategory[]>([])
-  const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('')
   const [subCategories, setSubCategories] = useState<FoodSubCategory[]>([])
   const [subCategoriesLoading, setSubCategoriesLoading] = useState(true)
@@ -48,17 +49,22 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
   const user = useContext(UserContext)
   const useApi = new UseApi(
     user?.user!,
-    setCategories,
-    setCategoriesLoading,
     setSubCategories,
     setSubCategoriesLoading,
     setFoodItems,
     setFoodItemsLoading
   )
 
+  const dataService = new DataService()
+
+  dataService.setUser(user?.user!)
+
+  const { isLoading, isError, data, error } = useQuery('categoryList', () =>
+    dataService.getFoodCategories()
+  )
   useEffect(() => {
-    useApi.fetchCategoryList()
-  }, [])
+    setCategories(data)
+  }, [data])
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setSelectedCategory(event.target.value)
@@ -159,7 +165,7 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
     <Grid container justifyContent="center">
       <FoodsCategorySelect
         categories={categories}
-        categoriesLoading={categoriesLoading}
+        categoriesLoading={isLoading}
         selectedCategory={selectedCategory}
         setAddFoodCategoryDialogOpen={() => null}
         isAdmin={false}

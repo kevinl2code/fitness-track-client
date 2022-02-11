@@ -9,6 +9,15 @@ import { AuthService } from '../services/AuthService'
 import { DataService } from '../services/DataService'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../navigation'
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
+import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorPage } from '../pages/ErrorPage'
 export const UserContext = React.createContext<UserState | null>(null)
 export const CycleContext = React.createContext<Cycle | null>(null)
 
@@ -19,6 +28,7 @@ function App() {
   const [user, setUser] = React.useState<User | null>(null)
   const [userContext, setUserContext] = React.useState<UserState | null>(null)
   const [cycleContext, setCycleContext] = React.useState<Cycle | null>(null)
+  const queryClient = new QueryClient()
   const navigate = useNavigate()
 
   const setAppUser = async (user: User | null) => {
@@ -56,20 +66,24 @@ function App() {
 
   return (
     <>
-      <ThemeProvider theme={defaultTheme}>
-        <CssBaseline />
-        <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
-          <UserContext.Provider value={userContext}>
-            <CycleContext.Provider value={cycleContext}>
-              <NavigationContainer
-                setAppUser={setAppUser}
-                setCycleContext={setCycleContext}
-                user={user}
-              />
-            </CycleContext.Provider>
-          </UserContext.Provider>
-        </LocalizationProvider>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={defaultTheme}>
+          <CssBaseline />
+          <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
+            <UserContext.Provider value={userContext}>
+              <CycleContext.Provider value={cycleContext}>
+                <ErrorBoundary FallbackComponent={ErrorPage}>
+                  <NavigationContainer
+                    setAppUser={setAppUser}
+                    setCycleContext={setCycleContext}
+                    user={user}
+                  />
+                </ErrorBoundary>
+              </CycleContext.Provider>
+            </UserContext.Provider>
+          </LocalizationProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </>
   )
 }

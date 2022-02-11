@@ -29,7 +29,7 @@ export const FoodsCategorySelect: React.FC<Props> = ({
   setAddFoodCategoryDialogOpen,
 }) => {
   const { matchesMD } = useMediaQueries()
-  const generatedCategories = categories.map((category, index) => {
+  const generatedCategories = categories?.map((category, index) => {
     const name = category.name
     const value = category.categoryId
     return (

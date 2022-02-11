@@ -9,11 +9,12 @@ import {
 import React from 'react'
 import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { FoodCategory } from '../../../model/Model'
-import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { v4 } from 'uuid'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
+import { DataService } from '../../../services/DataService'
+import { useMutation, useQueryClient } from 'react-query'
 
 interface IFormInput {
   categoryName: string
@@ -21,15 +22,13 @@ interface IFormInput {
 
 interface Props {
   open: boolean
-  useApi: UseApi
-  setCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>
+  dataService: DataService
   setAddFoodCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const AddFoodCategoryDialog: React.FC<Props> = ({
   open,
-  useApi,
-  setCategoriesLoading,
+  dataService,
   setAddFoodCategoryDialogOpen,
 }) => {
   const {
@@ -39,6 +38,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     formState: { errors },
   } = useForm()
   const { matchesMD } = useMediaQueries()
+  const queryClient = useQueryClient()
   const handleCancel = () => {
     reset()
     setAddFoodCategoryDialogOpen(false)
@@ -77,6 +77,16 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     )
   }
 
+  const { mutate: createFoodCategory, isLoading } = useMutation(
+    (category: FoodCategory) => dataService.createFoodCategory(category),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('categoryList')
+        console.log({ mutationData: data })
+      },
+    }
+  )
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const categoryId = v4()
 
@@ -87,9 +97,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
       name: data.categoryName.toUpperCase(),
       categoryId: categoryId,
     }
-    await useApi.createFoodCategory(newCategory)
-    setCategoriesLoading(true)
-    useApi.fetchCategoryList()
+    createFoodCategory(newCategory)
     reset()
     setAddFoodCategoryDialogOpen(false)
   }
