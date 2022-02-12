@@ -6,17 +6,24 @@ import {
   Grid,
   Typography,
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
-import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
+import {
+  RefetchOptions,
+  useMutation,
+  RefetchQueryFilters,
+  QueryObserverResult,
+  useQueryClient,
+} from 'react-query'
+import { DataService } from '../../../services/DataService'
 
 interface IFormInput {
   PK: string
@@ -40,7 +47,10 @@ interface IFormInput {
 interface Props {
   open: boolean
   foodItem: FitnessTrackFoodItem | null
-  useApi: UseApi
+  dataService: DataService
+  fetchFoodItems: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<any, unknown>>
   setEditFoodDialogOpen: React.Dispatch<
     React.SetStateAction<{
       open: boolean
@@ -95,7 +105,8 @@ const validationSchema = yup.object({
 export const EditFoodItemDialog: React.FC<Props> = ({
   open,
   foodItem,
-  useApi,
+  dataService,
+  fetchFoodItems,
   setEditFoodDialogOpen,
 }) => {
   const {
@@ -108,15 +119,43 @@ export const EditFoodItemDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  setValue('foodItemName', foodItem?.foodItemName)
-  setValue('foodItemUnit', foodItem?.foodItemUnit)
-  setValue('servingSize', foodItem?.servingSize)
-  setValue('calories', foodItem?.calories)
-  setValue('protein', foodItem?.protein)
-  setValue('fat', foodItem?.fat)
-  setValue('carbohydrates', foodItem?.carbohydrates)
-  setValue('foodItemReference', foodItem?.foodItemReference || '')
+  useEffect(() => {
+    setValue('foodItemName', foodItem?.foodItemName)
+    setValue('foodItemUnit', foodItem?.foodItemUnit)
+    setValue('servingSize', foodItem?.servingSize)
+    setValue('calories', foodItem?.calories)
+    setValue('protein', foodItem?.protein)
+    setValue('fat', foodItem?.fat)
+    setValue('carbohydrates', foodItem?.carbohydrates)
+    setValue('foodItemReference', foodItem?.foodItemReference || '')
+  }, [
+    foodItem?.calories,
+    foodItem?.carbohydrates,
+    foodItem?.fat,
+    foodItem?.foodItemName,
+    foodItem?.foodItemReference,
+    foodItem?.foodItemUnit,
+    foodItem?.protein,
+    foodItem?.servingSize,
+    setValue,
+  ])
+
   const { matchesMD } = useMediaQueries()
+
+  const { mutate: updateFoodItem, isLoading } = useMutation(
+    (updatedFoodItem: FitnessTrackFoodItem) =>
+      dataService.updateFoodItem(updatedFoodItem),
+    {
+      onSuccess: () => {
+        fetchFoodItems()
+        setEditFoodDialogOpen({
+          open: false,
+          foodItem: null,
+        })
+      },
+    }
+  )
+
   const handleCancel = () => {
     reset()
     setEditFoodDialogOpen({
@@ -128,6 +167,7 @@ export const EditFoodItemDialog: React.FC<Props> = ({
   if (!foodItem) {
     return null
   }
+
   const generateFormTextInput = ({
     name,
     control,
@@ -228,13 +268,7 @@ export const EditFoodItemDialog: React.FC<Props> = ({
       subCategoryId: foodItem.subCategoryId,
       foodItemId: foodItem.foodItemId,
     }
-    await useApi.updateFoodItem(updatedFoodItem)
-    // reset()
-    useApi.fetchFoodItems(foodItem.categoryId, foodItem.subCategoryId)
-    setEditFoodDialogOpen({
-      open: false,
-      foodItem: null,
-    })
+    updateFoodItem(updatedFoodItem)
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>

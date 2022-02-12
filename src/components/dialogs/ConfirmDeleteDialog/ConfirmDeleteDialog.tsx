@@ -9,8 +9,6 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
-import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormTextInput } from '../../form/FormTextInput'
 import * as yup from 'yup'
@@ -74,10 +72,6 @@ export const ConfirmDeleteDialog: React.FC<Props> = ({
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     handleDelete()
     reset()
-    setConfirmDeleteDialogOpen({
-      open: false,
-      deleteItem: null,
-    })
   }
 
   return (

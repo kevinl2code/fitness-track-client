@@ -11,13 +11,19 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
-import { UseApi } from '../../../pages/FoodsPage/UseApi'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { v4 } from 'uuid'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
+import {
+  RefetchOptions,
+  RefetchQueryFilters,
+  QueryObserverResult,
+  useMutation,
+} from 'react-query'
+import { DataService } from '../../../services/DataService'
 
 interface IFormInput {
   PK: string
@@ -42,7 +48,10 @@ interface Props {
   open: boolean
   categoryId: string
   subCategoryId: string
-  useApi: UseApi
+  dataService: DataService
+  fetchFoodItems: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<any, unknown>>
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -102,7 +111,8 @@ export const AddFoodItemDialog: React.FC<Props> = ({
   open,
   categoryId,
   subCategoryId,
-  useApi,
+  dataService,
+  fetchFoodItems,
   setAddFoodDialogOpen,
 }) => {
   const {
@@ -115,6 +125,19 @@ export const AddFoodItemDialog: React.FC<Props> = ({
     resolver: yupResolver(validationSchema),
   })
   const { matchesMD } = useMediaQueries()
+
+  const { mutate: createFoodItem, isLoading } = useMutation(
+    (newFoodItem: FitnessTrackFoodItem) =>
+      dataService.createFoodItem(newFoodItem),
+    {
+      onSuccess: () => {
+        fetchFoodItems()
+        reset()
+        setAddFoodDialogOpen(false)
+      },
+    }
+  )
+
   const handleCancel = () => {
     reset()
     setAddFoodDialogOpen(false)
@@ -223,10 +246,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
       subCategoryId: subCategoryId,
       foodItemId: newFoodItemId,
     }
-    await useApi.createFoodItem(newFoodItem)
-    useApi.fetchFoodItems(categoryId, subCategoryId)
-    reset()
-    setAddFoodDialogOpen(false)
+    createFoodItem(newFoodItem)
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>

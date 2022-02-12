@@ -7,13 +7,20 @@ import {
   Typography,
 } from '@mui/material'
 import React from 'react'
-import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import { FoodCategory, FoodSubCategory } from '../../../model/Model'
-import { UseApi } from '../../../pages/FoodsPage/UseApi'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { FoodSubCategory } from '../../../model/Model'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { v4 } from 'uuid'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
+import { DataService } from '../../../services/DataService'
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  useMutation,
+  useQueryClient,
+} from 'react-query'
 
 interface IFormInput {
   subCategoryName: string
@@ -21,17 +28,19 @@ interface IFormInput {
 
 interface Props {
   open: boolean
+  dataService: DataService
   categoryId: string
-  useApi: UseApi
-  setSubCategoriesLoading: React.Dispatch<React.SetStateAction<boolean>>
+  fetchSubCategoryList: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<any, unknown>>
   setAddFoodSubCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const AddFoodSubCategoryDialog: React.FC<Props> = ({
   open,
+  dataService,
   categoryId,
-  useApi,
-  setSubCategoriesLoading,
+  fetchSubCategoryList,
   setAddFoodSubCategoryDialogOpen,
 }) => {
   const {
@@ -41,10 +50,12 @@ export const AddFoodSubCategoryDialog: React.FC<Props> = ({
     formState: { errors },
   } = useForm()
   const { matchesMD } = useMediaQueries()
+  const queryClient = useQueryClient()
   const handleCancel = () => {
     reset()
     setAddFoodSubCategoryDialogOpen(false)
   }
+
   const generateFormTextInput = ({
     name,
     control,
@@ -79,6 +90,16 @@ export const AddFoodSubCategoryDialog: React.FC<Props> = ({
     )
   }
 
+  const { mutate: createFoodSubCategory, isLoading } = useMutation(
+    (subCategory: FoodSubCategory) =>
+      dataService.createFoodSubCategory(subCategory),
+    {
+      onSuccess: () => {
+        fetchSubCategoryList()
+      },
+    }
+  )
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const subCategoryId = v4()
 
@@ -92,9 +113,8 @@ export const AddFoodSubCategoryDialog: React.FC<Props> = ({
       categoryId: categoryId,
       subCategoryId: subCategoryId,
     }
-    await useApi.createFoodSubCategory(newSubCategory)
-    setSubCategoriesLoading(true)
-    useApi.fetchSubCategoryList(categoryId)
+    createFoodSubCategory(newSubCategory)
+
     reset()
     setAddFoodSubCategoryDialogOpen(false)
   }

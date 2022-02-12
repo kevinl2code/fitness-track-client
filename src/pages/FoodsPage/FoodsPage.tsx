@@ -16,8 +16,7 @@ import {
   FoodSubCategory,
 } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
-import { UseApi } from './UseApi'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { DataService } from '../../services/DataService'
 
 //https://www.ars.usda.gov/ARSUserFiles/80400530/pdf/1112/food_category_list.pdf
@@ -25,10 +24,8 @@ import { DataService } from '../../services/DataService'
 export const FoodsPage: React.FC = () => {
   const [categories, setCategories] = useState<FoodCategory[]>([])
   const [subCategories, setSubCategories] = useState<FoodSubCategory[]>([])
-  const [subCategoriesLoading, setSubCategoriesLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
-  const [foodItemsLoading, setFoodItemsLoading] = useState(true)
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
   const [editFoodDialogOpen, setEditFoodDialogOpen] = useState<{
@@ -54,51 +51,97 @@ export const FoodsPage: React.FC = () => {
     useState(false)
   const user = useContext(UserContext)
   const isAdmin = user?.user.isAdmin!
-  const useApi = useMemo(
-    () =>
-      new UseApi(
-        user?.user!,
-        setSubCategories,
-        setSubCategoriesLoading,
-        setFoodItems,
-        setFoodItemsLoading
-      ),
-    [user?.user]
-  )
   const { matchesMD } = useMediaQueries()
 
   const dataService = new DataService()
 
   dataService.setUser(user?.user!)
-  const { isLoading, isError, data, error } = useQuery('categoryList', () =>
-    dataService.getFoodCategories()
+
+  const {
+    isLoading: categoriesLoading,
+    isError: categoriesIsError,
+    data: fetchedCategories,
+    error: categoriesError,
+  } = useQuery('categoryList', () => dataService.getFoodCategories())
+
+  const {
+    isLoading: subCategoriesLoading,
+    isError: subCategoriesIsError,
+    data: fetchedSubCategories,
+    error: subCategoriesError,
+    refetch: fetchSubCategoryList,
+  } = useQuery(
+    ['foodsSubCategoryList', selectedCategory],
+    () => dataService.getFoodSubCategories(selectedCategory),
+    { enabled: false }
   )
 
-  console.log({ isLoading: isLoading, data: data, error: error })
+  const {
+    isLoading: foodItemsLoading,
+    isError: foodItemsIsError,
+    data: fetchedFoodItems,
+    error: foodItemsError,
+    refetch: fetchFoodItems,
+  } = useQuery(
+    ['foodsFoodItems', selectedCategory, selectedSubCategory],
+    () => dataService.getFoodItems(selectedCategory, selectedSubCategory),
+    {
+      enabled: false,
+      onSuccess: (data) => {
+        setFoodItems(data)
+      },
+    }
+  )
+
+  const { mutate: deleteFoodItem, isLoading } = useMutation(
+    (foodItemId: string) => dataService.deleteFoodItem(foodItemId),
+    {
+      onSuccess: () => {
+        fetchFoodItems()
+        setConfirmDeleteDialogOpen({
+          open: false,
+          deleteItem: null,
+        })
+      },
+    }
+  )
 
   useEffect(() => {
-    setCategories(data)
-  }, [data])
+    setCategories(fetchedCategories)
+  }, [fetchedCategories])
 
-  const handleCategoryChange = (event: SelectChangeEvent) => {
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchSubCategoryList()
+    }
+    setSubCategories(fetchedSubCategories)
+  }, [fetchSubCategoryList, fetchedSubCategories, selectedCategory])
+
+  useEffect(() => {
+    if (selectedSubCategory) {
+      fetchFoodItems()
+    }
+  }, [fetchFoodItems, selectedSubCategory])
+
+  const useHandleCategoryChange = (event: SelectChangeEvent) => {
     setSelectedSubCategory('')
     setFoodItems([])
     setSelectedCategory(event.target.value)
-    useApi.fetchSubCategoryList(event.target.value)
+    setSubCategories(fetchedSubCategories)
   }
+
   const handleSubCategoryChange = (event: SelectChangeEvent) => {
     setSelectedSubCategory(event.target.value)
-    useApi.fetchFoodItems(selectedCategory, event.target.value)
   }
 
   const handleDelete = async () => {
-    await useApi.deleteFoodItem(confirmDeleteDialogOpen.deleteItem?.id!)
-    await useApi.fetchFoodItems(selectedCategory, selectedSubCategory)
+    deleteFoodItem(confirmDeleteDialogOpen.deleteItem?.id!)
+    fetchFoodItems()
   }
 
   const emptySubCategorySelected =
     selectedSubCategory && foodItems.length === 0 ? true : false
-
+  console.log({ rawwwwwr: foodItems })
   return (
     <>
       <ConfirmDeleteDialog
@@ -111,7 +154,8 @@ export const FoodsPage: React.FC = () => {
         open={addFoodDialogOpen}
         categoryId={selectedCategory}
         subCategoryId={selectedSubCategory}
-        useApi={useApi}
+        dataService={dataService}
+        fetchFoodItems={fetchFoodItems}
         setAddFoodDialogOpen={setAddFoodDialogOpen}
       />
       <AddFoodCategoryDialog
@@ -121,26 +165,27 @@ export const FoodsPage: React.FC = () => {
       />
       <AddFoodSubCategoryDialog
         open={addFoodSubCategoryDialogOpen}
+        dataService={dataService}
+        fetchSubCategoryList={fetchSubCategoryList}
         setAddFoodSubCategoryDialogOpen={setAddFoodSubCategoryDialogOpen}
         categoryId={selectedCategory}
-        setSubCategoriesLoading={setSubCategoriesLoading}
-        useApi={useApi}
       />
       <EditFoodItemDialog
         open={editFoodDialogOpen.open}
+        dataService={dataService}
         foodItem={editFoodDialogOpen.foodItem}
         setEditFoodDialogOpen={setEditFoodDialogOpen}
-        useApi={useApi}
+        fetchFoodItems={fetchFoodItems}
       />
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
           <FoodsCategorySelect
             categories={categories}
-            categoriesLoading={isLoading}
+            categoriesLoading={categoriesLoading}
             selectedCategory={selectedCategory}
             setAddFoodCategoryDialogOpen={setAddFoodCategoryDialogOpen}
             isAdmin={isAdmin}
-            handleCategoryChange={handleCategoryChange}
+            handleCategoryChange={useHandleCategoryChange}
           />
           <FoodsSubCategorySelect
             subCategories={subCategories}
