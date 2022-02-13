@@ -57,36 +57,32 @@ export const FoodsPage: React.FC = () => {
 
   dataService.setUser(user?.user!)
 
-  const {
-    isLoading: categoriesLoading,
-    isError: categoriesIsError,
-    data: fetchedCategories,
-    error: categoriesError,
-  } = useQuery('categoryList', () => dataService.getFoodCategories())
+  const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
+    'categoryList',
+    () => dataService.getFoodCategories(),
+    {
+      onSuccess: (data) => setCategories(data),
+    }
+  )
 
   const {
     isLoading: subCategoriesLoading,
-    isError: subCategoriesIsError,
     data: fetchedSubCategories,
-    error: subCategoriesError,
     refetch: fetchSubCategoryList,
   } = useQuery(
     ['foodsSubCategoryList', selectedCategory],
     () => dataService.getFoodSubCategories(selectedCategory),
-    { enabled: false }
+    {
+      enabled: !!selectedCategory,
+      onSuccess: (data) => setSubCategories(data),
+    }
   )
 
-  const {
-    isLoading: foodItemsLoading,
-    isError: foodItemsIsError,
-    data: fetchedFoodItems,
-    error: foodItemsError,
-    refetch: fetchFoodItems,
-  } = useQuery(
+  const { isLoading: foodItemsLoading, refetch: fetchFoodItems } = useQuery(
     ['foodsFoodItems', selectedCategory, selectedSubCategory],
     () => dataService.getFoodItems(selectedCategory, selectedSubCategory),
     {
-      enabled: false,
+      enabled: !!selectedSubCategory,
       onSuccess: (data) => {
         setFoodItems(data)
       },
@@ -106,23 +102,6 @@ export const FoodsPage: React.FC = () => {
     }
   )
 
-  useEffect(() => {
-    setCategories(fetchedCategories)
-  }, [fetchedCategories])
-
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchSubCategoryList()
-    }
-    setSubCategories(fetchedSubCategories)
-  }, [fetchSubCategoryList, fetchedSubCategories, selectedCategory])
-
-  useEffect(() => {
-    if (selectedSubCategory) {
-      fetchFoodItems()
-    }
-  }, [fetchFoodItems, selectedSubCategory])
-
   const useHandleCategoryChange = (event: SelectChangeEvent) => {
     setSelectedSubCategory('')
     setFoodItems([])
@@ -141,7 +120,7 @@ export const FoodsPage: React.FC = () => {
 
   const emptySubCategorySelected =
     selectedSubCategory && foodItems.length === 0 ? true : false
-  console.log({ rawwwwwr: foodItems })
+
   return (
     <>
       <ConfirmDeleteDialog

@@ -1,5 +1,5 @@
 import { Grid, SelectChangeEvent } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   Control,
   FieldValues,
@@ -38,7 +38,6 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
 
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
-  const [foodItemsLoading, setFoodItemsLoading] = useState(true)
   const [selectedFoodItem, setSelectedFoodItem] =
     useState<FitnessTrackFoodItem | null>(null)
   const [filterText, setFilterText] = useState('')
@@ -50,55 +49,34 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
 
   dataService.setUser(user?.user!)
 
-  const { isLoading, isError, data, error } = useQuery('categoryList', () =>
-    dataService.getFoodCategories()
+  const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
+    'categoryList',
+    () => dataService.getFoodCategories(),
+    {
+      onSuccess: (data) => setCategories(data),
+    }
   )
 
-  const {
-    isLoading: subCategoriesLoadingX,
-    isError: subCategoriesIsError,
-    data: fetchedSubCategories,
-    error: subCategoriesError,
-    refetch: fetchSubCategoryList,
-  } = useQuery(
-    ['entriesSubCategoryList', selectedCategory],
-    () => dataService.getFoodSubCategories(selectedCategory),
-    { enabled: false }
-  )
+  const { isLoading: subCategoriesLoading, data: fetchedSubCategories } =
+    useQuery(
+      ['entriesSubCategoryList', selectedCategory],
+      () => dataService.getFoodSubCategories(selectedCategory),
+      {
+        enabled: !!selectedCategory,
+        onSuccess: (data) => setSubCategories(data),
+      }
+    )
 
-  const {
-    isLoading: foodItemsLoadingX,
-    isError: foodItemsIsError,
-    data: fetchedFoodItems,
-    error: foodItemsError,
-    refetch: fetchFoodItems,
-  } = useQuery(
+  const { isLoading: foodItemsLoading, data: fetchedFoodItems } = useQuery(
     ['entriesFoodItems', selectedCategory, selectedSubCategory],
     () => dataService.getFoodItems(selectedCategory, selectedSubCategory),
     {
-      enabled: false,
+      enabled: !!selectedSubCategory,
       onSuccess: (data) => {
         setFoodItems(data)
       },
     }
   )
-
-  useEffect(() => {
-    setCategories(data)
-  }, [data])
-
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchSubCategoryList()
-    }
-    setSubCategories(fetchedSubCategories)
-  }, [fetchSubCategoryList, fetchedSubCategories, selectedCategory])
-
-  useEffect(() => {
-    if (selectedSubCategory) {
-      fetchFoodItems()
-    }
-  }, [fetchFoodItems, selectedSubCategory])
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setSelectedCategory(event.target.value)
@@ -108,7 +86,6 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
     setSelectedFoodItem(null)
     setQuantity('')
     reset()
-    // setSubCategories(fetchedSubCategories)
   }
   const handleSubCategoryChange = (event: SelectChangeEvent) => {
     setSelectedSubCategory(event.target.value)
@@ -117,7 +94,6 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
     setSelectedFoodItem(null)
     setQuantity('')
     reset()
-    // useApi.fetchFoodItems(selectedCategory, event.target.value)
   }
   if (selectedFoodItem) {
     const valuePerUnit = {
@@ -199,7 +175,7 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
     <Grid container justifyContent="center">
       <FoodsCategorySelect
         categories={categories}
-        categoriesLoading={isLoading}
+        categoriesLoading={categoriesLoading}
         selectedCategory={selectedCategory}
         setAddFoodCategoryDialogOpen={() => null}
         isAdmin={false}
@@ -207,7 +183,7 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
       />
       <FoodsSubCategorySelect
         subCategories={subCategories}
-        subCategoriesLoading={subCategoriesLoadingX}
+        subCategoriesLoading={subCategoriesLoading}
         selectedCategory={selectedCategory}
         selectedSubCategory={selectedSubCategory}
         setAddFoodSubCategoryDialogOpen={() => null}
@@ -216,7 +192,7 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
       />
       <ConsumablesList
         foodItems={foodItems}
-        foodItemsLoading={foodItemsLoadingX}
+        foodItemsLoading={foodItemsLoading}
         emptySubCategorySelected={emptySubCategorySelected}
         selectedSubCategory={selectedSubCategory}
         selectedFoodItem={selectedFoodItem}
