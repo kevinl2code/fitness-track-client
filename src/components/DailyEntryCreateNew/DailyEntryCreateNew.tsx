@@ -55,6 +55,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
+
   const { matchesMD } = useMediaQueries()
   const isFirstDay = date === cycle?.startDate
   const weightDefaultValue = isFirstDay ? cycle.startingWeight : 0

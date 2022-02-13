@@ -1,13 +1,14 @@
 import { LinearProgress, Grid } from '@mui/material'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { CycleContext, UserContext } from '../../app/App'
 import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
 import { DashboardSummaryCard } from '../../components/DashboardSummaryCard'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { Cycle, DailyEntry } from '../../model/Model'
-import { UseApi } from './UseApi'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { DataService } from '../../services/DataService'
+import { useQuery } from 'react-query'
 
 interface Props {
   setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
@@ -22,33 +23,53 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const { matchesMD } = useMediaQueries()
-  const useApi = useMemo(
-    () =>
-      new UseApi(
-        user?.user!,
-        user?.sub!,
-        setEntries,
-        setLoading,
-        setOpenNewUserDialog,
-        setCycleContext
-      ),
-    [setCycleContext, user?.sub, user?.user]
-  )
-  useEffect(() => {
-    if (user) {
-      useApi?.fetchPageData()
+
+  const dataService = new DataService()
+
+  dataService.setUser(user?.user!)
+
+  const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
+    'cycles',
+    () => dataService.getUserCycles(user?.sub!),
+    {
+      onSuccess: (data) => {
+        const currentlyActiveCycle = data?.find((cycle) => {
+          return cycle.isActive === true
+        })
+
+        if (currentlyActiveCycle) {
+          setCycleContext(currentlyActiveCycle)
+        } else {
+          setOpenNewUserDialog(true)
+        }
+      },
     }
-  }, [useApi, user])
+  )
+
+  const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
+    useQuery(
+      ['dailyEntries'],
+      () => dataService.getDailyEntriesForCycle(cycle?.cycleId!),
+      {
+        enabled: !!cycle,
+        onSuccess: (data) => {
+          if (data && data.length > 0) {
+            setEntries(data)
+          }
+        },
+      }
+    )
 
   return (
     <>
       <NewUserDialog
         open={openNewUserDialog}
         user={user!}
-        useApi={useApi}
+        dataService={dataService}
+        setCycleContext={setCycleContext}
         setDialogOpenState={setOpenNewUserDialog}
       />
-      {loading ? (
+      {dailyEntriesLoading || cyclesLoading ? (
         <LinearProgress />
       ) : (
         <Grid container spacing={2} sx={{ width: '100%' }}>

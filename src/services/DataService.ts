@@ -63,8 +63,7 @@ export class DataService {
     try {
       const result = await fetch(requestUrl, requestOptions)
       const resultJSON = await result.json()
-      console.log(resultJSON)
-      return JSON.stringify(resultJSON.id)
+      return resultJSON
     } catch (error) {
       console.log({ dataServiceError: error })
     }

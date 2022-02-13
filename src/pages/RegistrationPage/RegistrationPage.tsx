@@ -143,7 +143,6 @@ export const RegistrationPage: React.FC = () => {
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data)
     const result = await authService.signUp(
       data.username,
       data.password,
@@ -151,7 +150,7 @@ export const RegistrationPage: React.FC = () => {
       data.familyName,
       data.birthdate,
       data.gender,
-      data.height,
+      data.height.toString(),
       data.email
     )
     if (result) {
@@ -237,7 +236,6 @@ export const RegistrationPage: React.FC = () => {
       value: 'female',
     },
   ]
-  console.log(getValues())
   return (
     <>
       <ConfirmRegistrationDialog

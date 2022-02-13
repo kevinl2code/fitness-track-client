@@ -53,7 +53,7 @@ export class AuthService {
     familyName: string,
     birthdate: string,
     gender: CognitoGender,
-    height: number,
+    height: string,
     email: string
   ): Promise<CognitoUser | undefined> {
     try {

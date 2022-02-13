@@ -12,15 +12,19 @@ import {
 import { DateTime } from 'luxon'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 import { v4 } from 'uuid'
 import { Cycle, UserState, CycleType } from '../../../model/Model'
-import { UseApi } from '../../../pages/DashboardPage/UseApi'
+import { ROUTES } from '../../../navigation'
+import { DataService } from '../../../services/DataService'
 import { NewUserDialogForm } from './NewUserDialogForm'
 
 interface Props {
   open: boolean
   user: UserState
-  useApi: UseApi
+  dataService: DataService
+  setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -39,7 +43,8 @@ const steps = ['Current Weight', 'Goal Weight', 'Timeframe', 'Review']
 export const NewUserDialog: React.FC<Props> = ({
   open,
   user,
-  useApi,
+  dataService,
+  setCycleContext,
   setDialogOpenState,
 }) => {
   const [activeStep, setActiveStep] = React.useState(0)
@@ -51,13 +56,28 @@ export const NewUserDialog: React.FC<Props> = ({
     formState: { errors },
     getValues,
   } = useForm({ mode: 'onBlur' })
+  const queryClient = useQueryClient()
   // const authService = new AuthService()
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   // const handleCloseDialog = () => {
   //   setDialogOpenState(false)
   //   reset()
   // }
+
+  const { mutate: createNewCycle, isLoading: createNewCycleLoading } =
+    useMutation(
+      (newUserCycle: Cycle) => dataService.createUserCycle(newUserCycle),
+      {
+        onSuccess: (data) => {
+          setCycleContext(data)
+          console.log({ onsuccess: data })
+          queryClient.invalidateQueries('cycles')
+          setDialogOpenState(false)
+          navigate(`../${ROUTES.dailyEntries}`, { replace: true })
+        },
+      }
+    )
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -94,7 +114,7 @@ export const NewUserDialog: React.FC<Props> = ({
       isActive: true,
       cycleId: newCycleId,
     }
-    await useApi.createNewUserCycle(newUserCycle)
+    createNewCycle(newUserCycle)
     // console.log(newUserCycle)
   }
 
