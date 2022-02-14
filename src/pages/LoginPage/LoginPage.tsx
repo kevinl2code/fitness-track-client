@@ -33,8 +33,8 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
 
-  console.log(user)
-  console.log(cycle)
+  // console.log(user)
+  // console.log(cycle)
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)

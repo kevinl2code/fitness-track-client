@@ -19,7 +19,7 @@ export const MainAppBarTabs: React.FC<Props> = ({ isAdmin }) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
-  console.log(isAdmin)
+  // console.log(isAdmin)
   return (
     <Tabs
       value={value}

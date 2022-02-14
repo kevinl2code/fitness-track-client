@@ -32,12 +32,12 @@ export class UseApi {
     setDailyEntry: React.Dispatch<React.SetStateAction<null | DailyEntry>>
   ) {
     if (this.currentlySelectedDate) {
-      console.log(
-        this.currentlySelectedDate.substring(
-          0,
-          this.currentlySelectedDate.length - 1
-        )
-      )
+      // console.log(
+      //   this.currentlySelectedDate.substring(
+      //     0,
+      //     this.currentlySelectedDate.length - 1
+      //   )
+      // )
       this.dataService.setUser(this.user)
       const data = await this.dataService.getDailyEntryByDate(
         this.userId,
@@ -47,7 +47,7 @@ export class UseApi {
       if (!data) {
         return null
       }
-      console.log(data)
+      // console.log(data)
       data?.length > 0 ? setDailyEntry(data[0]) : setDailyEntry(null)
     }
   }
@@ -103,7 +103,7 @@ export class UseApi {
             this.currentlySelectedDate,
             [...this.dailyEntry.dailyEntryConsumables, data]
           )
-          console.log(result)
+          // console.log(result)
           this.setDailyEntry({
             ...this.dailyEntry,
             dailyEntryConsumables: result,

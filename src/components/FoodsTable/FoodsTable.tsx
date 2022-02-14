@@ -57,7 +57,7 @@ export const FoodsTable: React.FC<Props> = ({
 }) => {
   const [filterText, setFilterText] = useState('')
   const { matchesMD } = useMediaQueries()
-  console.log(emptySubCategorySelected)
+  // console.log(emptySubCategorySelected)
   const sortedFoodItems = foodItems.sort((a, b) => {
     const nameA = a.foodItemName.toUpperCase()
     const nameB = b.foodItemName.toUpperCase()

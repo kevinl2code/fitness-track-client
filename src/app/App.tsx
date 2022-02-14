@@ -56,7 +56,7 @@ function App() {
         email: userInfo.attributes.email,
         sub: userInfo.attributes.sub,
       })
-      navigate(`app/${ROUTES.dashboard}`)
+      navigate(`app/${ROUTES.dailyEntries}`)
     }
     if (!user) {
       setUserContext(null)

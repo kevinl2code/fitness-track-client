@@ -3,6 +3,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import React from 'react'
 import { DateTime } from 'luxon'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface Props {
   pickerDate: DateTime
@@ -19,6 +20,7 @@ export const MobileDateView: React.FC<Props> = ({
   setPickerDate,
   setDatePickerOpen,
 }) => {
+  const { matchesSM, matchesXS } = useMediaQueries()
   const mobileDateViewStartPosition =
     document.getElementById('dailyEntryPageMobileDateView')?.getClientRects()[0]
       .top! - 1
@@ -46,15 +48,23 @@ export const MobileDateView: React.FC<Props> = ({
     <Paper
       square
       id="dailyEntryPageMobileDateView"
-      sx={{
-        width: '100%',
-        backgroundColor: 'primary.main',
-        border: 'none',
-        padding: '1rem 1rem 0 1rem',
-        position: 'sticky',
-        top: mobileDateViewStartPosition,
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-      }}
+      sx={[
+        {
+          width: '100%',
+          backgroundColor: 'primary.main',
+          border: 'none',
+          padding: '1rem 1rem 0 1rem',
+          position: 'sticky',
+          // top: mobileDateViewStartPosition,
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        },
+        matchesXS && {
+          top: '55px',
+        },
+        matchesSM && {
+          top: '63px',
+        },
+      ]}
     >
       <Grid container justifyContent="space-between">
         <IconButton aria-label="delete" size="small" onClick={stepDateBack}>

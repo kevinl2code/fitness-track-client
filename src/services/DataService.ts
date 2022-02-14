@@ -44,7 +44,7 @@ export class DataService {
     try {
       const result = await fetch(requestUrl, requestOptions)
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return JSON.stringify(resultJSON.id)
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -81,7 +81,7 @@ export class DataService {
           },
         })
         const responseJSON = await requestResult.json()
-        console.log(responseJSON)
+        // console.log(responseJSON)
         return responseJSON
       } else {
         return []
@@ -105,7 +105,7 @@ export class DataService {
           },
         })
         const responseJSON = await requestResult.json()
-        console.log(responseJSON)
+        // console.log(responseJSON)
         return responseJSON
       } else {
         return []
@@ -128,7 +128,7 @@ export class DataService {
     })
     try {
       const responseJSON = await requestResult.json()
-      console.log(responseJSON)
+      // console.log(responseJSON)
       return responseJSON
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -152,7 +152,7 @@ export class DataService {
       const result = await fetch(requestUrl, requestOptions)
 
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return resultJSON.Attributes.dailyEntryConsumables
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -176,7 +176,7 @@ export class DataService {
       const result = await fetch(requestUrl, requestOptions)
 
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return resultJSON.Attributes.dailyEntryWeight
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -200,7 +200,7 @@ export class DataService {
       const result = await fetch(requestUrl, requestOptions)
 
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return resultJSON.Attributes.dailyEntryActivityLevel
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -218,7 +218,7 @@ export class DataService {
         },
       })
       const responseJSON = await requestResult.json()
-      console.log(responseJSON)
+      // console.log(responseJSON)
       return responseJSON
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -235,7 +235,7 @@ export class DataService {
         },
       })
       const responseJSON = await requestResult.json()
-      console.log(responseJSON)
+      // console.log(responseJSON)
       return responseJSON
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -252,7 +252,7 @@ export class DataService {
         },
       })
       const responseJSON = await requestResult.json()
-      console.log(responseJSON)
+      // console.log(responseJSON)
       return responseJSON
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -271,7 +271,7 @@ export class DataService {
     try {
       const result = await fetch(requestUrl, requestOptions)
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return JSON.stringify(resultJSON.id)
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -289,7 +289,7 @@ export class DataService {
         },
       })
       const responseJSON = await requestResult.json()
-      console.log(responseJSON)
+      // console.log(responseJSON)
       return responseJSON
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -308,7 +308,7 @@ export class DataService {
     try {
       const result = await fetch(requestUrl, requestOptions)
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return JSON.stringify(resultJSON)
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -328,7 +328,7 @@ export class DataService {
     try {
       const result = await fetch(requestUrl, requestOptions)
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return JSON.stringify(resultJSON)
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -346,7 +346,7 @@ export class DataService {
     try {
       const result = await fetch(requestUrl, requestOptions)
       const resultJSON = await result.json()
-      console.log(resultJSON)
+      // console.log(resultJSON)
       return JSON.stringify(resultJSON.name)
     } catch (error) {
       console.log({ dataServiceError: error })
