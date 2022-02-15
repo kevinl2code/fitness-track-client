@@ -87,12 +87,16 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
     const caloriesRelativeToTDEE = parseInt(tdee) - previousDaysCalories
 
     const expectedWeightChange = caloriesRelativeToTDEE / 3500
-
+    const missedPriorDay =
+      parseInt(currentValue.entryDate) - parseInt(previousValue.entryDate) > 1
+        ? true
+        : false
     calculatedEntries.push({
       name: date,
       actualValue: currentValue.dailyEntryWeight,
-      projectedValue:
-        calculatedEntries[index - 1].projectedValue - expectedWeightChange,
+      projectedValue: missedPriorDay
+        ? currentValue.dailyEntryWeight
+        : calculatedEntries[index - 1].projectedValue - expectedWeightChange,
     })
     return currentValue
   })
@@ -182,7 +186,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
       >
         {renderLineChart}
       </Grid>
-      <Grid container justifyContent="center">
+      {/* <Grid container justifyContent="center">
         {' '}
         <ToggleButtonGroup
           color="primary"
@@ -194,7 +198,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
           <ToggleButton value="month">30 Days</ToggleButton>
           <ToggleButton value="overall">Overall</ToggleButton>
         </ToggleButtonGroup>
-      </Grid>
+      </Grid> */}
     </Paper>
   )
 }

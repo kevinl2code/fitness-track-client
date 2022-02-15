@@ -4,22 +4,17 @@ import DateAdapter from '@mui/lab/AdapterLuxon'
 import React, { useEffect } from 'react'
 import { NavigationContainer } from '../navigation/NavigationContainer'
 import { defaultTheme } from '../themes/default-theme'
-import { Cycle, User, UserState } from '../model/Model'
+import { Cycle, DailyEntry, User, UserState } from '../model/Model'
 import { AuthService } from '../services/AuthService'
 import { DataService } from '../services/DataService'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../navigation'
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query'
+import { useQuery } from 'react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorPage } from '../pages/ErrorPage'
 export const UserContext = React.createContext<UserState | null>(null)
 export const CycleContext = React.createContext<Cycle | null>(null)
+export const EntriesContext = React.createContext<DailyEntry[] | []>([])
 
 const authService = new AuthService()
 const dataService = new DataService()
@@ -28,8 +23,43 @@ function App() {
   const [user, setUser] = React.useState<User | null>(null)
   const [userContext, setUserContext] = React.useState<UserState | null>(null)
   const [cycleContext, setCycleContext] = React.useState<Cycle | null>(null)
-  const queryClient = new QueryClient()
+  const [entriesContext, setEntriesContext] = React.useState<DailyEntry[] | []>(
+    []
+  )
+
   const navigate = useNavigate()
+
+  const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
+    'cycles',
+    () => dataService.getUserCycles(userContext?.sub!),
+    {
+      enabled: !!userContext,
+      onSuccess: (data) => {
+        const currentlyActiveCycle = data?.find((cycle) => {
+          return cycle.isActive === true
+        })
+        if (currentlyActiveCycle) {
+          setCycleContext(currentlyActiveCycle)
+        }
+      },
+    }
+  )
+
+  const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
+    useQuery(
+      ['dailyEntries'],
+      () => dataService.getDailyEntriesForCycle(cycleContext?.cycleId!),
+      {
+        enabled: !!cycleContext,
+        onSuccess: (data) => {
+          if (data && data.length > 0) {
+            setEntriesContext(data)
+          }
+        },
+      }
+    )
+
+  // console.log({ appEntriesContext: entriesContext })
 
   const setAppUser = async (user: User | null) => {
     setUser(user)
@@ -64,27 +94,27 @@ function App() {
     }
   }
 
-  return (
-    <>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={defaultTheme}>
-          <CssBaseline />
-          <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
-            <UserContext.Provider value={userContext}>
-              <CycleContext.Provider value={cycleContext}>
-                <ErrorBoundary FallbackComponent={ErrorPage}>
-                  <NavigationContainer
-                    setAppUser={setAppUser}
-                    setCycleContext={setCycleContext}
-                    user={user}
-                  />
-                </ErrorBoundary>
-              </CycleContext.Provider>
-            </UserContext.Provider>
-          </LocalizationProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </>
+  return cyclesLoading || dailyEntriesLoading ? (
+    <div>LOADING</div>
+  ) : (
+    <ThemeProvider theme={defaultTheme}>
+      <CssBaseline />
+      <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
+        <UserContext.Provider value={userContext}>
+          <CycleContext.Provider value={cycleContext}>
+            <EntriesContext.Provider value={entriesContext}>
+              <ErrorBoundary FallbackComponent={ErrorPage}>
+                <NavigationContainer
+                  setAppUser={setAppUser}
+                  setCycleContext={setCycleContext}
+                  user={user}
+                />
+              </ErrorBoundary>
+            </EntriesContext.Provider>
+          </CycleContext.Provider>
+        </UserContext.Provider>
+      </LocalizationProvider>
+    </ThemeProvider>
   )
 }
 

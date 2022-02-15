@@ -18,8 +18,6 @@ const workingOut = `${process.env.PUBLIC_URL}/workingout.svg`
 
 export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
   const [entries, setEntries] = useState<DailyEntry[] | null>(null)
-  const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
-  const [loading, setLoading] = useState(true)
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const { matchesMD } = useMediaQueries()
@@ -28,23 +26,23 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
 
   dataService.setUser(user?.user!)
 
-  const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
-    'cycles',
-    () => dataService.getUserCycles(user?.sub!),
-    {
-      onSuccess: (data) => {
-        const currentlyActiveCycle = data?.find((cycle) => {
-          return cycle.isActive === true
-        })
+  // const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
+  //   'cycles',
+  //   () => dataService.getUserCycles(user?.sub!),
+  //   {
+  //     onSuccess: (data) => {
+  //       const currentlyActiveCycle = data?.find((cycle) => {
+  //         return cycle.isActive === true
+  //       })
 
-        if (currentlyActiveCycle) {
-          setCycleContext(currentlyActiveCycle)
-        } else {
-          setOpenNewUserDialog(true)
-        }
-      },
-    }
-  )
+  //       if (currentlyActiveCycle) {
+  //         setCycleContext(currentlyActiveCycle)
+  //       } else {
+  //         setOpenNewUserDialog(true)
+  //       }
+  //     },
+  //   }
+  // )
 
   const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
     useQuery(
@@ -62,14 +60,8 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
 
   return (
     <>
-      <NewUserDialog
-        open={openNewUserDialog}
-        user={user!}
-        dataService={dataService}
-        setCycleContext={setCycleContext}
-        setDialogOpenState={setOpenNewUserDialog}
-      />
-      {dailyEntriesLoading || cyclesLoading ? (
+      {/* {dailyEntriesLoading || cyclesLoading ? ( */}
+      {dailyEntriesLoading ? (
         <LinearProgress />
       ) : (
         <Grid container spacing={2} sx={{ width: '100%' }}>

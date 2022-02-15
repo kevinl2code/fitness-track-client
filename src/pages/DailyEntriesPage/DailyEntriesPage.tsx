@@ -1,43 +1,75 @@
-import { Box, Button, Grid, LinearProgress } from '@mui/material'
+import { Box, Grid, LinearProgress } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
 import React, { useContext, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { UseApi } from './UseApi'
-import { DailyEntry } from '../../model/Model'
+import { Cycle, DailyEntry } from '../../model/Model'
 import { DailyEntryCreateNew } from '../../components'
 import {
   UpdateDailyEntryWeightDialog,
   UpdateDailyEntryActivityLevelDialog,
   AddConsumableToDailyEntryDialog,
 } from '../../components/dialogs'
-import { CycleContext, UserContext } from '../../app/App'
+import { CycleContext, UserContext, EntriesContext } from '../../app/App'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { formattedActivityLevel } from '../../utilities/Convert'
 import { Calculate } from '../../utilities/Calculate'
 import { MobileDateView } from '../../components/MobileDateView'
 import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
 import { DailyEntryMissedDay } from '../../components/DailyEntryMissedDay/DailyEntryMissedDay'
+import { DataService } from '../../services/DataService'
+import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
+import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialog'
+import { Sort } from '../../utilities/Sort'
+
+interface Props {
+  setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
+}
 
 const today = DateTime.now()
 
-export const DailyEntriesPage: React.FC = () => {
+export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const user = useContext(UserContext)
-
   const cycle = useContext(CycleContext)
+  const entries = useContext(EntriesContext)
   const [pickerDate, setPickerDate] = useState<DateTime>(today)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
+  const [openReturningUserDialog, setOpenReturningUserDialog] =
+    React.useState(false)
   const [openConsumableDialog, setOpenConsumableDialog] = React.useState(false)
   const [openUpdateWeightDialog, setOpenUpdateWeightDialog] =
     React.useState(false)
   const [openUpdateActivityLevelDialog, setOpenUpdateActivityLevelDialog] =
     React.useState(false)
+  const dataService = new DataService()
 
+  dataService.setUser(user?.user!)
+  useEffect(() => {
+    if (cycle === null) {
+      setOpenNewUserDialog(true)
+    }
+  }, [cycle])
   const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
   const currentlySelectedDate = pickerDate?.toISODate()?.split('-')?.join('')
+  const sort = new Sort()
+  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries).reverse()
+  const todayISO = today.toISODate()?.split('-')?.join('')
+  const daysSinceLastActive =
+    parseInt(todayISO) - parseInt(sortedEntries[0].entryDate)
+  const userAwayOneDay = daysSinceLastActive === 1
+  const userAwaySeveralDays = daysSinceLastActive > 2 && daysSinceLastActive < 6
+
   const isFirstDay = cycle?.startDate === currentlySelectedDate
+
+  useEffect(() => {
+    if (!isFirstDay && userAwaySeveralDays) {
+      setOpenReturningUserDialog(true)
+    }
+  }, [isFirstDay, userAwaySeveralDays])
+
   const useApi = new UseApi(
     user?.user!,
     user?.sub!,
@@ -46,14 +78,62 @@ export const DailyEntriesPage: React.FC = () => {
     dailyEntry,
     setDailyEntry
   )
+  // console.log({ entriesEntriesContext: entries })
+  /////////NEW CODE HERE//////////
+  // console.log(sortedEntries.reverse())
+  // const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
+  //   'cycles',
+  //   () => dataService.getUserCycles(user?.sub!),
+  //   {
+  //     onSuccess: (data) => {
+  //       const currentlyActiveCycle = data?.find((cycle) => {
+  //         return cycle.isActive === true
+  //       })
+
+  //       if (currentlyActiveCycle) {
+  //         setCycleContext(currentlyActiveCycle)
+  //       }
+  //       //  else {
+  //       //   setOpenNewUserDialog(true)
+  //       // }
+  //     },
+  //   }
+  // )
+
+  // const { isLoading: dailyEntryLoading, data: fetchedDailyEntry } = useQuery(
+  //   'dailyEntry',
+  //   () => dataService.getDailyEntryByDate(user?.sub!, currentlySelectedDate), {
+
+  //   }
+  // )
+
+  // const {
+  //   isLoading: dailyEntriesLoading,
+  //   data: dailyEntries,
+  //   refetch: refetchEntries,
+  // } = useQuery(
+  //   'dailyEntries',
+  //   () => dataService.getDailyEntriesForCycle(cycle?.cycleId!),
+  //   {
+  //     enabled: !!cycle,
+  //     onSuccess: (data) => {
+  //       setFetchedDailyEntries(data ?? [])
+  //     },
+  //     staleTime: 10000,
+  //   }
+  // )
+
+  useEffect(() => {
+    const selectedEntry =
+      entries?.find((entry) => entry.entryDate === currentlySelectedDate) ??
+      null
+    setDailyEntry(selectedEntry)
+  }, [currentlySelectedDate, entries])
+  /////////NEW CODE HERE//////////
+
   const { matchesMD } = useMediaQueries()
   const calculate = new Calculate()
-  useEffect(() => {
-    setLoading(true)
-    useApi.fetchPageData(setLoading, setDailyEntry)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentlySelectedDate])
-  //Plan is to fetch the previous day and now allow the current day to set a weight thats more than 10lbs or so different.
+
   if (!user) {
     return null
   }
@@ -84,8 +164,6 @@ export const DailyEntriesPage: React.FC = () => {
     ? formattedActivityLevel[dailyEntry?.dailyEntryActivityLevel]
     : '-'
 
-  const userAWOL = false
-
   const isEditable =
     pickerDate.minus({ days: 1 }).startOf('day').valueOf() ===
       today.minus({ days: 1 }).startOf('day').valueOf() ||
@@ -110,10 +188,9 @@ export const DailyEntriesPage: React.FC = () => {
     <DailyEntryCreateNew
       date={currentlySelectedDate!}
       cycle={cycle}
-      useApi={useApi}
+      dataService={dataService}
+      // refetchEntries={refetchEntries}
       sub={user?.sub!}
-      setLoading={setLoading}
-      setDailyEntry={setDailyEntry}
     />
   )
 
@@ -138,6 +215,20 @@ export const DailyEntriesPage: React.FC = () => {
         open={openConsumableDialog}
         useApi={useApi}
         setDialogOpenState={setOpenConsumableDialog}
+      />
+      <NewUserDialog
+        open={openNewUserDialog}
+        user={user!}
+        dataService={dataService}
+        setCycleContext={setCycleContext}
+        setDialogOpenState={setOpenNewUserDialog}
+      />
+      <ReturningUserDialog
+        open={openReturningUserDialog}
+        cycle={cycle}
+        dataService={dataService}
+        entries={sortedEntries}
+        setDialogOpenState={setOpenReturningUserDialog}
       />
       {!matchesMD && (
         <MobileDateView
@@ -176,10 +267,14 @@ export const DailyEntriesPage: React.FC = () => {
           {/* </Grid> */}
         </Grid>
         <Grid item xs={12} md={8} id="dailyEntryMainContentContainer">
-          {loading && <LinearProgress />}
-          {!loading && mainContent}
-          {!loading && newDayNoEntry}
-          {!loading && missedDay}
+          {/* {dailyEntriesLoading && <LinearProgress />}
+          {!dailyEntriesLoading && mainContent}
+          {!dailyEntriesLoading && newDayNoEntry}
+          {!dailyEntriesLoading && missedDay} */}
+          {entries === null && <LinearProgress />}
+          {entries !== null && mainContent}
+          {entries !== null && newDayNoEntry}
+          {entries !== null && missedDay}
         </Grid>
       </Grid>
     </>
