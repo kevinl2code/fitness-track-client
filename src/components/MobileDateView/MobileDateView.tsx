@@ -8,6 +8,7 @@ import { useMediaQueries } from '../../utilities/useMediaQueries'
 interface Props {
   pickerDate: DateTime
   minDate: DateTime
+  maxDate: DateTime
   setPickerDate: React.Dispatch<React.SetStateAction<DateTime>>
   setDatePickerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -17,6 +18,7 @@ const today = DateTime.now()
 export const MobileDateView: React.FC<Props> = ({
   pickerDate,
   minDate,
+  maxDate,
   setPickerDate,
   setDatePickerOpen,
 }) => {
@@ -38,7 +40,7 @@ export const MobileDateView: React.FC<Props> = ({
     if (!pickerDate) {
       return null
     }
-    if (pickerDate.endOf('day').valueOf() === today.endOf('day').valueOf()) {
+    if (pickerDate.endOf('day').valueOf() === maxDate.endOf('day').valueOf()) {
       return null
     }
     setPickerDate(pickerDate?.plus({ days: 1 }))

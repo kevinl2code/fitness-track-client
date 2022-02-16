@@ -9,4 +9,5 @@ export const ROUTES = {
   foods: 'foods',
   admin: 'admin',
   more: 'more',
+  plan: 'plan',
 }

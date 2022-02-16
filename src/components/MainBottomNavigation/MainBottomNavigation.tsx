@@ -4,16 +4,19 @@ import RestaurantIcon from '@mui/icons-material/Restaurant'
 import HomeIcon from '@mui/icons-material/Home'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import StackedLineChartIcon from '@mui/icons-material/StackedLineChart'
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../navigation'
 
 const valueMap: {
   [key: string]: number
 } = {
-  dashboard: 0,
-  dailyEntries: 1,
-  foods: 2,
-  more: 3,
+  dailyEntries: 0,
+  dashboard: 1,
+  plan: 2,
+  foods: 3,
+  more: 4,
 }
 
 export const MainBottomNavigation: React.FC = () => {
@@ -36,21 +39,26 @@ export const MainBottomNavigation: React.FC = () => {
         }}
       >
         <BottomNavigationAction
-          label="Dashboard"
-          icon={<HomeIcon />}
-          onClick={() => navigate(ROUTES.dashboard)}
-        />
-        <BottomNavigationAction
           label="Entries"
           icon={<EventAvailableIcon />}
           onClick={() => navigate(ROUTES.dailyEntries)}
         />
-
+        <BottomNavigationAction
+          label="Dashboard"
+          icon={<StackedLineChartIcon />}
+          onClick={() => navigate(ROUTES.dashboard)}
+        />
+        <BottomNavigationAction
+          label="Plan"
+          icon={<AssignmentOutlinedIcon />}
+          onClick={() => navigate(ROUTES.plan)}
+        />
         <BottomNavigationAction
           label="Foods"
           icon={<RestaurantIcon />}
           onClick={() => navigate(ROUTES.foods)}
         />
+
         <BottomNavigationAction
           label="More"
           icon={<MoreVertIcon />}

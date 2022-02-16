@@ -27,13 +27,17 @@ interface Props {
   setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
 }
 
-const today = DateTime.now()
+const today = DateTime.now().startOf('day')
 
 export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const entries = useContext(EntriesContext)
-  const [pickerDate, setPickerDate] = useState<DateTime>(today)
+  const cycleEndDate = cycle?.endingDate
+    ? DateTime.fromISO(cycle?.endingDate)
+    : null
+  const calendarMaxDate = cycleEndDate ?? today
+  const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
   const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
@@ -52,23 +56,28 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
       setOpenNewUserDialog(true)
     }
   }, [cycle])
+
   const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
+
   const currentlySelectedDate = pickerDate?.toISODate()?.split('-')?.join('')
   const sort = new Sort()
   const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries).reverse()
-  const todayISO = today.toISODate()?.split('-')?.join('')
-  const daysSinceLastActive =
-    parseInt(todayISO) - parseInt(sortedEntries[0].entryDate)
+  const lastEntryDate = DateTime.fromISO(sortedEntries[0].entryDate).startOf(
+    'day'
+  )
+
+  const daysSinceLastActive = Math.floor(today.diff(lastEntryDate, 'days').days)
+
   const userAwayOneDay = daysSinceLastActive === 1
-  const userAwaySeveralDays = daysSinceLastActive > 2 && daysSinceLastActive < 6
+  const userAwaySeveralDays = daysSinceLastActive > 2
 
   const isFirstDay = cycle?.startDate === currentlySelectedDate
-
+  console.log(daysSinceLastActive)
   useEffect(() => {
-    if (!isFirstDay && userAwaySeveralDays) {
+    if (!isFirstDay && cycle?.isActive && userAwaySeveralDays) {
       setOpenReturningUserDialog(true)
     }
-  }, [isFirstDay, userAwaySeveralDays])
+  }, [cycle?.isActive, isFirstDay, userAwaySeveralDays])
 
   const useApi = new UseApi(
     user?.user!,
@@ -78,50 +87,6 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     dailyEntry,
     setDailyEntry
   )
-  // console.log({ entriesEntriesContext: entries })
-  /////////NEW CODE HERE//////////
-  // console.log(sortedEntries.reverse())
-  // const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
-  //   'cycles',
-  //   () => dataService.getUserCycles(user?.sub!),
-  //   {
-  //     onSuccess: (data) => {
-  //       const currentlyActiveCycle = data?.find((cycle) => {
-  //         return cycle.isActive === true
-  //       })
-
-  //       if (currentlyActiveCycle) {
-  //         setCycleContext(currentlyActiveCycle)
-  //       }
-  //       //  else {
-  //       //   setOpenNewUserDialog(true)
-  //       // }
-  //     },
-  //   }
-  // )
-
-  // const { isLoading: dailyEntryLoading, data: fetchedDailyEntry } = useQuery(
-  //   'dailyEntry',
-  //   () => dataService.getDailyEntryByDate(user?.sub!, currentlySelectedDate), {
-
-  //   }
-  // )
-
-  // const {
-  //   isLoading: dailyEntriesLoading,
-  //   data: dailyEntries,
-  //   refetch: refetchEntries,
-  // } = useQuery(
-  //   'dailyEntries',
-  //   () => dataService.getDailyEntriesForCycle(cycle?.cycleId!),
-  //   {
-  //     enabled: !!cycle,
-  //     onSuccess: (data) => {
-  //       setFetchedDailyEntries(data ?? [])
-  //     },
-  //     staleTime: 10000,
-  //   }
-  // )
 
   useEffect(() => {
     const selectedEntry =
@@ -129,7 +94,6 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
       null
     setDailyEntry(selectedEntry)
   }, [currentlySelectedDate, entries])
-  /////////NEW CODE HERE//////////
 
   const { matchesMD } = useMediaQueries()
   const calculate = new Calculate()
@@ -228,12 +192,14 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
         cycle={cycle}
         dataService={dataService}
         entries={sortedEntries}
+        daysSinceLastActive={daysSinceLastActive}
         setDialogOpenState={setOpenReturningUserDialog}
       />
       {!matchesMD && (
         <MobileDateView
           pickerDate={pickerDate}
           minDate={cycleStartDate}
+          maxDate={calendarMaxDate}
           setPickerDate={setPickerDate}
           setDatePickerOpen={setDatePickerOpen}
         />
@@ -244,7 +210,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
           <DatePicker
             value={pickerDate}
             minDate={cycleStartDate}
-            maxDate={today}
+            maxDate={calendarMaxDate}
             open={datePickerOpen}
             onOpen={() => setDatePickerOpen(true)}
             onClose={() => setDatePickerOpen(false)}

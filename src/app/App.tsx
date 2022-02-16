@@ -12,6 +12,7 @@ import { ROUTES } from '../navigation'
 import { useQuery } from 'react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorPage } from '../pages/ErrorPage'
+import { Sort } from '../utilities/Sort'
 export const UserContext = React.createContext<UserState | null>(null)
 export const CycleContext = React.createContext<Cycle | null>(null)
 export const EntriesContext = React.createContext<DailyEntry[] | []>([])
@@ -26,7 +27,7 @@ function App() {
   const [entriesContext, setEntriesContext] = React.useState<DailyEntry[] | []>(
     []
   )
-
+  const sort = new Sort()
   const navigate = useNavigate()
 
   const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
@@ -40,6 +41,10 @@ function App() {
         })
         if (currentlyActiveCycle) {
           setCycleContext(currentlyActiveCycle)
+        } else if (data && !currentlyActiveCycle) {
+          const sortedCycles: Cycle[] = sort.cyclesByDate(data).reverse()
+          console.log(data)
+          setCycleContext(sortedCycles[0])
         }
       },
     }

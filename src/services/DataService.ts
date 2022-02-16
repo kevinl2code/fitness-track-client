@@ -69,6 +69,27 @@ export class DataService {
     }
   }
 
+  public async updateUserCycle(updatedCycle: Cycle) {
+    const requestUrl = `${process.env.REACT_APP_API_USER!}?PK=${
+      updatedCycle.PK
+    }&SK=${updatedCycle.SK}`
+    const requestOptions: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify({ ...updatedCycle }),
+    }
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      // console.log(resultJSON)
+      return resultJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
+  }
+
   public async getUserCycles(userId: string): Promise<Cycle[] | undefined> {
     try {
       if (this.user) {
