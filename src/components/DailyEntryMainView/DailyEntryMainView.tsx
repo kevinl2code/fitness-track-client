@@ -11,6 +11,7 @@ interface Props {
   user: UserState
   displayWeight: number | '-'
   isFirstDay: boolean
+  deficitPerDay: number
   isEditable: boolean
   useApi: UseApi
   activityLevel: string
@@ -26,6 +27,7 @@ export const DailyEntryMainView: React.FC<Props> = ({
   user,
   displayWeight,
   isFirstDay,
+  deficitPerDay,
   isEditable,
   useApi,
   activityLevel,
@@ -36,7 +38,11 @@ export const DailyEntryMainView: React.FC<Props> = ({
   return (
     <>
       <Grid container justifyContent="center">
-        <DailyEntryGaugeChart dailyEntry={dailyEntry} user={user} />
+        <DailyEntryGaugeChart
+          dailyEntry={dailyEntry}
+          user={user}
+          deficitPerDay={deficitPerDay}
+        />
       </Grid>
       <Grid
         container

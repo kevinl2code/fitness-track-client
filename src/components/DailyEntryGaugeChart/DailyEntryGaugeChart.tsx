@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import { DailyEntry, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
@@ -9,28 +9,34 @@ let COLORS = ['#00C49F', '#C8C8C8']
 interface Props {
   dailyEntry: DailyEntry
   user: UserState | null
+  deficitPerDay: number
 }
-const data = [
-  { name: 'Calories Consumed', value: 300 },
-  { name: 'Calories Expended', value: 3000 },
-]
+// const data = [
+//   { name: 'Calories Consumed', value: 300 },
+//   { name: 'Calories Expended', value: 3000 },
+// ]
 
-export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
+export const DailyEntryGaugeChart: React.FC<Props> = ({
+  dailyEntry,
+  user,
+  deficitPerDay,
+}) => {
+  const [graphData, setGraphData] = useState<
+    { name: string; value: number }[] | []
+  >([])
   const { matchesMD, matchesSM } = useMediaQueries()
   const parentDivWidth = document.getElementById(
     'dailyEntryMainContentContainer'
   )?.offsetWidth
-  if (!parentDivWidth || !user) {
-    return null
-  }
+
   const calculate = new Calculate()
   const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
     dailyEntry
-  const { birthday, sex, height } = user
+  const { birthday, sex, height } = user!
   const age = calculate.age(birthday)
 
   const bmr = calculate.BMR(height, dailyEntryWeight, age, sex)
-  const tdee = calculate.TDEE(bmr!, dailyEntryActivityLevel)
+  const tdee = parseInt(calculate.TDEE(bmr!, dailyEntryActivityLevel))
 
   const confirmedConsumables =
     dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
@@ -39,55 +45,60 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
       (acc, consumable) => acc + consumable.calories,
       0
     ) || 0
-  const remainingCals = parseInt(tdee) - caloriesConsumed
-  const targetCals = 1000
+  const remainingCals = tdee - caloriesConsumed
+  const targetCals = tdee - deficitPerDay
   const targetCalsRemaining = targetCals - caloriesConsumed
-
-  let data = [
-    {
-      name: 'Calories Consumed',
-      value: caloriesConsumed,
-    },
-    { name: 'Target', value: targetCalsRemaining },
-  ]
-
+  console.log(targetCals)
   const overTargetUnderLimit =
-    caloriesConsumed > targetCals && caloriesConsumed < parseInt(tdee)
+    caloriesConsumed > targetCals && caloriesConsumed < tdee
 
-  const overTargetAndLimit = caloriesConsumed > parseInt(tdee)
+  const overTargetAndLimit = caloriesConsumed > tdee
 
   const superLimit = caloriesConsumed < 5000 ? 5000 : 10000
 
-  if (overTargetUnderLimit) {
-    COLORS = ['#FFBB28', '#C8C8C8']
-    data = [
-      {
-        name: 'Calories over Target',
-        value: caloriesConsumed,
-      },
-      {
-        name: 'Cals under TDEE remaining',
-        value: remainingCals,
-      },
-    ]
-  } else if (!overTargetAndLimit) {
-    COLORS = ['#00C49F', '#C8C8C8']
-    data = [
-      {
-        name: 'Calories Consumed',
-        value: caloriesConsumed,
-      },
-      { name: 'Target', value: targetCalsRemaining },
-    ]
-  } else {
-    COLORS = ['#d32f2f', '#C8C8C8']
-    data = [
-      {
-        name: 'Calories Consumed',
-        value: caloriesConsumed,
-      },
-      { name: 'Target', value: superLimit - caloriesConsumed },
-    ]
+  useEffect(() => {
+    if (overTargetUnderLimit) {
+      COLORS = ['#FFBB28', '#C8C8C8']
+      setGraphData([
+        {
+          name: 'Calories over Target',
+          value: caloriesConsumed,
+        },
+        {
+          name: 'Cals under TDEE remaining',
+          value: remainingCals,
+        },
+      ])
+    } else if (!overTargetAndLimit) {
+      COLORS = ['#00C49F', '#C8C8C8']
+      setGraphData([
+        {
+          name: 'Calories Consumed',
+          value: caloriesConsumed,
+        },
+        { name: 'Target', value: targetCalsRemaining },
+      ])
+    } else {
+      COLORS = ['#d32f2f', '#C8C8C8']
+      setGraphData([
+        {
+          name: 'Calories Consumed',
+          value: caloriesConsumed,
+        },
+        { name: 'Target', value: superLimit - caloriesConsumed },
+      ])
+    }
+  }, [
+    caloriesConsumed,
+    overTargetAndLimit,
+    overTargetUnderLimit,
+    remainingCals,
+    superLimit,
+    targetCalsRemaining,
+  ])
+
+  if (!parentDivWidth || !user) {
+    return null
   }
 
   const innerRadius = matchesMD
@@ -167,7 +178,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
       // key={Math.random() * 100}
     >
       <Pie
-        data={data}
+        data={graphData}
         blendStroke
         cx="50%"
         cy="60%"
@@ -182,7 +193,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
         labelLine={false}
         label={(props) => renderCustomLabel(props)}
       >
-        {data.map((entry, index) => (
+        {graphData.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>

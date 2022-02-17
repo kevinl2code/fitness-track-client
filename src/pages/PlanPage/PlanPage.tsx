@@ -71,8 +71,12 @@ export const PlanPage: React.FC<Props> = () => {
   const goalText: {
     [key: string]: string
   } = {
-    CUT: `Lose ${startingWeight - goalWeight} lbs in ${duration} days!`,
-    BULK: `Gain ${goalWeight - startingWeight} lbs in ${duration} days!`,
+    CUT: `Lose ${(startingWeight - goalWeight).toFixed(
+      1
+    )} lbs in ${duration} days!`,
+    BULK: `Gain ${(goalWeight - startingWeight).toFixed(
+      1
+    )} lbs in ${duration} days!`,
     MAINTAIN: `Maintain current weight for ${duration} days!`,
   }
 

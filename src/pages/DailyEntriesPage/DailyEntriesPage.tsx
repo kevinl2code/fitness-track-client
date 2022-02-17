@@ -37,6 +37,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     ? DateTime.fromISO(cycle?.endingDate)
     : null
   const calendarMaxDate = cycleEndDate ?? today
+  console.log(today.toLocaleString(DateTime.DATETIME_HUGE))
   const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
@@ -102,8 +103,8 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   if (!user) {
     return null
   }
-  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
-    { ...dailyEntry } || {}
+  // const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
+  //   { ...dailyEntry } || {}
   const start = DateTime.fromISO(cycle?.startDate!)
   const currentDay = pickerDate
   const daysSinceStart = Math.floor(currentDay.diff(start, 'days').days)
@@ -111,10 +112,10 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const poundsToGo = dailyEntry?.dailyEntryWeight! - cycle?.goalWeight!
   const caloriesToGo = poundsToGo * 3500
   const deficitPerDay = caloriesToGo / daysRemaining
-  const { birthday, sex, height } = user
-  const age = calculate.age(birthday)
-  // const bmr = calculate.BMR(height, dailyEntryWeight, age, sex)
-  // const tdee = calculate.TDEE(bmr!, dailyEntryActivityLevel)
+  // const { birthday, sex, height } = user
+  // const age = calculate.age(birthday)
+  // const bmr = calculate.BMR(height, dailyEntryWeight!, age, sex)
+  // const tdee = parseInt(calculate.TDEE(bmr!, dailyEntryActivityLevel!))
   // const confirmedConsumables =
   //   dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
   // const caloriesConsumed =
@@ -141,6 +142,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
       user={user}
       displayWeight={displayWeight}
       isFirstDay={isFirstDay}
+      deficitPerDay={deficitPerDay}
       isEditable={isEditable}
       useApi={useApi}
       activityLevel={activityLevel}
