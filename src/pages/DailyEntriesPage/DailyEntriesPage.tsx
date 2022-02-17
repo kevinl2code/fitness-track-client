@@ -51,6 +51,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const dataService = new DataService()
 
   dataService.setUser(user?.user!)
+  console.log(cycle)
   useEffect(() => {
     if (cycle === null) {
       setOpenNewUserDialog(true)
@@ -62,7 +63,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const currentlySelectedDate = pickerDate?.toISODate()?.split('-')?.join('')
   const sort = new Sort()
   const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries).reverse()
-  const lastEntryDate = DateTime.fromISO(sortedEntries[0].entryDate).startOf(
+  const lastEntryDate = DateTime.fromISO(sortedEntries[0]?.entryDate).startOf(
     'day'
   )
 
@@ -72,7 +73,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const userAwaySeveralDays = daysSinceLastActive > 2
 
   const isFirstDay = cycle?.startDate === currentlySelectedDate
-  console.log(daysSinceLastActive)
+  // console.log(daysSinceLastActive)
   useEffect(() => {
     if (!isFirstDay && cycle?.isActive && userAwaySeveralDays) {
       setOpenReturningUserDialog(true)
@@ -239,7 +240,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
           {!dailyEntriesLoading && missedDay} */}
           {entries === null && <LinearProgress />}
           {entries !== null && mainContent}
-          {entries !== null && newDayNoEntry}
+          {entries !== null && !openNewUserDialog && newDayNoEntry}
           {entries !== null && missedDay}
         </Grid>
       </Grid>

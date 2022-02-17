@@ -32,14 +32,14 @@ export const NewUserDialogForm: React.FC<Props> = ({
 }) => {
   const reviewText = () => {
     if (values.goalWeight < values.currentWeight) {
-      return `Based on what you've entered, you want to lose ${
+      return `Based on what you've entered, you want to lose ${(
         values.currentWeight - values.goalWeight
-      } lbs over the course of ${values.timeFrame} days.`
+      ).toFixed(1)} lbs over the course of ${values.timeFrame} days.`
     }
     if (values.goalWeight > values.currentWeight) {
-      return `Based on what you've entered, you want to gain ${
+      return `Based on what you've entered, you want to gain ${(
         values.goalWeight - values.currentWeight
-      } lbs over the course of ${values.timeFrame} days.`
+      ).toFixed(1)} lbs over the course of ${values.timeFrame} days.`
     }
     if (values.goalWeight === values.currentWeight) {
       return `Based on what you've entered, you want to maintain your current weight over the course of ${values.timeFrame} days.`

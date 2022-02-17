@@ -45,8 +45,7 @@ function App() {
           setCycleContext(currentlyActiveCycle)
         } else if (data && !currentlyActiveCycle) {
           const sortedCycles: Cycle[] = sort.cyclesByDate(data).reverse()
-          console.log(data)
-          setCycleContext(sortedCycles[0])
+          sortedCycles.length > 1 && setCycleContext(sortedCycles[0])
         }
       },
     }
@@ -98,6 +97,8 @@ function App() {
       setCycleContext(null)
     }
   }
+
+  console.log({ cycleContext })
 
   const handleLogout = () => {
     queryCache.clear()
