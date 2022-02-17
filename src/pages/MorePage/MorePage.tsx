@@ -17,31 +17,23 @@ import PersonIcon from '@mui/icons-material/Person'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
 import { UserContext } from '../../app/App'
-import { useNavigate } from 'react-router-dom'
-import { AuthService } from '../../services/AuthService'
+import { QueryCache } from 'react-query'
 import { User } from '../../model/Model'
 
 interface Props {
   setUser: (user: User | null) => Promise<void>
+  handleLogout: () => void
 }
 
-export const MorePage: React.FC<Props> = ({ setUser }) => {
+export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
   const user = useContext(UserContext)
-  const navigate = useNavigate()
-  const authService = new AuthService()
   const calculate = new Calculate()
   const convert = new Convert()
-
+  const queryCache = new QueryCache()
   let usersAge
 
   if (user) {
     usersAge = calculate.age(user?.birthday!)
-  }
-
-  const handleLogoutClick = (route: string) => {
-    authService.logOut()
-    setUser(null)
-    navigate(route)
   }
 
   return (
@@ -118,7 +110,7 @@ export const MorePage: React.FC<Props> = ({ setUser }) => {
       <Button
         variant="outlined"
         size="medium"
-        onClick={() => handleLogoutClick('/')}
+        onClick={() => handleLogout()}
         sx={{ marginBottom: '8px' }}
       >
         Sign Out

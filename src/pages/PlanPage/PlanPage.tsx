@@ -1,34 +1,79 @@
-import { AccountCircle, Email } from '@mui/icons-material'
-import {
-  Grid,
-  Typography,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-} from '@mui/material'
+import { Grid, Typography, Divider } from '@mui/material'
 import React, { useContext } from 'react'
-import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
-import WcIcon from '@mui/icons-material/Wc'
-import PersonIcon from '@mui/icons-material/Person'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
 import { CycleContext, UserContext, EntriesContext } from '../../app/App'
+import { DateTime } from 'luxon'
+import { PlanDetail } from '../../components/PlanDetail'
+import { Sort } from '../../utilities/Sort'
+import { DailyEntry } from '../../model/Model'
 
 interface Props {}
 
 export const PlanPage: React.FC<Props> = () => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
+  const entries = useContext(EntriesContext)
   const calculate = new Calculate()
   const convert = new Convert()
+  const sort = new Sort()
+  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries)
+  if (!cycle) {
+    return null
+  }
 
-  let usersAge
+  const {
+    cycleType,
+    startingWeight,
+    endingWeight,
+    goalWeight,
+    startDate,
+    endingDate,
+    duration,
+    isActive,
+  } = cycle
+  const currentWeight = sortedEntries
+    ? sortedEntries[sortedEntries.length - 1]?.dailyEntryWeight
+    : startingWeight
+  const cycleStartDate = DateTime.fromISO(startDate)
+  const today = DateTime.local()
+  const expectedEndDate = cycleStartDate.plus({ days: duration })
+  const actualEndDate = endingDate ? DateTime.fromISO(endingDate) : null
+  const cycleEndDate = actualEndDate ?? expectedEndDate
+  const daysSinceStart = Math.floor(today.diff(cycleStartDate, 'days').days)
+  const daysRemaining = duration - daysSinceStart
+  const weightChanged = currentWeight && startingWeight - currentWeight
+  const weightChangedRatePerDay = weightChanged / daysSinceStart
+  const projectedFinalWeightAtCurrentPace = (
+    Math.round(
+      (Math.abs(weightChangedRatePerDay * daysRemaining) +
+        Math.abs(weightChanged)) *
+        10
+    ) / 10
+  ).toFixed(1)
+  console.log(sortedEntries)
+  let status = {
+    pastTense: '',
+    currentTense: '',
+  }
 
-  if (user) {
-    usersAge = calculate.age(user?.birthday!)
+  if (weightChanged > 0) {
+    status.pastTense = 'lost'
+    status.currentTense = 'lose'
+  } else if (weightChanged < 0) {
+    status.pastTense = 'gained'
+    status.currentTense = 'gain'
+  } else {
+    status.pastTense = 'maintained'
+    status.currentTense = 'maintain'
+  }
+
+  const goalText: {
+    [key: string]: string
+  } = {
+    CUT: `Lose ${startingWeight - goalWeight} lbs in ${duration} days!`,
+    BULK: `Gain ${goalWeight - startingWeight} lbs in ${duration} days!`,
+    MAINTAIN: `Maintain current weight for ${duration} days!`,
   }
 
   return (
@@ -39,69 +84,39 @@ export const PlanPage: React.FC<Props> = () => {
       sx={{ marginTop: '1rem' }}
     >
       <Grid item>
-        <AccountCircle fontSize="large" />
+        <Typography variant="h4">MY GOAL</Typography>
       </Grid>
       <Grid item>
-        <Typography variant="h6">{`${user?.firstName} ${user?.lastName}`}</Typography>
+        <Typography variant="h6">{goalText[cycleType]}</Typography>
       </Grid>
-      <Grid item>
-        <Typography>{user?.user.userName}</Typography>
-      </Grid>
-      <Divider sx={{ width: '100%', marginTop: '1rem' }} />
-      <Grid item sx={{ width: '100%' }}>
-        <List
-          sx={{
-            width: '100%',
-            maxWidth: 360,
-            bgcolor: 'background.paper',
-          }}
-          dense={true}
-        >
-          <ListItem sx={{ paddingLeft: '8px', paddingBottom: '0px' }}>
-            <ListItemAvatar>
-              <Avatar>
-                <PersonIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Age" secondary={`${usersAge} yrs`} />
-          </ListItem>
-          <ListItem sx={{ paddingLeft: '8px', paddingBottom: '0px' }}>
-            <ListItemAvatar>
-              <Avatar>
-                <WcIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Sex" secondary={user?.sex} />
-          </ListItem>
-          <ListItem sx={{ paddingLeft: '8px', paddingBottom: '0px' }}>
-            <ListItemAvatar>
-              <Avatar>
-                <AlignHorizontalLeftIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary="Height"
-              secondary={
-                user?.height
-                  ? `${convert.inchesToFeetAndInches(
-                      user.height,
-                      'ABBREVIATED'
-                    )}`
-                  : '-'
-              }
-            />
-          </ListItem>
-          <ListItem sx={{ paddingLeft: '8px', paddingBottom: '0px' }}>
-            <ListItemAvatar>
-              <Avatar>
-                <Email />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Email" secondary={`${user?.email}`} />
-          </ListItem>
-        </List>
-      </Grid>
-      <Divider sx={{ width: '100%', marginBottom: '1rem' }} />
+      <Divider sx={{ width: '90%', marginTop: '1rem' }} />
+      <PlanDetail
+        text={`Start Date:`}
+        value={cycleStartDate.toLocaleString(DateTime.DATE_MED)}
+      />
+      <PlanDetail
+        text={isActive ? 'Expected End Date:' : 'End Date:'}
+        value={cycleEndDate.toLocaleString(DateTime.DATE_MED)}
+      />
+      <PlanDetail text={`Starting Weight:`} value={`${startingWeight} lbs`} />
+      <PlanDetail
+        text={isActive ? 'Current Weight:' : 'Ending Weight:'}
+        value={isActive ? `${currentWeight} lbs` : `${endingWeight} lbs`}
+      />
+
+      <PlanDetail text={`Goal Weight:`} value={`${goalWeight} lbs`} />
+      {status.pastTense !== 'maintained' && (
+        <PlanDetail
+          text={`Pounds ${status.pastTense}:`}
+          value={(Math.round(Math.abs(weightChanged) * 10) / 10).toFixed(1)}
+        />
+      )}
+      {cycleType !== 'MAINTAIN' && (
+        <PlanDetail
+          text={'Pounds to go:'}
+          value={currentWeight ? (currentWeight - goalWeight).toFixed(1) : '-'}
+        />
+      )}
     </Grid>
   )
 }

@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react'
 import { CycleContext, UserContext } from '../../app/App'
 import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
-import { DashboardSummaryCard } from '../../components/DashboardSummaryCard'
+// import { DashboardSummaryCard } from '../../components/DashboardSummaryCard'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { Cycle, DailyEntry } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
@@ -75,7 +75,7 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
             </Grid>
           ) : (
             <>
-              {matchesMD && (
+              {/* {matchesMD && (
                 <Grid item xs={12} md={4}>
                   <DashboardSummaryCard
                     cycleType={cycle?.cycleType!}
@@ -86,7 +86,7 @@ export const DashboardPage: React.FC<Props> = ({ setCycleContext }) => {
                     startingWeight={cycle?.startingWeight!}
                   />
                 </Grid>
-              )}
+              )} */}
               <Grid item xs={12} md={8} container justifyContent="flex-end">
                 <DashboardWeightTrackerChart entries={entries} user={user!} />
               </Grid>

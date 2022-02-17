@@ -9,10 +9,11 @@ import { AuthService } from '../services/AuthService'
 import { DataService } from '../services/DataService'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../navigation'
-import { useQuery } from 'react-query'
+import { QueryCache, useQuery, useQueryClient } from 'react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorPage } from '../pages/ErrorPage'
 import { Sort } from '../utilities/Sort'
+import { AppLoadingPage } from '../pages/AppLoadingPage'
 export const UserContext = React.createContext<UserState | null>(null)
 export const CycleContext = React.createContext<Cycle | null>(null)
 export const EntriesContext = React.createContext<DailyEntry[] | []>([])
@@ -29,7 +30,8 @@ function App() {
   )
   const sort = new Sort()
   const navigate = useNavigate()
-
+  const queryCache = new QueryCache()
+  const queryClient = useQueryClient()
   const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
     'cycles',
     () => dataService.getUserCycles(userContext?.sub!),
@@ -64,8 +66,6 @@ function App() {
       }
     )
 
-  // console.log({ appEntriesContext: entriesContext })
-
   const setAppUser = async (user: User | null) => {
     setUser(user)
     if (user) {
@@ -99,8 +99,22 @@ function App() {
     }
   }
 
-  return cyclesLoading || dailyEntriesLoading ? (
-    <div>LOADING</div>
+  const handleLogout = () => {
+    queryCache.clear()
+    queryClient.removeQueries('cycles')
+    queryClient.removeQueries('dailyEntries')
+    authService.logOut()
+    setUser(null)
+    setUserContext(null)
+    setCycleContext(null)
+    setEntriesContext([])
+    navigate('/')
+  }
+
+  const isLoading = cyclesLoading || dailyEntriesLoading
+
+  return isLoading ? (
+    <AppLoadingPage />
   ) : (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -111,6 +125,7 @@ function App() {
               <ErrorBoundary FallbackComponent={ErrorPage}>
                 <NavigationContainer
                   setAppUser={setAppUser}
+                  handleLogout={handleLogout}
                   setCycleContext={setCycleContext}
                   user={user}
                 />

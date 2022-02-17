@@ -47,6 +47,10 @@ export const ReturningUserDialog: React.FC<Props> = ({
   }
 
   const longHiatus = daysSinceLastActive > 6
+  const longHiatusText = `Looks like you've been away for quite some time so we've closed out the plan you had been.  Once you're ready, pick up where you left off by starting a new plan.`
+  const shortHiatusText = `Looks like you've been away for a few days. Go ahead and weigh in for today and we'll auto generate entries for the days you were gone based on where you currently stand.`
+
+  const dialogText = longHiatus ? longHiatusText : shortHiatusText
 
   return (
     <Dialog open={open} fullScreen={!matchesMD}>
@@ -55,11 +59,7 @@ export const ReturningUserDialog: React.FC<Props> = ({
           <Typography variant="h4" align="center">
             Welcome Back!
           </Typography>
-          <Typography align="center">
-            Looks like you've been away for a few days. Go ahead and weigh in
-            for today and we'll auto generate entries for the days you were gone
-            based on where you currently stand.
-          </Typography>
+          <Typography align="center">{dialogText}</Typography>
         </CardContent>
         <CardContent>
           {!longHiatus && (

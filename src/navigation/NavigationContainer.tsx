@@ -17,12 +17,14 @@ import { PlanPage } from '../pages/PlanPage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
+  handleLogout: () => void
   setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
   user: User | null
 }
 
 export const NavigationContainer: React.FC<Props> = ({
   setAppUser,
+  handleLogout,
   setCycleContext,
   user,
 }) => {
@@ -65,7 +67,12 @@ export const NavigationContainer: React.FC<Props> = ({
         />
         <Route path={ROUTES.foods} element={<FoodsPage />} />
         <Route path={ROUTES.admin} element={<AdminPage />} />
-        <Route path={ROUTES.more} element={<MorePage setUser={setAppUser} />} />
+        <Route
+          path={ROUTES.more}
+          element={
+            <MorePage setUser={setAppUser} handleLogout={handleLogout} />
+          }
+        />
         <Route path={ROUTES.plan} element={<PlanPage />} />
       </Route>
     </Routes>
