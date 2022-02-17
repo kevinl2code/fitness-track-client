@@ -23,7 +23,7 @@ interface Props {
     name: string
     id: string
   } | null
-  handleDelete: () => void
+  handleConfirmation: () => void
   setConfirmDeleteDialogOpen: React.Dispatch<
     React.SetStateAction<{
       open: boolean
@@ -42,10 +42,10 @@ const validationSchema = yup.object({
     .matches(/^DELETE$/g, 'Must match "DELETE"'),
 })
 
-export const ConfirmDeleteDialog: React.FC<Props> = ({
+export const ConfirmationDialog: React.FC<Props> = ({
   open,
   deleteItem,
-  handleDelete,
+  handleConfirmation,
   setConfirmDeleteDialogOpen,
 }) => {
   const {
@@ -70,7 +70,7 @@ export const ConfirmDeleteDialog: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    handleDelete()
+    handleConfirmation()
     reset()
   }
 

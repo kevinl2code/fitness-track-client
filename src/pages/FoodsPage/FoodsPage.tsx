@@ -1,11 +1,11 @@
 import { Box, Grid, SelectChangeEvent } from '@mui/material'
 
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { UserContext } from '../../app/App'
 import { AddFoodCategoryDialog } from '../../components/dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../../components/dialogs/AddFoodItemDialog'
 import { AddFoodSubCategoryDialog } from '../../components/dialogs/AddFoodSubCategoryDialog/AddFoodSubCategoryDialog'
-import { ConfirmDeleteDialog } from '../../components/dialogs/ConfirmDeleteDialog'
+
 import { EditFoodItemDialog } from '../../components/dialogs/EditFoodItemDialog'
 import { FoodsCategorySelect } from '../../components/FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../../components/FoodsSubCategorySelect'
@@ -18,6 +18,7 @@ import {
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { useMutation, useQuery } from 'react-query'
 import { DataService } from '../../services/DataService'
+import { ConfirmationDialog } from '../../components/dialogs/ConfirmationDialog'
 
 //https://www.ars.usda.gov/ARSUserFiles/80400530/pdf/1112/food_category_list.pdf
 
@@ -35,7 +36,7 @@ export const FoodsPage: React.FC = () => {
     open: false,
     foodItem: null,
   })
-  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState<{
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<{
     open: boolean
     deleteItem: {
       name: string
@@ -94,7 +95,7 @@ export const FoodsPage: React.FC = () => {
     {
       onSuccess: () => {
         fetchFoodItems()
-        setConfirmDeleteDialogOpen({
+        setConfirmationDialogOpen({
           open: false,
           deleteItem: null,
         })
@@ -114,7 +115,7 @@ export const FoodsPage: React.FC = () => {
   }
 
   const handleDelete = async () => {
-    deleteFoodItem(confirmDeleteDialogOpen.deleteItem?.id!)
+    deleteFoodItem(confirmationDialogOpen.deleteItem?.id!)
     fetchFoodItems()
   }
 
@@ -123,11 +124,11 @@ export const FoodsPage: React.FC = () => {
 
   return (
     <>
-      <ConfirmDeleteDialog
-        open={confirmDeleteDialogOpen.open}
-        deleteItem={confirmDeleteDialogOpen.deleteItem}
-        handleDelete={handleDelete}
-        setConfirmDeleteDialogOpen={setConfirmDeleteDialogOpen}
+      <ConfirmationDialog
+        open={confirmationDialogOpen.open}
+        deleteItem={confirmationDialogOpen.deleteItem}
+        handleConfirmation={handleDelete}
+        setConfirmDeleteDialogOpen={setConfirmationDialogOpen}
       />
       <AddFoodItemDialog
         open={addFoodDialogOpen}
@@ -183,7 +184,7 @@ export const FoodsPage: React.FC = () => {
             isAdmin={isAdmin}
             setAddFoodDialogOpen={setAddFoodDialogOpen}
             setEditFoodDialogOpen={setEditFoodDialogOpen}
-            setConfirmDeleteDialogOpen={setConfirmDeleteDialogOpen}
+            setConfirmDeleteDialogOpen={setConfirmationDialogOpen}
           />
         </Grid>
       </Box>

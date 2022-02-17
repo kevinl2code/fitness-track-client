@@ -17,14 +17,7 @@ import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
 import { ActivityLevel, Cycle, DailyEntry } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { palette } from '@mui/system'
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-} from 'react-query'
+import { useMutation, useQueryClient, QueryClient } from 'react-query'
 import { DataService } from '../../services/DataService'
 
 interface IFormInput {

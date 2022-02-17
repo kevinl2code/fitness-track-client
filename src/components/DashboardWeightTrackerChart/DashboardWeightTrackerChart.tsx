@@ -145,7 +145,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
           dataKey="name"
           // interval="preserveStart"
           interval={0}
-          angle={30}
+          // angle={30}
           dx={20}
         />
         <YAxis domain={[domainMin, domainMax]} padding={{ bottom: 10 }} hide />
