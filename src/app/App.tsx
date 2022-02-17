@@ -45,7 +45,8 @@ function App() {
           setCycleContext(currentlyActiveCycle)
         } else if (data && !currentlyActiveCycle) {
           const sortedCycles: Cycle[] = sort.cyclesByDate(data).reverse()
-          sortedCycles.length > 1 && setCycleContext(sortedCycles[0])
+          console.log({ sortedCycles })
+          sortedCycles.length > 0 && setCycleContext(sortedCycles[0])
         }
       },
     }
@@ -110,6 +111,7 @@ function App() {
     setCycleContext(null)
     setEntriesContext([])
     navigate('/')
+    window.location.reload()
   }
 
   const isLoading = cyclesLoading || dailyEntriesLoading

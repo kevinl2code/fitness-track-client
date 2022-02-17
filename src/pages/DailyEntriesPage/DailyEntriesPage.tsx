@@ -37,7 +37,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     ? DateTime.fromISO(cycle?.endingDate)
     : null
   const calendarMaxDate = cycleEndDate ?? today
-  console.log(today.toLocaleString(DateTime.DATETIME_HUGE))
+  // console.log(today.toLocaleString(DateTime.DATETIME_HUGE))
   const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
@@ -52,7 +52,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const dataService = new DataService()
 
   dataService.setUser(user?.user!)
-  console.log(cycle)
+  // console.log(cycle)
   useEffect(() => {
     if (cycle === null) {
       setOpenNewUserDialog(true)

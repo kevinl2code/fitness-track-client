@@ -46,7 +46,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
       0
     ) || 0
   const remainingCals = tdee - caloriesConsumed
-  const targetCals = tdee - deficitPerDay
+  const targetCals = Math.round(tdee - deficitPerDay)
   const targetCalsRemaining = targetCals - caloriesConsumed
   console.log(targetCals)
   const overTargetUnderLimit =
@@ -57,7 +57,16 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
   const superLimit = caloriesConsumed < 5000 ? 5000 : 10000
 
   useEffect(() => {
-    if (overTargetUnderLimit) {
+    if (caloriesConsumed === 0) {
+      COLORS = ['#00C49F', '#C8C8C8']
+      setGraphData([
+        {
+          name: 'Calories Consumed',
+          value: caloriesConsumed,
+        },
+        { name: 'Target', value: targetCalsRemaining },
+      ])
+    } else if (overTargetUnderLimit) {
       COLORS = ['#FFBB28', '#C8C8C8']
       setGraphData([
         {

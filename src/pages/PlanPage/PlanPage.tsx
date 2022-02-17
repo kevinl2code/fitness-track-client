@@ -67,7 +67,7 @@ export const PlanPage: React.FC<Props> = () => {
     status.pastTense = 'maintained'
     status.currentTense = 'maintain'
   }
-
+  const displayCurrentWeight = currentWeight ? currentWeight : '-'
   const goalText: {
     [key: string]: string
   } = {
@@ -105,7 +105,7 @@ export const PlanPage: React.FC<Props> = () => {
       <PlanDetail text={`Starting Weight:`} value={`${startingWeight} lbs`} />
       <PlanDetail
         text={isActive ? 'Current Weight:' : 'Ending Weight:'}
-        value={isActive ? `${currentWeight} lbs` : `${endingWeight} lbs`}
+        value={isActive ? `${displayCurrentWeight} lbs` : `${endingWeight} lbs`}
       />
 
       <PlanDetail text={`Goal Weight:`} value={`${goalWeight} lbs`} />
