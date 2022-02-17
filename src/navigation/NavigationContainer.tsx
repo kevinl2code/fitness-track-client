@@ -53,14 +53,8 @@ export const NavigationContainer: React.FC<Props> = ({
         path={ROUTES.appRoot}
         element={<AuthLayout setAppUser={setAppUser} />}
       >
-        <Route
-          index
-          element={<DashboardPage setCycleContext={setCycleContext} />}
-        />
-        <Route
-          path={ROUTES.dashboard}
-          element={<DashboardPage setCycleContext={setCycleContext} />}
-        />
+        <Route index element={<DashboardPage />} />
+        <Route path={ROUTES.dashboard} element={<DashboardPage />} />
         <Route
           path={ROUTES.dailyEntries}
           element={<DailyEntriesPage setCycleContext={setCycleContext} />}
