@@ -26,11 +26,6 @@ import {
 import { DataService } from '../../../services/DataService'
 
 interface IFormInput {
-  PK: string
-  SK: 'METADATA'
-  GSI1PK: string
-  GSI1SK: string
-  type: 'FOOD'
   foodItemName: string
   foodItemUnit: FoodItemUnits
   servingSize: string
@@ -39,9 +34,6 @@ interface IFormInput {
   fat: string
   carbohydrates: string
   foodItemReference: string
-  categoryId: string
-  subCategoryId: string
-  foodItemId: string
 }
 
 interface Props {

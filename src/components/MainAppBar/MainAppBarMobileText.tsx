@@ -1,13 +1,27 @@
-import { AppBar, Box, Grid, Toolbar, Typography } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  Grid,
+  IconButton,
+  Toolbar,
+  Typography,
+} from '@mui/material'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import React from 'react'
 import { useLocation } from 'react-router-dom'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../../navigation'
+
+const siblingWidth = document
+  .getElementById('mobile-appbar-back-button')
+  ?.getBoundingClientRect().width
 
 export const MainAppBarMobileText: React.FC = () => {
   const { matchesSM, matchesXS } = useMediaQueries()
   const routeParams = useLocation()
+  const navigate = useNavigate()
   const currentPath = routeParams.pathname.substring(1)
-
   const mainText: {
     [key: string]: string
   } = {
@@ -17,7 +31,18 @@ export const MainAppBarMobileText: React.FC = () => {
     'app/admin': 'Admin',
     'app/more': 'More',
     'app/plan': 'Fitness Plan',
+    'app/profile': 'Profile',
   }
+  const isMoreSubSection = mainText[currentPath] === 'Profile' ? true : false
+  const returnToMorePage = (
+    <IconButton
+      aria-label="delete"
+      size="small"
+      onClick={() => navigate(`${ROUTES.more}`)}
+    >
+      <NavigateBeforeIcon sx={{ color: 'white' }} fontSize="large" />
+    </IconButton>
+  )
 
   return (
     <Box
@@ -46,7 +71,7 @@ export const MainAppBarMobileText: React.FC = () => {
       >
         <Grid
           container
-          justifyContent="center"
+          justifyContent={isMoreSubSection ? 'space-between' : 'center'}
           alignItems="center"
           sx={[
             { flexGrow: 1 },
@@ -58,9 +83,20 @@ export const MainAppBarMobileText: React.FC = () => {
             },
           ]}
         >
+          {isMoreSubSection && (
+            <Grid item id="mobile-appbar-back-button">
+              {returnToMorePage}
+            </Grid>
+          )}
           <Grid item>
             <Typography variant="h4">{mainText[currentPath]}</Typography>
           </Grid>
+
+          {isMoreSubSection && (
+            <Grid item sx={{ width: siblingWidth }}>
+              <></>
+            </Grid>
+          )}
         </Grid>
       </AppBar>
     </Box>

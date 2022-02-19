@@ -1,48 +1,39 @@
-import {
-  Grid,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  TextField,
-  InputAdornment,
-} from '@mui/material'
+import { Grid, Typography, InputAdornment } from '@mui/material'
 import React from 'react'
-import {
-  Control,
-  Controller,
-  FieldValues,
-  UseFormRegister,
-} from 'react-hook-form'
+import { Control, FieldValues, UseFormRegister } from 'react-hook-form'
+import { FormTextInput } from '../../form/FormTextInput'
 
 interface Props {
   activeStep: number
-  register: UseFormRegister<FieldValues>
   control: Control<FieldValues, object>
   values: {
     [x: string]: any
   }
+  hasErrors: boolean
 }
 
 export const NewUserDialogForm: React.FC<Props> = ({
   activeStep,
-  register,
   control,
   values,
+  hasErrors,
 }) => {
+  const currentWeight = parseFloat(values.startingWeight)
+  const goalWeight = parseFloat(values.goalWeight)
+  // console.log({ currentWeight, goalWeight })
   const reviewText = () => {
-    if (values.goalWeight < values.currentWeight) {
+    if (goalWeight < currentWeight) {
       return `Based on what you've entered, you want to lose ${(
-        values.currentWeight - values.goalWeight
-      ).toFixed(1)} lbs over the course of ${values.timeFrame} days.`
+        currentWeight - goalWeight
+      ).toFixed(1)} lbs over the course of ${values.duration} days.`
     }
-    if (values.goalWeight > values.currentWeight) {
+    if (goalWeight > currentWeight) {
       return `Based on what you've entered, you want to gain ${(
-        values.goalWeight - values.currentWeight
-      ).toFixed(1)} lbs over the course of ${values.timeFrame} days.`
+        goalWeight - currentWeight
+      ).toFixed(1)} lbs over the course of ${values.duration} days.`
     }
-    if (values.goalWeight === values.currentWeight) {
-      return `Based on what you've entered, you want to maintain your current weight over the course of ${values.timeFrame} days.`
+    if (goalWeight === currentWeight) {
+      return `Based on what you've entered, you want to maintain your current weight over the course of ${values.duration} days.`
     }
   }
 
@@ -52,30 +43,14 @@ export const NewUserDialogForm: React.FC<Props> = ({
         <Typography>My current weight is...</Typography>
       </Grid>
       <Grid item xs={6}>
-        <Controller
-          name="currentWeight"
+        <FormTextInput
           control={control}
-          defaultValue={0}
-          render={({
-            field,
-            fieldState: { invalid, isTouched, isDirty, error },
-          }) => (
-            <FormControl>
-              <TextField
-                {...field}
-                error={invalid}
-                helperText={invalid && 'Weight is out olf range.'}
-                sx={{ minWidth: '100%' }}
-                variant="standard"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">lbs</InputAdornment>
-                  ),
-                }}
-              />
-            </FormControl>
-          )}
-          rules={{ min: 50, max: 600 }}
+          name="startingWeight"
+          type="number"
+          required={true}
+          inputProps={{
+            endAdornment: <InputAdornment position="end">lbs</InputAdornment>,
+          }}
         />
       </Grid>
     </>
@@ -87,32 +62,13 @@ export const NewUserDialogForm: React.FC<Props> = ({
         <Typography>My goal weight is...</Typography>
       </Grid>
       <Grid item xs={6}>
-        <Controller
-          name="goalWeight"
+        <FormTextInput
           control={control}
-          defaultValue={0}
-          render={({
-            field,
-            fieldState: { invalid, isTouched, isDirty, error },
-          }) => (
-            <FormControl>
-              <TextField
-                {...field}
-                error={invalid}
-                helperText={invalid && 'Weight is out of range.'}
-                sx={{ minWidth: '100%' }}
-                variant="standard"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">lbs</InputAdornment>
-                  ),
-                }}
-              />
-            </FormControl>
-          )}
-          rules={{
-            min: 50,
-            max: 600,
+          name="goalWeight"
+          type="number"
+          required={true}
+          inputProps={{
+            endAdornment: <InputAdornment position="end">lbs</InputAdornment>,
           }}
         />
       </Grid>
@@ -123,33 +79,16 @@ export const NewUserDialogForm: React.FC<Props> = ({
     <>
       <Grid item xs={6}>
         <Typography>I hope to accomplish this in...</Typography>
+        {}
       </Grid>
       <Grid item xs={6}>
-        <Controller
-          name="timeFrame"
+        <FormTextInput
           control={control}
-          defaultValue={0}
-          render={({
-            field,
-            fieldState: { invalid, isTouched, isDirty, error },
-          }) => (
-            <FormControl>
-              <TextField
-                {...field}
-                error={invalid}
-                helperText={invalid && 'Weight must be greater than 50 lbs'}
-                sx={{ minWidth: '100%' }}
-                variant="standard"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">days</InputAdornment>
-                  ),
-                }}
-              />
-            </FormControl>
-          )}
-          rules={{
-            min: 7,
+          name="duration"
+          type="number"
+          required={true}
+          inputProps={{
+            endAdornment: <InputAdornment position="end">days</InputAdornment>,
           }}
         />
       </Grid>
@@ -170,64 +109,13 @@ export const NewUserDialogForm: React.FC<Props> = ({
     <Grid
       container
       sx={{ width: '100%' }}
-      alignItems="flex-end"
+      alignItems={hasErrors ? 'center' : 'flex-end'}
       justifyContent="space-around"
     >
-      {/* {activeStep === 0 && (
-          <Controller
-            name="intent"
-            control={control}
-            defaultValue="MAINTAIN"
-            render={({ field: { onChange, value } }) => (
-              <Select
-                {...register}
-                variant="standard"
-                value={value}
-                onChange={onChange}
-                displayEmpty
-                inputProps={{ 'aria-label': 'Without label' }}
-                sx={{ minWidth: '100%' }}
-              >
-                <MenuItem value={'MAINTAIN'}>
-                  Maintain my current weight.
-                </MenuItem>
-                <MenuItem value={'CUT'}>Lose some weight</MenuItem>
-                <MenuItem value={'BULK'}>Gain some weight</MenuItem>
-              </Select>
-            )}
-          />
-        )} */}
       {stepOne}
       {stepTwo}
       {stepThree}
       {stepFour}
-      {/* {activeStep === 1 && (
-          <Controller
-            name="weight"
-            control={control}
-            defaultValue={0}
-            render={({
-              field,
-              fieldState: { invalid, isTouched, isDirty, error },
-            }) => (
-              <FormControl>
-                <TextField
-                  {...field}
-                  error={invalid}
-                  helperText={invalid && 'Weight must be greater than 50 lbs'}
-                  sx={{ minWidth: '100%' }}
-                  variant="standard"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">lbs</InputAdornment>
-                    ),
-                  }}
-                />
-              </FormControl>
-            )}
-            rules={{ min: 50 }}
-          />
-        )} */}
     </Grid>
   )
 }

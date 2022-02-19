@@ -45,13 +45,12 @@ function App() {
           setCycleContext(currentlyActiveCycle)
         } else if (data && !currentlyActiveCycle) {
           const sortedCycles: Cycle[] = sort.cyclesByDate(data).reverse()
-          console.log({ sortedCycles })
           sortedCycles.length > 0 && setCycleContext(sortedCycles[0])
         }
       },
     }
   )
-
+  console.log(cycleContext)
   const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
     useQuery(
       ['dailyEntries'],
@@ -98,8 +97,6 @@ function App() {
       setCycleContext(null)
     }
   }
-
-  console.log({ cycleContext })
 
   const handleLogout = () => {
     queryCache.clear()

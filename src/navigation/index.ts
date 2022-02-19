@@ -10,4 +10,5 @@ export const ROUTES = {
   admin: 'admin',
   more: 'more',
   plan: 'plan',
+  profile: 'profile',
 }

@@ -14,6 +14,7 @@ import { FoodsPage } from '../pages/FoodsPage'
 import { AdminPage } from '../pages/AdminPage'
 import { MorePage } from '../pages/MorePage'
 import { PlanPage } from '../pages/PlanPage'
+import { ProfilePage } from '../pages/ProfilePage/ProfilePage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -68,6 +69,7 @@ export const NavigationContainer: React.FC<Props> = ({
           }
         />
         <Route path={ROUTES.plan} element={<PlanPage />} />
+        <Route path={ROUTES.profile} element={<ProfilePage />} />
       </Route>
     </Routes>
   )

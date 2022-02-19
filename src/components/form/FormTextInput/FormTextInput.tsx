@@ -5,7 +5,7 @@ import { Control, Controller, FieldValues } from 'react-hook-form'
 export interface FormTextInputProps {
   name: string
   control: Control<FieldValues, object>
-  label: string
+  label?: string
   placeholder?: string
   helperText?: string
   required?: boolean
