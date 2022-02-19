@@ -13,21 +13,26 @@ import {
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry, EntryConsumable } from '../../../model/Model'
-import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
+import { ActivityLevel, DailyEntry } from '../../../model/Model'
+import { useMutation, useQueryClient } from 'react-query'
+import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
+
+interface IFormInput {
+  activityLevel: ActivityLevel
+}
 
 interface Props {
   entry: DailyEntry
+  dataService: DataService
   open: boolean
-  useApi: UseApi
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   entry,
+  dataService,
   open,
-  useApi,
   setDialogOpenState,
 }) => {
   const {
@@ -37,17 +42,30 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
+  const queryClient = useQueryClient()
   const { matchesMD } = useMediaQueries()
   const handleCloseDialog = () => {
     setDialogOpenState(false)
     reset()
   }
-  //TODO Fix the generic, not sure why this is working
-  const onSubmit: SubmitHandler<Partial<EntryConsumable>> = async (
-    data: any
-  ) => {
-    useApi.updateActivityLevel(data.activityLevel)
-    setDialogOpenState(false)
+
+  const { mutate: updateDailyEntry, isLoading } = useMutation(
+    (dailyEntry: DailyEntry) => dataService.updateDailyEntry(dailyEntry),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('dailyEntries')
+        setDialogOpenState(false)
+        console.log({ mutationData: data })
+      },
+    }
+  )
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const updatedDailyEntry = {
+      ...entry,
+      dailyEntryActivityLevel: data.activityLevel,
+    }
+    updateDailyEntry(updatedDailyEntry)
   }
 
   return (

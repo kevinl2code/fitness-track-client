@@ -27,31 +27,6 @@ export class UseApi {
     this.setDailyEntry = setDailyEntry
   }
 
-  // public async fetchPageData(
-  //   setPageLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  //   setDailyEntry: React.Dispatch<React.SetStateAction<null | DailyEntry>>
-  // ) {
-  //   if (this.currentlySelectedDate) {
-  //     // console.log(
-  //     //   this.currentlySelectedDate.substring(
-  //     //     0,
-  //     //     this.currentlySelectedDate.length - 1
-  //     //   )
-  //     // )
-  //     this.dataService.setUser(this.user)
-  //     const data = await this.dataService.getDailyEntryByDate(
-  //       this.userId,
-  //       this.currentlySelectedDate
-  //     )
-  //     setPageLoading(false)
-  //     if (!data) {
-  //       return null
-  //     }
-  //     // console.log(data)
-  //     data?.length > 0 ? setDailyEntry(data[0]) : setDailyEntry(null)
-  //   }
-  // }
-
   public async createNewDailyEntry(newDailyEntry: any) {
     try {
       this.dataService.setUser(this.user)
@@ -112,26 +87,6 @@ export class UseApi {
       } catch (error) {
         if (error instanceof Error) {
           alert(`Error adding consumable: ${error.message}`)
-        }
-      }
-    }
-  }
-
-  public async updateWeight(data: any) {
-    if (this.dailyEntry) {
-      try {
-        if (this.currentlySelectedDate) {
-          this.dataService.setUser(this.user)
-          const result = await this.dataService.updateDailyEntryWeight(
-            this.userId,
-            this.currentlySelectedDate,
-            data
-          )
-          this.setDailyEntry({ ...this.dailyEntry, dailyEntryWeight: result })
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          alert(`Error updating weight: ${error.message}`)
         }
       }
     }

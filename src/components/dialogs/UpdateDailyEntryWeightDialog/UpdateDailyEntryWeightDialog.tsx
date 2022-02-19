@@ -11,22 +11,38 @@ import {
   Grid,
   InputAdornment,
 } from '@mui/material'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry, EntryConsumable } from '../../../model/Model'
-import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
+import { DailyEntry } from '../../../model/Model'
+import { useMutation, useQueryClient } from 'react-query'
+import { DataService } from '../../../services/DataService'
+
+interface IFormInput {
+  weight: string
+}
 
 interface Props {
   entry: DailyEntry
-  useApi: UseApi
+  dataService: DataService
   open: boolean
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+const validationSchema = yup.object({
+  weight: yup
+    .number()
+    .typeError('Value for weight is required')
+    .min(50, ({ min }) => `Must be ${min} lbs or more`)
+    .max(1000, ({ max }) => `Must be ${max} lbs or less`)
+    .required('Value for weight is required'),
+})
+
 export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
   entry,
-  useApi,
+  dataService,
   open,
   setDialogOpenState,
 }) => {
@@ -35,19 +51,28 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm()
-
+  } = useForm({ mode: 'onTouched', resolver: yupResolver(validationSchema) })
+  const queryClient = useQueryClient()
   const handleCloseDialog = () => {
     setDialogOpenState(false)
     reset()
   }
 
-  const onSubmit: SubmitHandler<EntryConsumable> = async (data: any) => {
-    if (typeof data === 'object' && 'weight' in data) {
-      data.weight = parseInt(data?.weight)
+  const { mutate: updateDailyEntry, isLoading } = useMutation(
+    (dailyEntry: DailyEntry) => dataService.updateDailyEntry(dailyEntry),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('dailyEntries')
+        setDialogOpenState(false)
+        console.log({ mutationData: data })
+      },
     }
-    useApi.updateWeight(data.weight)
-    setDialogOpenState(false)
+  )
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const updatedWeight = Math.round(parseFloat(data.weight) * 10) / 10
+    const updatedDailyEntry = { ...entry, dailyEntryWeight: updatedWeight }
+    updateDailyEntry(updatedDailyEntry)
   }
 
   return (

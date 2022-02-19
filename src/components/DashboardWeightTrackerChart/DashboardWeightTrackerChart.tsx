@@ -70,9 +70,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
       calculate.age(birthday!),
       sex!
     )
-    const tdee = calculate
-      .TDEE(bmr!, previousValue.dailyEntryActivityLevel)
-      .split('.')[0]
+    const tdee = calculate.TDEE(bmr!, previousValue.dailyEntryActivityLevel)
 
     //TODO - MAKE SURE THIS WORKS FOR GAINING AND MAINTAINING WEIGHT
     const confirmedConsumables =
@@ -84,7 +82,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
         (acc, consumable) => acc + consumable.calories,
         0
       ) || 0
-    const caloriesRelativeToTDEE = parseInt(tdee) - previousDaysCalories
+    const caloriesRelativeToTDEE = tdee - previousDaysCalories
 
     const expectedWeightChange = caloriesRelativeToTDEE / 3500
     const missedPriorDay =

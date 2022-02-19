@@ -17,6 +17,7 @@ export class Calculate {
     if (sex === 'female') {
       return 655 + 4.35 * weight + 4.7 * height - 4.7 * age
     }
+    return Number.NaN
   }
 
   // https://www.bmi-calculator.net/bmr-calculator/harris-benedict-equation/
@@ -28,7 +29,7 @@ export class Calculate {
       VERY_ACTIVE: bmr * 1.725,
       EXTRA_ACTIVE: bmr * 1.9,
     }
-    return tdeeByActivityLevel[activityLevel].toFixed(0)
+    return parseInt(tdeeByActivityLevel[activityLevel]?.toFixed(0))
   }
 
   // https://blog.nasm.org/nutrition/how-much-protein-should-you-eat-per-day-for-weight-loss

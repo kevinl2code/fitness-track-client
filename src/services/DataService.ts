@@ -51,6 +51,25 @@ export class DataService {
     }
   }
 
+  public async updateDailyEntry(updatedDailyEntry: DailyEntry) {
+    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${updatedDailyEntry.PK}&SK=${updatedDailyEntry.SK}`
+    const requestOptions: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify({ ...updatedDailyEntry }),
+    }
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+      // console.log(resultJSON)
+      return JSON.stringify(resultJSON)
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
+  }
+
   public async createUserCycle(cycle: Cycle) {
     const requestUrl = process.env.REACT_APP_API_USER!
     const requestOptions: RequestInit = {
@@ -175,30 +194,6 @@ export class DataService {
       const resultJSON = await result.json()
       // console.log(resultJSON)
       return resultJSON.Attributes.dailyEntryConsumables
-    } catch (error) {
-      console.log({ dataServiceError: error })
-    }
-  }
-
-  public async updateDailyEntryWeight(
-    userId: string,
-    date: string,
-    updatedDailyEntryWeight: number
-  ) {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
-    const requestOptions: RequestInit = {
-      method: 'PUT',
-      headers: {
-        Authorization: this.getUserIdToken(),
-      },
-      body: JSON.stringify({ dailyEntryWeight: updatedDailyEntryWeight }),
-    }
-    try {
-      const result = await fetch(requestUrl, requestOptions)
-
-      const resultJSON = await result.json()
-      // console.log(resultJSON)
-      return resultJSON.Attributes.dailyEntryWeight
     } catch (error) {
       console.log({ dataServiceError: error })
     }

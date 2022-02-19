@@ -94,12 +94,12 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
     }
 
     const bmr = calculate.BMR(
-      height!,
+      height,
       dailyEntryWeight,
       calculate.age(birthday!),
-      sex!
+      sex
     )
-    const tdee = calculate.TDEE(bmr!, dailyEntryActivityLevel).split('.')[0]
+    const tdee = calculate.TDEE(bmr, dailyEntryActivityLevel)
 
     return (
       <TableRow
@@ -113,7 +113,7 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
           {renderActivity[dailyEntryActivityLevel]}
         </TableCell>
         <TableCell align="right">{proteinIndicator}</TableCell>
-        <TableCell align="right">{caloriesConsumed}</TableCell>
+        <TableCell align="right">{Math.round(caloriesConsumed)}</TableCell>
         <TableCell align="right">{tdee}</TableCell>
 
         <TableCell align="right">{dailyEntryWeight}</TableCell>

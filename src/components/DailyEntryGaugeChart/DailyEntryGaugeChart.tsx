@@ -11,10 +11,6 @@ interface Props {
   user: UserState | null
   deficitPerDay: number
 }
-// const data = [
-//   { name: 'Calories Consumed', value: 300 },
-//   { name: 'Calories Expended', value: 3000 },
-// ]
 
 export const DailyEntryGaugeChart: React.FC<Props> = ({
   dailyEntry,
@@ -36,7 +32,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
   const age = calculate.age(birthday)
 
   const bmr = calculate.BMR(height, dailyEntryWeight, age, sex)
-  const tdee = parseInt(calculate.TDEE(bmr!, dailyEntryActivityLevel))
+  const tdee = calculate.TDEE(bmr, dailyEntryActivityLevel)
 
   const confirmedConsumables =
     dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
@@ -48,7 +44,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
   const remainingCals = tdee - caloriesConsumed
   const targetCals = Math.round(tdee - deficitPerDay)
   const targetCalsRemaining = targetCals - caloriesConsumed
-  console.log(targetCals)
+
   const overTargetUnderLimit =
     caloriesConsumed > targetCals && caloriesConsumed < tdee
 

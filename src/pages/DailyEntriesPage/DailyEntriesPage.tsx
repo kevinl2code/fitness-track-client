@@ -52,7 +52,6 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const dataService = new DataService()
 
   dataService.setUser(user?.user!)
-  // console.log(cycle)
   useEffect(() => {
     if (cycle === null) {
       setOpenNewUserDialog(true)
@@ -103,19 +102,19 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   if (!user) {
     return null
   }
-  // const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
-  //   { ...dailyEntry } || {}
-  const start = DateTime.fromISO(cycle?.startDate!)
+  const { dailyEntryWeight, dailyEntryActivityLevel } = { ...dailyEntry } || {}
+  const cycleStart = DateTime.fromISO(cycle?.startDate!)
   const currentDay = pickerDate
-  const daysSinceStart = Math.floor(currentDay.diff(start, 'days').days)
+  const daysSinceStart = Math.floor(currentDay.diff(cycleStart, 'days').days)
   const daysRemaining = cycle?.duration! - daysSinceStart
   const poundsToGo = dailyEntry?.dailyEntryWeight! - cycle?.goalWeight!
   const caloriesToGo = poundsToGo * 3500
   const deficitPerDay = caloriesToGo / daysRemaining
-  // const { birthday, sex, height } = user
-  // const age = calculate.age(birthday)
-  // const bmr = calculate.BMR(height, dailyEntryWeight!, age, sex)
-  // const tdee = parseInt(calculate.TDEE(bmr!, dailyEntryActivityLevel!))
+  const { birthday, sex, height } = user
+  const age = calculate.age(birthday)
+  const bmr = calculate.BMR(height, dailyEntryWeight!, age, sex)
+  const tdee = calculate.TDEE(bmr, dailyEntryActivityLevel!)
+  const targetCals = Math.round(tdee - deficitPerDay)
   // const confirmedConsumables =
   //   dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
   // const caloriesConsumed =
@@ -123,7 +122,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   //     (acc, consumable) => acc + consumable.calories,
   //     0
   //   ) || 0
-  // const remainingCals = parseInt(tdee) - caloriesConsumed
+  // const remainingCals = tdee - caloriesConsumed
 
   const displayWeight = dailyEntry?.dailyEntryWeight || '-'
   const activityLevel = dailyEntry?.dailyEntryActivityLevel
@@ -154,10 +153,10 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const newDayNoEntry = isEditable && !dailyEntry && (
     <DailyEntryCreateNew
       date={currentlySelectedDate!}
+      deficitPerDay={deficitPerDay}
       cycle={cycle}
       dataService={dataService}
-      // refetchEntries={refetchEntries}
-      sub={user?.sub!}
+      user={user}
     />
   )
 
@@ -167,14 +166,14 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     <>
       <UpdateDailyEntryWeightDialog
         entry={dailyEntry!}
+        dataService={dataService}
         open={openUpdateWeightDialog}
-        useApi={useApi}
         setDialogOpenState={setOpenUpdateWeightDialog}
       />
       <UpdateDailyEntryActivityLevelDialog
         entry={dailyEntry!}
+        dataService={dataService}
         open={openUpdateActivityLevelDialog}
-        useApi={useApi}
         setDialogOpenState={setOpenUpdateActivityLevelDialog}
       />
       <AddConsumableToDailyEntryDialog
