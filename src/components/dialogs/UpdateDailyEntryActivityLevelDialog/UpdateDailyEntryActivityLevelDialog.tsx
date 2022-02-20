@@ -17,6 +17,7 @@ import { ActivityLevel, DailyEntry } from '../../../model/Model'
 import { useMutation, useQueryClient } from 'react-query'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
+import { Calculate } from '../../../utilities/Calculate'
 
 interface IFormInput {
   activityLevel: ActivityLevel
@@ -24,6 +25,8 @@ interface IFormInput {
 
 interface Props {
   entry: DailyEntry
+  deficitPerDay: number
+  bmr: number
   dataService: DataService
   open: boolean
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
@@ -31,6 +34,8 @@ interface Props {
 
 export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   entry,
+  deficitPerDay,
+  bmr,
   dataService,
   open,
   setDialogOpenState,
@@ -42,6 +47,7 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
+  const calculate = new Calculate()
   const queryClient = useQueryClient()
   const { matchesMD } = useMediaQueries()
   const handleCloseDialog = () => {
@@ -61,9 +67,13 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   )
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const newActivityLevel = data.activityLevel
+    const tdee = calculate.TDEE(bmr, newActivityLevel)
+    const targetCalories = Math.round(tdee - deficitPerDay)
     const updatedDailyEntry = {
       ...entry,
-      dailyEntryActivityLevel: data.activityLevel,
+      dailyEntryActivityLevel: newActivityLevel,
+      targetCalories: targetCalories,
     }
     updateDailyEntry(updatedDailyEntry)
   }

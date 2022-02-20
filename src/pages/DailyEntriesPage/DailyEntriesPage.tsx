@@ -104,7 +104,8 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
   const age = calculate.age(birthday)
   const bmr = calculate.BMR(height, dailyEntryWeight!, age, sex)
   const tdee = calculate.TDEE(bmr, dailyEntryActivityLevel!)
-  const targetCals = Math.round(tdee - deficitPerDay)
+  const targetCalories = Math.round(tdee - deficitPerDay)
+  console.log(targetCalories)
   // const confirmedConsumables =
   //   dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
   // const caloriesConsumed =
@@ -156,12 +157,17 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     <>
       <UpdateDailyEntryWeightDialog
         entry={dailyEntry!}
+        goalWeight={cycle?.goalWeight!}
+        daysRemaining={daysRemaining}
+        user={user}
         dataService={dataService}
         open={openUpdateWeightDialog}
         setDialogOpenState={setOpenUpdateWeightDialog}
       />
       <UpdateDailyEntryActivityLevelDialog
         entry={dailyEntry!}
+        deficitPerDay={deficitPerDay}
+        bmr={bmr}
         dataService={dataService}
         open={openUpdateActivityLevelDialog}
         setDialogOpenState={setOpenUpdateActivityLevelDialog}

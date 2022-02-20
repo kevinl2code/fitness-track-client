@@ -16,9 +16,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry } from '../../../model/Model'
+import { DailyEntry, UserState } from '../../../model/Model'
 import { useMutation, useQueryClient } from 'react-query'
 import { DataService } from '../../../services/DataService'
+import { Calculate } from '../../../utilities/Calculate'
 
 interface IFormInput {
   weight: string
@@ -26,6 +27,9 @@ interface IFormInput {
 
 interface Props {
   entry: DailyEntry
+  goalWeight: number
+  daysRemaining: number
+  user: UserState
   dataService: DataService
   open: boolean
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
@@ -42,6 +46,9 @@ const validationSchema = yup.object({
 
 export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
   entry,
+  goalWeight,
+  daysRemaining,
+  user,
   dataService,
   open,
   setDialogOpenState,
@@ -52,7 +59,13 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm({ mode: 'onTouched', resolver: yupResolver(validationSchema) })
+
+  const calculate = new Calculate()
   const queryClient = useQueryClient()
+  const { birthday, sex, height, sub } = user
+
+  const { dailyEntryActivityLevel } = entry || {}
+  const age = calculate.age(birthday)
   const handleCloseDialog = () => {
     setDialogOpenState(false)
     reset()
@@ -71,7 +84,17 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const updatedWeight = Math.round(parseFloat(data.weight) * 10) / 10
-    const updatedDailyEntry = { ...entry, dailyEntryWeight: updatedWeight }
+    const poundsToGo = updatedWeight - goalWeight
+    const caloriesToGo = poundsToGo * 3500
+    const deficitPerDay = caloriesToGo / daysRemaining
+    const bmr = calculate.BMR(height, updatedWeight, age, sex)
+    const tdee = calculate.TDEE(bmr, dailyEntryActivityLevel)
+    const targetCalories = Math.round(tdee - deficitPerDay)
+    const updatedDailyEntry = {
+      ...entry,
+      dailyEntryWeight: updatedWeight,
+      targetCalories: targetCalories,
+    }
     updateDailyEntry(updatedDailyEntry)
   }
 

@@ -9,14 +9,9 @@ let COLORS = ['#00C49F', '#C8C8C8']
 interface Props {
   dailyEntry: DailyEntry
   user: UserState | null
-  deficitPerDay: number
 }
 
-export const DailyEntryGaugeChart: React.FC<Props> = ({
-  dailyEntry,
-  user,
-  deficitPerDay,
-}) => {
+export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
   const [graphData, setGraphData] = useState<
     { name: string; value: number }[] | []
   >([])
@@ -26,8 +21,12 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
   )?.offsetWidth
 
   const calculate = new Calculate()
-  const { dailyEntryWeight, dailyEntryActivityLevel, dailyEntryConsumables } =
-    dailyEntry
+  const {
+    dailyEntryWeight,
+    dailyEntryActivityLevel,
+    dailyEntryConsumables,
+    targetCalories,
+  } = dailyEntry
   const { birthday, sex, height } = user!
   const age = calculate.age(birthday)
 
@@ -42,11 +41,10 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
       0
     ) || 0
   const remainingCals = tdee - caloriesConsumed
-  const targetCals = Math.round(tdee - deficitPerDay)
-  const targetCalsRemaining = targetCals - caloriesConsumed
+  const targetCaloriesRemaining = targetCalories - caloriesConsumed
 
   const overTargetUnderLimit =
-    caloriesConsumed > targetCals && caloriesConsumed < tdee
+    caloriesConsumed > targetCalories && caloriesConsumed < tdee
 
   const overTargetAndLimit = caloriesConsumed > tdee
 
@@ -60,7 +58,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
           name: 'Calories Consumed',
           value: caloriesConsumed,
         },
-        { name: 'Target', value: targetCalsRemaining },
+        { name: 'Target', value: targetCaloriesRemaining },
       ])
     } else if (overTargetUnderLimit) {
       COLORS = ['#FFBB28', '#C8C8C8']
@@ -81,7 +79,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
           name: 'Calories Consumed',
           value: caloriesConsumed,
         },
-        { name: 'Target', value: targetCalsRemaining },
+        { name: 'Target', value: targetCaloriesRemaining },
       ])
     } else {
       COLORS = ['#d32f2f', '#C8C8C8']
@@ -99,7 +97,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
     overTargetUnderLimit,
     remainingCals,
     superLimit,
-    targetCalsRemaining,
+    targetCaloriesRemaining,
   ])
 
   if (!parentDivWidth || !user) {
@@ -140,7 +138,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
             ? superLimit
             : overTargetUnderLimit
             ? tdee
-            : targetCals}
+            : targetCalories}
         </text>
         <text
           fontWeight="700"
@@ -168,7 +166,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
 
   // console.log({
   //   consumed: caloriesConsumed,
-  //   target: targetCals,
+  //   target: targetCalories,
   //   calsOverTarget: calsOverTarget,
   //   tdee: tdee,
   // })

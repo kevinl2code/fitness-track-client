@@ -38,11 +38,7 @@ export const DailyEntryMainView: React.FC<Props> = ({
   return (
     <>
       <Grid container justifyContent="center">
-        <DailyEntryGaugeChart
-          dailyEntry={dailyEntry}
-          user={user}
-          deficitPerDay={deficitPerDay}
-        />
+        <DailyEntryGaugeChart dailyEntry={dailyEntry} user={user} />
       </Grid>
       <Grid
         container
