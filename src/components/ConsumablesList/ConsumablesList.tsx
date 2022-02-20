@@ -1,19 +1,19 @@
+import ClearIcon from '@mui/icons-material/Clear'
+import SearchIcon from '@mui/icons-material/Search'
 import {
   Grid,
-  Paper,
+  IconButton,
   List,
-  ListItemText,
   ListItem,
   ListItemButton,
-  IconButton,
+  ListItemText,
+  Paper,
 } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-import ClearIcon from '@mui/icons-material/Clear'
-import React, { useState } from 'react'
+import React from 'react'
+import { FieldValues, UseFormReset } from 'react-hook-form'
 import { FitnessTrackFoodItem } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { FormattedTextField } from '../FormattedTextField/FormattedTextField'
-import { UseFormReset, FieldValues } from 'react-hook-form'
 
 interface Props {
   emptySubCategorySelected: boolean

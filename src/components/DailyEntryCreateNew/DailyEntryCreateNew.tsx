@@ -1,8 +1,5 @@
 import {
   Button,
-  Card,
-  CardContent,
-  Divider,
   FormControl,
   Grid,
   InputAdornment,
@@ -11,15 +8,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import React, { useEffect, useState } from 'react'
-import { Calculate } from '../../utilities/Calculate'
-import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from 'react-query'
 import { ActivityLevel, Cycle, DailyEntry, UserState } from '../../model/Model'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
-import { palette } from '@mui/system'
-import { useMutation, useQueryClient, QueryClient } from 'react-query'
 import { DataService } from '../../services/DataService'
+import { Calculate } from '../../utilities/Calculate'
+import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface IFormInput {
   weight: number

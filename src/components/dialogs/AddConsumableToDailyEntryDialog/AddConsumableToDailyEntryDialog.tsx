@@ -9,14 +9,23 @@ import {
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { DailyEntry, EntryConsumable } from '../../../model/Model'
-import { UseApi } from '../../../pages/DailyEntriesPage/UseApi'
+import { useMutation, useQueryClient } from 'react-query'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { AddCustomConsumableForm } from './AddCustomConsumableForm'
 import { AddFoodCatalogConsumableForm } from './AddFoodCatalogConsumableForm'
+import { DataService } from '../../../services/DataService'
+
+interface IFormInput {
+  name: string
+  calories: string
+  protein: string
+  fat: string
+  carbohydrates: string
+}
 
 interface Props {
   entry: DailyEntry
-  useApi: UseApi
+  dataService: DataService
   open: boolean
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -24,8 +33,9 @@ interface Props {
 type EntryMethod = 'CATALOG' | 'MYFOODS' | 'CUSTOM' | null
 
 export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
+  entry,
   open,
-  useApi,
+  dataService,
   setDialogOpenState,
 }) => {
   const [entryMethod, setEntryMethod] = useState<EntryMethod>(null)
@@ -36,6 +46,7 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
     setValue,
     formState: { errors },
   } = useForm()
+  const queryClient = useQueryClient()
   const { matchesMD } = useMediaQueries()
   const handleCloseDialog = () => {
     setDialogOpenState(false)
@@ -43,22 +54,29 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
     setEntryMethod(null)
   }
 
-  const onSubmit: SubmitHandler<EntryConsumable> = async (data: any) => {
-    if (typeof data === 'object' && 'calories' in data) {
-      data.calories = parseFloat(data.calories)
+  const { mutate: updateDailyEntry, isLoading } = useMutation(
+    (dailyEntry: DailyEntry) => dataService.updateDailyEntry(dailyEntry),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('dailyEntries')
+        handleCloseDialog()
+        console.log({ mutationData: data })
+      },
     }
-    if (typeof data === 'object' && 'protein' in data) {
-      data.protein = parseFloat(data.protein)
+  )
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const { name, calories, protein, fat, carbohydrates } = data
+    const newConsumable: EntryConsumable = {
+      name: name,
+      calories: parseFloat(calories),
+      protein: parseFloat(protein),
+      fat: parseFloat(fat),
+      carbohydrates: parseFloat(carbohydrates),
     }
-    if (typeof data === 'object' && 'fat' in data) {
-      data.fat = parseFloat(data.fat)
-    }
-    if (typeof data === 'object' && 'carbohydrates' in data) {
-      data.carbohydrates = parseFloat(data.carbohydrates)
-    }
-    // console.log(data)
-    useApi.addConsumable(data)
-    handleCloseDialog()
+    const updatedConsumables = [...entry.dailyEntryConsumables, newConsumable]
+    const updatedEntry = { ...entry, dailyEntryConsumables: updatedConsumables }
+    updateDailyEntry(updatedEntry)
   }
 
   return (

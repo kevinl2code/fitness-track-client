@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Button,
   Card,
@@ -8,22 +9,20 @@ import {
 } from '@mui/material'
 import React, { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  useMutation,
+} from 'react-query'
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
+import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
-import { FormTextInput } from '../../form/FormTextInput'
-import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
-import {
-  RefetchOptions,
-  useMutation,
-  RefetchQueryFilters,
-  QueryObserverResult,
-  useQueryClient,
-} from 'react-query'
-import { DataService } from '../../../services/DataService'
+import { FormTextInput } from '../../form/FormTextInput'
+import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 
 interface IFormInput {
   PK: string

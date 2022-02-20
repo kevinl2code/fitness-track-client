@@ -2,7 +2,6 @@ import { config } from 'aws-sdk'
 import {
   Cycle,
   DailyEntry,
-  EntryConsumable,
   FitnessTrackFoodItem,
   FoodCategory,
   FoodSubCategory,
@@ -170,54 +169,6 @@ export class DataService {
       const responseJSON = await requestResult.json()
       // console.log(responseJSON)
       return responseJSON
-    } catch (error) {
-      console.log({ dataServiceError: error })
-    }
-  }
-
-  public async updateDailyEntryConsumables(
-    userId: string,
-    date: string,
-    updatedDailyEntry: EntryConsumable[]
-  ) {
-    try {
-      const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
-      const requestOptions: RequestInit = {
-        method: 'PUT',
-        headers: {
-          Authorization: this.getUserIdToken(),
-        },
-        body: JSON.stringify({ dailyEntryConsumables: updatedDailyEntry }),
-      }
-      const result = await fetch(requestUrl, requestOptions)
-
-      const resultJSON = await result.json()
-      // console.log(resultJSON)
-      return resultJSON.Attributes.dailyEntryConsumables
-    } catch (error) {
-      console.log({ dataServiceError: error })
-    }
-  }
-
-  public async updateDailyEntryActivityLevel(
-    userId: string,
-    date: string,
-    updatedDailyEntry: string
-  ) {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
-    const requestOptions: RequestInit = {
-      method: 'PUT',
-      headers: {
-        Authorization: this.getUserIdToken(),
-      },
-      body: JSON.stringify({ dailyEntryActivityLevel: updatedDailyEntry }),
-    }
-    try {
-      const result = await fetch(requestUrl, requestOptions)
-
-      const resultJSON = await result.json()
-      // console.log(resultJSON)
-      return resultJSON.Attributes.dailyEntryActivityLevel
     } catch (error) {
       console.log({ dataServiceError: error })
     }

@@ -3,7 +3,6 @@ import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
 import React, { useContext, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
-import { UseApi } from './UseApi'
 import { Cycle, DailyEntry } from '../../model/Model'
 import { DailyEntryCreateNew } from '../../components'
 import {
@@ -80,15 +79,6 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     }
   }, [cycle?.isActive, isFirstDay, userAwaySeveralDays])
 
-  const useApi = new UseApi(
-    user?.user!,
-    user?.sub!,
-    cycle?.cycleId!,
-    currentlySelectedDate,
-    dailyEntry,
-    setDailyEntry
-  )
-
   useEffect(() => {
     const selectedEntry =
       entries?.find((entry) => entry.entryDate === currentlySelectedDate) ??
@@ -143,7 +133,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
       isFirstDay={isFirstDay}
       deficitPerDay={deficitPerDay}
       isEditable={isEditable}
-      useApi={useApi}
+      dataService={dataService}
       activityLevel={activityLevel}
       setOpenConsumableDialog={setOpenConsumableDialog}
       setOpenUpdateWeightDialog={setOpenUpdateWeightDialog}
@@ -178,8 +168,8 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
       />
       <AddConsumableToDailyEntryDialog
         entry={dailyEntry!}
+        dataService={dataService}
         open={openConsumableDialog}
-        useApi={useApi}
         setDialogOpenState={setOpenConsumableDialog}
       />
       <NewUserDialog

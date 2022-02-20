@@ -2,7 +2,7 @@ import { Grid, Button } from '@mui/material'
 import React from 'react'
 import { DailyEntryMetricView } from '..'
 import { DailyEntry, UserState } from '../../model/Model'
-import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
+import { DataService } from '../../services/DataService'
 import { DailyEntryConsumablesTable } from '../DailyEntryConsumablesTable/DailyEntryConsumablesTable'
 import { DailyEntryGaugeChart } from '../DailyEntryGaugeChart'
 
@@ -13,7 +13,7 @@ interface Props {
   isFirstDay: boolean
   deficitPerDay: number
   isEditable: boolean
-  useApi: UseApi
+  dataService: DataService
   activityLevel: string
   setOpenConsumableDialog: (value: React.SetStateAction<boolean>) => void
   setOpenUpdateWeightDialog: (value: React.SetStateAction<boolean>) => void
@@ -29,7 +29,7 @@ export const DailyEntryMainView: React.FC<Props> = ({
   isFirstDay,
   deficitPerDay,
   isEditable,
-  useApi,
+  dataService,
   activityLevel,
   setOpenConsumableDialog,
   setOpenUpdateActivityLevelDialog,
@@ -84,11 +84,8 @@ export const DailyEntryMainView: React.FC<Props> = ({
         />
       </Grid>
       <DailyEntryConsumablesTable
-        rows={dailyEntry?.dailyEntryConsumables}
-        useApi={useApi}
-        handleOpenAddConsumableDialog={() => {
-          setOpenConsumableDialog(true)
-        }}
+        dataService={dataService}
+        entry={dailyEntry}
       />{' '}
     </>
   )

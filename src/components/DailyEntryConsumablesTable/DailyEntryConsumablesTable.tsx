@@ -1,6 +1,5 @@
 import {
   TableContainer,
-  Card,
   Table,
   TableHead,
   TableRow,
@@ -8,33 +7,51 @@ import {
   TableBody,
   IconButton,
   Grid,
-  InputAdornment,
   Paper,
-  TextField,
-  Typography,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { useMutation, useQueryClient } from 'react-query'
 import React from 'react'
-import { EntryConsumable } from '../../model/Model'
-import { UseApi } from '../../pages/DailyEntriesPage/UseApi'
+import { DailyEntry } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { DataService } from '../../services/DataService'
 
 interface Props {
-  rows: EntryConsumable[] | []
-  useApi: UseApi
-  handleOpenAddConsumableDialog: () => void
+  entry: DailyEntry
+  dataService: DataService
 }
 
 export const DailyEntryConsumablesTable: React.FC<Props> = ({
-  rows,
-  useApi,
-  handleOpenAddConsumableDialog,
+  entry,
+  dataService,
 }) => {
+  const queryClient = useQueryClient()
   const { matchesMD } = useMediaQueries()
-  const generatedRows = rows?.map((row, index) => (
+
+  const { dailyEntryConsumables } = entry
+
+  const { mutate: updateDailyEntry, isLoading } = useMutation(
+    (dailyEntry: DailyEntry) => dataService.updateDailyEntry(dailyEntry),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries('dailyEntries')
+        console.log({ mutationData: data })
+      },
+    }
+  )
+
+  const handleDeleteConsumable = async (consumableIndex: number) => {
+    const updatedConsumables =
+      dailyEntryConsumables.filter((consumable, index) => {
+        return index !== consumableIndex
+      }) ?? []
+    const updatedEntry = { ...entry, dailyEntryConsumables: updatedConsumables }
+    updateDailyEntry(updatedEntry)
+  }
+
+  const generatedRows = dailyEntryConsumables?.map((consumable, index) => (
     <TableRow
-      key={`${row.name} + ${index}`}
+      key={`${consumable.name} + ${index}`}
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
       <TableCell
@@ -44,7 +61,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
         scope="row"
         sx={{ paddingLeft: '16px' }}
       >
-        {row.name}
+        {consumable.name}
       </TableCell>
       <TableCell
         size="small"
@@ -55,7 +72,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
           overflow: 'hidden',
         }}
       >
-        {row.calories.toFixed(0)}
+        {consumable.calories.toFixed(0)}
       </TableCell>
       <TableCell
         size="small"
@@ -68,7 +85,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
           textOverflow: 'ellipsis',
         }}
       >
-        {row.protein.toFixed(0)}
+        {consumable.protein.toFixed(0)}
       </TableCell>
       <TableCell
         size="small"
@@ -82,7 +99,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
           textOverflow: 'ellipsis',
         }}
       >
-        {row.fat.toFixed(0)}
+        {consumable.fat.toFixed(0)}
       </TableCell>
       <TableCell
         size="small"
@@ -96,10 +113,10 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
           textOverflow: 'ellipsis',
         }}
       >
-        {row.carbohydrates.toFixed(0)}
+        {consumable.carbohydrates.toFixed(0)}
       </TableCell>
       <TableCell size="small" padding="none" align="right">
-        <IconButton onClick={() => useApi.deleteConsumable(index, rows)}>
+        <IconButton onClick={() => handleDeleteConsumable(index)}>
           <DeleteIcon />
         </IconButton>
       </TableCell>
@@ -109,36 +126,6 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
   return (
     <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
       <Grid container>
-        {/* <Grid
-          container
-          item
-          xs={12}
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{ backgroundColor: '#81d4fa' }}
-        >
-          <Grid item xs={5}>
-            <Typography variant="h6" sx={{ paddingLeft: '1rem' }}>
-              Food Details
-            </Typography>
-          </Grid>
-          {/* <Grid
-            container
-            justifyContent="flex-end"
-            alignItems="center"
-            item
-            xs={7}
-          >
-            <Typography>Add Consumable</Typography>
-            <IconButton
-              color="primary"
-              aria-label="add consumable"
-              onClick={handleOpenAddConsumableDialog}
-            >
-              <AddCircleIcon fontSize="large" />
-            </IconButton>
-          </Grid> */}
-        {/* </Grid> */}
         <Grid item xs={12}>
           <TableContainer component={Paper} elevation={0}>
             <Table aria-label="simple table">

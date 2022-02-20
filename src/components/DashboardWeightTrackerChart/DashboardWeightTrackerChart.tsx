@@ -1,25 +1,14 @@
-import {
-  Card,
-  Grid,
-  MenuItem,
-  Paper,
-  Select,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material'
+import { Grid, Paper, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React from 'react'
 import {
-  LineChart,
   Line,
-  CartesianGrid,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
 } from 'recharts'
-import { format } from 'util'
 import { DailyEntry, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
 import { Sort } from '../../utilities/Sort'
