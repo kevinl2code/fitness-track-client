@@ -50,7 +50,7 @@ function App() {
       },
     }
   )
-  console.log(cycleContext)
+  // console.log(cycleContext)
   const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
     useQuery(
       ['dailyEntries'],

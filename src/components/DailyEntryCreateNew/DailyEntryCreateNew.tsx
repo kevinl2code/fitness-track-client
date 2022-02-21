@@ -17,15 +17,15 @@ import { Calculate } from '../../utilities/Calculate'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface IFormInput {
-  weight: number
+  weight: string
   activityLevel: ActivityLevel
 }
 
 interface Props {
   date: string
-  deficitPerDay: number
+  daysRemaining: number
   user: UserState
-  cycle: Cycle | null
+  cycle: Cycle
   dataService: DataService
 }
 //https://undraw.co/search
@@ -37,7 +37,7 @@ const images = [indoorBike, workingOut, stabilityBall, personalTrainer]
 
 export const DailyEntryCreateNew: React.FC<Props> = ({
   date,
-  deficitPerDay,
+  daysRemaining,
   user,
   cycle,
   dataService,
@@ -47,7 +47,6 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   const {
     register,
     handleSubmit,
-    reset,
     setValue,
     control,
     formState: { errors },
@@ -59,25 +58,31 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   const { birthday, sex, height, sub } = user
   const age = calculate.age(birthday)
   const isFirstDay = date === cycle?.startDate
-  const weightDefaultValue = isFirstDay ? cycle.startingWeight : 0
+  const weightDefaultValue = isFirstDay ? cycle.startingWeight : ''
 
   const { mutate: createNewDailyEntry, isLoading } = useMutation(
     (dailyEntry: DailyEntry) => dataService.createDailyEntry(dailyEntry),
     {
       onSuccess: async (data) => {
         await queryClient.refetchQueries(['dailyEntries'])
-        reset()
       },
     }
   )
 
   useEffect(() => {
-    setValue('weight', weightDefaultValue)
-  }, [date, setValue, weightDefaultValue])
+    return () => {
+      setValue('weight', weightDefaultValue)
+    }
+  })
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const bmr = calculate.BMR(height, data.weight, age, sex)
-    const tdee = calculate.TDEE(bmr!, data.activityLevel)
+    const weight = parseFloat(data.weight)
+    const poundsToGo = weight - cycle?.goalWeight
+    const caloriesToGo = poundsToGo * 3500
+    const deficitPerDay = caloriesToGo / daysRemaining
+    const bmr = calculate.BMR(height, weight, age, sex)
+
+    const tdee = calculate.TDEE(bmr, data.activityLevel)
     const targetCals = Math.round(tdee - deficitPerDay)
     const newDailyEntry: DailyEntry = {
       PK: sub,
@@ -85,7 +90,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
       GSI1PK: `C_${cycle?.cycleId!}`,
       GSI1SK: 'DAILYENTRIES',
       type: 'DAILYENTRY',
-      dailyEntryWeight: data.weight,
+      dailyEntryWeight: weight,
       dailyEntryConsumables: [],
       dailyEntryActivityLevel: data.activityLevel,
       entryDate: date,
@@ -93,6 +98,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
       targetCalories: targetCals,
       cycleId: cycle?.cycleId!,
     }
+
     createNewDailyEntry(newDailyEntry)
   }
 

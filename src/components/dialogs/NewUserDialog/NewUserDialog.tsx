@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { DateTime } from 'luxon'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
@@ -81,8 +81,10 @@ export const NewUserDialog: React.FC<Props> = ({
   const theme = useTheme()
   const ftlogo = `${process.env.PUBLIC_URL}/ftlogo.png`
   const [activeStep, setActiveStep] = React.useState(0)
-  const { reset, register, handleSubmit, control, formState, getValues } =
-    useForm({ mode: 'onTouched', resolver: yupResolver(validationSchema) })
+  const { setValue, handleSubmit, control, formState, getValues } = useForm({
+    mode: 'onTouched',
+    resolver: yupResolver(validationSchema),
+  })
   const errors = formState.errors
   const hasErrors = Object.keys(errors).length !== 0
   const queryClient = useQueryClient()
@@ -94,6 +96,14 @@ export const NewUserDialog: React.FC<Props> = ({
   //   setDialogOpenState(false)
   //   reset()
   // }
+
+  useEffect(() => {
+    return () => {
+      setValue('startingWeight', '')
+      setValue('goalWeight', '')
+      setValue('duration', '')
+    }
+  }, [setValue])
 
   const { mutate: createNewCycle, isLoading: createNewCycleLoading } =
     useMutation(
@@ -145,7 +155,7 @@ export const NewUserDialog: React.FC<Props> = ({
       cycleId: newCycleId,
     }
     console.log(newUserCycle)
-    // createNewCycle(newUserCycle)
+    createNewCycle(newUserCycle)
   }
   const disableNextButton = (activeStep: number) => {
     const currentStep: {
@@ -188,7 +198,7 @@ export const NewUserDialog: React.FC<Props> = ({
       </Button>
     )
 
-  console.log(activeStep)
+  // console.log(activeStep)
   return (
     <Dialog
       open={open}
