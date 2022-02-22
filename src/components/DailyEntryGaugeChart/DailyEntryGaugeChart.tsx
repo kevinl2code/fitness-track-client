@@ -91,6 +91,9 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
         { name: 'Target', value: superLimit - caloriesConsumed },
       ])
     }
+    return () => {
+      setGraphData([])
+    }
   }, [
     caloriesConsumed,
     overTargetAndLimit,

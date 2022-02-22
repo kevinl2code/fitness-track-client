@@ -19,7 +19,7 @@ export const DashboardPage: React.FC = () => {
   return (
     <>
       {cycleHasMinimumEntries ? (
-        <Grid container spacing={2} sx={{ width: '100%' }}>
+        <Grid container sx={{ width: '100%' }}>
           <Grid item xs={12} md={8} container justifyContent="flex-end">
             <DashboardWeightTrackerChart entries={entries} user={user!} />
           </Grid>

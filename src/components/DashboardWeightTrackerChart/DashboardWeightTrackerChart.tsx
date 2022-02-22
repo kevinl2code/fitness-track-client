@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography } from '@mui/material'
+import { Container, Grid, Paper, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React from 'react'
 import {
@@ -6,13 +6,19 @@ import {
   LineChart,
   ResponsiveContainer,
   Tooltip,
+  TooltipProps,
   XAxis,
   YAxis,
 } from 'recharts'
+import {
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent'
 import { DailyEntry, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
 import { Sort } from '../../utilities/Sort'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { first, last } from 'lodash'
 
 interface Props {
   entries: DailyEntry[]
@@ -87,6 +93,12 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
     })
     return currentValue
   })
+  console.log(calculatedEntries)
+  const defaultTooltipValues = {
+    name: last(calculatedEntries)?.name ?? '-',
+    projectedValue: last(calculatedEntries)?.projectedValue ?? 0,
+    actualValue: last(calculatedEntries)?.actualValue ?? 0,
+  }
 
   const actualWeightMax = Math.max.apply(
     Math,
@@ -109,7 +121,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   const domainMax = Math.round(
     Math.max(actualWeightMax, projectedWeightMax) * 1.01
   )
-
+  console.log(domainMax)
   const domainMin = Math.round(
     Math.min(actualWeightMin, projectedWeightMin) * 0.99
   )
@@ -118,29 +130,44 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
     <ResponsiveContainer width="100%" height="100%">
       <LineChart
         margin={{
-          top: 5,
+          // top: 5,
           right: 0,
-          left: 0,
+          left: -23,
           bottom: 5,
         }}
         data={calculatedEntries}
       >
-        <Line type="monotone" dataKey="actualValue" stroke="#8884d8" />
-        <Line type="monotone" dataKey="projectedValue" stroke="green" />
-        {/* <CartesianGrid stroke="#ccc" /> */}
-        <XAxis
-          dataKey="name"
-          // interval="preserveStart"
-          interval={0}
-          // angle={30}
-          dx={20}
+        <Line
+          type="monotone"
+          dataKey="actualValue"
+          stroke="#8884d8"
+          strokeWidth={2}
         />
-        <YAxis domain={[domainMin, domainMax]} padding={{ bottom: 10 }} hide />
+        <Line
+          type="monotone"
+          dataKey="projectedValue"
+          stroke="green"
+          strokeWidth={2}
+        />
+        <XAxis dataKey="name" minTickGap={20} />
+        <YAxis
+          domain={[domainMin, domainMax]}
+          padding={{ bottom: 10 }}
+          tickCount={4}
+        />
         <Tooltip
-          formatter={(val: number, name: 'actualValue' | 'projectedValue') => [
-            (Math.round(val * 10) / 10).toFixed(1),
-            tooltipName(name),
-          ]}
+          content={(props) => (
+            <CustomTooltip {...props} defaultValues={defaultTooltipValues} />
+          )}
+          position={{ x: 0, y: -60 }}
+          wrapperStyle={{
+            visibility: 'visible',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: -8,
+          }}
+          allowEscapeViewBox={{ y: true }}
         />
       </LineChart>
     </ResponsiveContainer>
@@ -151,25 +178,18 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
       elevation={0}
       variant={matchesMD ? 'outlined' : 'elevation'}
       sx={{
-        padding: '0 2rem 1rem 1rem',
+        padding: '2rem 4px 1rem 4px',
         borderRadius: '2rem',
         width: '100%',
+        paddingTop: 10,
       }}
     >
-      <Grid container justifyContent="space-between" sx={{ padding: '1rem' }}>
-        <Grid item container justifyContent="center">
-          <Typography sx={{ fontSize: '1.5rem', fontWeight: 700 }}>
-            Weight Tracker
-          </Typography>
-        </Grid>
-      </Grid>
       <Grid
         item
         xs={12}
         container
         direction="column"
-        sx={{ height: 300, width: '100%' }}
-        // className={classes.chartContainer}
+        sx={{ height: '300px', width: '100%' }}
       >
         {renderLineChart}
       </Grid>
@@ -187,5 +207,81 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
         </ToggleButtonGroup>
       </Grid> */}
     </Paper>
+  )
+}
+
+interface CustomTooltipProps extends TooltipProps<ValueType, NameType> {
+  defaultValues: {
+    name: string
+    projectedValue: number
+    actualValue: number
+  }
+}
+
+const CustomTooltip: React.FC<CustomTooltipProps> = ({
+  payload,
+  defaultValues,
+}) => {
+  const hasValues = !!first(payload)?.payload
+  const values = first(payload)?.payload ?? defaultValues
+  const date = values.name
+  const projectedValue = (Math.round(values.projectedValue * 10) / 10).toFixed(
+    1
+  )
+  const actualValue = (Math.round(values.actualValue * 10) / 10).toFixed(1)
+
+  return (
+    <div
+      style={{
+        backgroundColor: 'white',
+        position: 'relative',
+        height: 70,
+        width: '100%',
+      }}
+    >
+      <Container maxWidth="sm" sx={{ height: '100%' }}>
+        <Grid
+          container
+          alignItems="flex-end"
+          justifyContent="space-evenly"
+          spacing={2}
+          sx={{ height: '100%', paddingRight: 2 }}
+        >
+          <ToolTipDisplayItem label="Projected" value={projectedValue} />
+          <ToolTipDisplayItem value={date} />
+          <ToolTipDisplayItem label="Actual" value={actualValue} />
+        </Grid>
+      </Container>
+    </div>
+  )
+}
+
+interface ToolTipDisplayItemProps {
+  value: string
+  label?: string
+}
+
+const ToolTipDisplayItem: React.FC<ToolTipDisplayItemProps> = ({
+  label,
+  value,
+}) => {
+  return (
+    <Grid item>
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <Typography>{label}</Typography>
+        </Grid>
+        <Grid item>
+          <Typography fontWeight={700} fontSize={'1.5rem'}>
+            {value}
+          </Typography>
+        </Grid>
+      </Grid>
+    </Grid>
   )
 }
