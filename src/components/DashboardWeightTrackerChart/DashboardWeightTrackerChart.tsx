@@ -16,7 +16,6 @@ import {
 } from 'recharts/types/component/DefaultTooltipContent'
 import { DailyEntry, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
-import { Sort } from '../../utilities/Sort'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { first, last } from 'lodash'
 
@@ -33,8 +32,6 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   const { matchesMD } = useMediaQueries()
   const { birthday, sex, height } = user
   const calculate = new Calculate()
-  const sort = new Sort()
-  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries!)
 
   const handleToggleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -51,13 +48,13 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
     projectedValue: number
   }[] = [
     {
-      name: DateTime.fromISO(sortedEntries[0].entryDate).toFormat('MMM dd'),
-      actualValue: sortedEntries[0].dailyEntryWeight,
-      projectedValue: sortedEntries[0].dailyEntryWeight,
+      name: DateTime.fromISO(entries[0].entryDate).toFormat('MMM dd'),
+      actualValue: entries[0].dailyEntryWeight,
+      projectedValue: entries[0].dailyEntryWeight,
     },
   ]
 
-  sortedEntries.reduce((previousValue, currentValue, index) => {
+  entries.reduce((previousValue, currentValue, index) => {
     const date = DateTime.fromISO(currentValue.entryDate).toFormat('MMM dd')
     const bmr = calculate.BMR(
       height!,
@@ -149,9 +146,10 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
           stroke="green"
           strokeWidth={2}
         />
-        <XAxis dataKey="name" minTickGap={20} />
+        <XAxis dataKey="name" interval="preserveStartEnd" minTickGap={30} />
         <YAxis
-          domain={[domainMin, domainMax]}
+          // domain={[domainMin, domainMax]}
+          domain={['auto', 'auto']}
           padding={{ bottom: 10 }}
           tickCount={4}
         />
@@ -178,12 +176,19 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
       elevation={0}
       variant={matchesMD ? 'outlined' : 'elevation'}
       sx={{
-        padding: '2rem 4px 1rem 4px',
+        padding: '2rem 8px 1rem 8px',
         borderRadius: '2rem',
         width: '100%',
-        paddingTop: 10,
       }}
     >
+      <Typography
+        sx={{ marginBottom: 10, color: 'primary.main' }}
+        align="center"
+        fontWeight={700}
+        fontSize="1.5rem"
+      >
+        Weight Change
+      </Typography>
       <Grid
         item
         xs={12}

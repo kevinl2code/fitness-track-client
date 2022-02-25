@@ -135,7 +135,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
               : '#00C49F'
           }
         >
-          {caloriesConsumed}
+          {caloriesConsumed.toFixed(0)}
           {' / '}
           {overTargetAndLimit
             ? superLimit
