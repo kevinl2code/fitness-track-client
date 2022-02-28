@@ -1,5 +1,5 @@
 import { Grid, SelectChangeEvent } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   Control,
   FieldValues,
@@ -77,6 +77,16 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
       },
     }
   )
+
+  useEffect(() => {
+    return () => {
+      setValue('name', '')
+      setValue('calories', '')
+      setValue('protein', '')
+      setValue('fat', '')
+      setValue('carbohydrates', '')
+    }
+  }, [setValue])
 
   const handleCategoryChange = (event: SelectChangeEvent) => {
     setSelectedCategory(event.target.value)
