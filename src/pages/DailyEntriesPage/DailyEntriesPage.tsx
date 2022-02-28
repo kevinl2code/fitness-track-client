@@ -22,13 +22,9 @@ import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialog'
 import { Sort } from '../../utilities/Sort'
 
-interface Props {
-  setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
-}
-
 const today = DateTime.now().startOf('day')
 
-export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
+export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const entries = useContext(EntriesContext)
@@ -36,7 +32,6 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     ? DateTime.fromISO(cycle?.endingDate)
     : null
   const calendarMaxDate = cycleEndDate ?? today
-  // console.log(today.toLocaleString(DateTime.DATETIME_HUGE))
   const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
@@ -77,6 +72,7 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
     if (!isFirstDay && cycle?.isActive && userAwaySeveralDays) {
       setOpenReturningUserDialog(true)
     }
+    return () => setOpenReturningUserDialog(false)
   }, [cycle?.isActive, isFirstDay, userAwaySeveralDays])
 
   useEffect(() => {
@@ -182,7 +178,6 @@ export const DailyEntriesPage: React.FC<Props> = ({ setCycleContext }) => {
         open={openNewUserDialog}
         user={user!}
         dataService={dataService}
-        setCycleContext={setCycleContext}
         setDialogOpenState={setOpenNewUserDialog}
       />
       <ReturningUserDialog

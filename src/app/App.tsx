@@ -126,7 +126,6 @@ function App() {
                 <NavigationContainer
                   setAppUser={setAppUser}
                   handleLogout={handleLogout}
-                  setCycleContext={setCycleContext}
                   user={user}
                 />
               </ErrorBoundary>

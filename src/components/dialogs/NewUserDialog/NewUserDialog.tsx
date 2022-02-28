@@ -5,9 +5,6 @@ import {
   DialogContentText,
   Button,
   Box,
-  Step,
-  StepLabel,
-  Stepper,
   MobileStepper,
   Grid,
 } from '@mui/material'
@@ -24,7 +21,6 @@ import { DataService } from '../../../services/DataService'
 import { NewUserDialogForm } from './NewUserDialogForm'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { stringMap } from 'aws-sdk/clients/backup'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'
 
@@ -32,7 +28,6 @@ interface Props {
   open: boolean
   user: UserState
   dataService: DataService
-  setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -75,7 +70,6 @@ export const NewUserDialog: React.FC<Props> = ({
   open,
   user,
   dataService,
-  setCycleContext,
   setDialogOpenState,
 }) => {
   const theme = useTheme()
@@ -88,14 +82,9 @@ export const NewUserDialog: React.FC<Props> = ({
   const errors = formState.errors
   const hasErrors = Object.keys(errors).length !== 0
   const queryClient = useQueryClient()
-  // const authService = new AuthService()
   const { matchesMD, orientation } = useMediaQueries()
   const navigate = useNavigate()
   const showLogo = !matchesMD || orientation === 0
-  // const handleCloseDialog = () => {
-  //   setDialogOpenState(false)
-  //   reset()
-  // }
 
   useEffect(() => {
     return () => {
@@ -110,7 +99,6 @@ export const NewUserDialog: React.FC<Props> = ({
       (newUserCycle: Cycle) => dataService.createUserCycle(newUserCycle),
       {
         onSuccess: (data) => {
-          setCycleContext(data)
           queryClient.invalidateQueries('cycles')
           setDialogOpenState(false)
           navigate(`../${ROUTES.dailyEntries}`, { replace: true })
@@ -198,15 +186,8 @@ export const NewUserDialog: React.FC<Props> = ({
       </Button>
     )
 
-  // console.log(activeStep)
   return (
-    <Dialog
-      open={open}
-      // onClose={handleCloseDialog}
-      fullWidth
-      fullScreen={!matchesMD}
-      // sx={{ height: dialogHeight }}
-    >
+    <Dialog open={open} fullWidth fullScreen={!matchesMD}>
       {!matchesMD && (
         <DialogTitle sx={{ textAlign: 'center', padding: 0 }}>
           <Box
@@ -217,8 +198,6 @@ export const NewUserDialog: React.FC<Props> = ({
                 backgroundColor: 'primary.main',
                 flexGrow: 1,
                 display: 'flex',
-                // justifyContent: 'center',
-                // alignItems: 'center',
               },
               !matchesMD && {
                 width: '100%',

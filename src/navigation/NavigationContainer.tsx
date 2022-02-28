@@ -19,14 +19,12 @@ import { ProfilePage } from '../pages/ProfilePage/ProfilePage'
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
   handleLogout: () => void
-  setCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
   user: User | null
 }
 
 export const NavigationContainer: React.FC<Props> = ({
   setAppUser,
   handleLogout,
-  setCycleContext,
   user,
 }) => {
   const navigate = useNavigate()
@@ -56,10 +54,7 @@ export const NavigationContainer: React.FC<Props> = ({
       >
         <Route index element={<DashboardPage />} />
         <Route path={ROUTES.dashboard} element={<DashboardPage />} />
-        <Route
-          path={ROUTES.dailyEntries}
-          element={<DailyEntriesPage setCycleContext={setCycleContext} />}
-        />
+        <Route path={ROUTES.dailyEntries} element={<DailyEntriesPage />} />
         <Route path={ROUTES.foods} element={<FoodsPage />} />
         <Route path={ROUTES.admin} element={<AdminPage />} />
         <Route
