@@ -77,10 +77,21 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
     const caloriesRelativeToTDEE = tdee - previousDaysCalories
 
     const expectedWeightChange = caloriesRelativeToTDEE / 3500
-    const missedPriorDay =
-      parseInt(currentValue.entryDate) - parseInt(previousValue.entryDate) > 1
-        ? true
-        : false
+
+    const currentDateTime = DateTime.fromISO(currentValue.entryDate).startOf(
+      'day'
+    )
+    const previousDateTime = DateTime.fromISO(currentValue.entryDate).startOf(
+      'day'
+    )
+
+    const daysSinceLastActive =
+      currentDateTime.diff(previousDateTime, 'days').toObject().days ?? 0
+    console.log({
+      diff: currentDateTime.diff(previousDateTime, 'days').toObject().days,
+    })
+    const missedPriorDay = daysSinceLastActive > 1 ? true : false
+
     calculatedEntries.push({
       name: date,
       actualValue: currentValue.dailyEntryWeight,
