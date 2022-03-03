@@ -143,7 +143,15 @@ export const FoodsTable: React.FC<Props> = ({
   return (
     <Grid item md={8} xs={12}>
       {selectedSubCategory.length > 0 && !foodItemsLoading && (
-        <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
+        <Paper
+          elevation={0}
+          variant={matchesMD ? 'outlined' : 'elevation'}
+          sx={[
+            !matchesMD && {
+              margin: '0 8px 0 8px',
+            },
+          ]}
+        >
           <Grid container>
             <Grid
               container
