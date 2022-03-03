@@ -15,8 +15,7 @@ export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
 
   return (
     <Container sx={{ display: 'flex' }} disableGutters={!matchesMD}>
-      <MainAppBar setAppUser={setAppUser} />
-      {/* <MainDrawer /> */}
+      {matchesMD && <MainAppBar setAppUser={setAppUser} />}
       <Box
         component="main"
         sx={[
@@ -26,7 +25,7 @@ export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
           },
         ]}
       >
-        <Toolbar />
+        {matchesMD && <Toolbar />}
         <Outlet />
         {!matchesMD && <Toolbar />}
       </Box>

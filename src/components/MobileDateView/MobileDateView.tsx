@@ -1,9 +1,8 @@
-import { Paper, Grid, IconButton, Typography } from '@mui/material'
+import { Grid, IconButton, Typography } from '@mui/material'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import React from 'react'
 import { DateTime } from 'luxon'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface Props {
   pickerDate: DateTime
@@ -13,8 +12,6 @@ interface Props {
   setDatePickerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const today = DateTime.now()
-
 export const MobileDateView: React.FC<Props> = ({
   pickerDate,
   minDate,
@@ -22,11 +19,6 @@ export const MobileDateView: React.FC<Props> = ({
   setPickerDate,
   setDatePickerOpen,
 }) => {
-  const { matchesSM, matchesXS } = useMediaQueries()
-  const mobileDateViewStartPosition =
-    document.getElementById('dailyEntryPageMobileDateView')?.getClientRects()[0]
-      .top! - 1
-
   const stepDateBack = () => {
     if (!pickerDate) {
       return null
@@ -47,42 +39,35 @@ export const MobileDateView: React.FC<Props> = ({
   }
 
   return (
-    <Paper
-      square
-      id="dailyEntryPageMobileDateView"
+    <Grid
+      container
+      justifyContent="space-between"
       sx={[
         {
           width: '100%',
-          backgroundColor: 'primary.main',
+          height: '60px',
+          backgroundColor: 'white',
           border: 'none',
           padding: '1rem 1rem 0 1rem',
           position: 'sticky',
-          // top: mobileDateViewStartPosition,
+          top: -1,
           zIndex: (theme) => theme.zIndex.drawer + 1,
-        },
-        matchesXS && {
-          top: '55px',
-        },
-        matchesSM && {
-          top: '63px',
         },
       ]}
     >
-      <Grid container justifyContent="space-between">
-        <IconButton aria-label="delete" size="small" onClick={stepDateBack}>
-          <NavigateBeforeIcon sx={{ color: 'white' }} />
-        </IconButton>
-        <Typography
-          color={'white'}
-          variant="h5"
-          onClick={() => setDatePickerOpen(true)}
-        >
-          {pickerDate?.toFormat('MMMM dd')}
-        </Typography>
-        <IconButton aria-label="delete" size="small" onClick={stepDateForward}>
-          <NavigateNextIcon sx={{ color: 'white' }} />
-        </IconButton>
-      </Grid>
-    </Paper>
+      <IconButton aria-label="delete" size="small" onClick={stepDateBack}>
+        <NavigateBeforeIcon sx={{ color: 'primary.main' }} />
+      </IconButton>
+      <Typography
+        color={'primary.main'}
+        variant="h5"
+        onClick={() => setDatePickerOpen(true)}
+      >
+        {pickerDate?.toFormat('MMMM dd')}
+      </Typography>
+      <IconButton aria-label="delete" size="small" onClick={stepDateForward}>
+        <NavigateNextIcon sx={{ color: 'primary.main' }} />
+      </IconButton>
+    </Grid>
   )
 }
