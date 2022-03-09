@@ -1,4 +1,5 @@
 import { config } from 'aws-sdk'
+import { config as appConfig } from './config'
 import {
   Cycle,
   DailyEntry,
@@ -9,7 +10,7 @@ import {
 } from '../model/Model'
 
 config.update({
-  region: process.env.REACT_APP_REGION,
+  region: appConfig.REGION,
 })
 
 export class DataService {
@@ -32,7 +33,7 @@ export class DataService {
   }
 
   public async createDailyEntry(dailyEntry: DailyEntry) {
-    const requestUrl = process.env.REACT_APP_API_USER!
+    const requestUrl = appConfig.api.userUrl
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
@@ -51,7 +52,7 @@ export class DataService {
   }
 
   public async updateDailyEntry(updatedDailyEntry: DailyEntry) {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${updatedDailyEntry.PK}&SK=${updatedDailyEntry.SK}`
+    const requestUrl = `${appConfig.api.userUrl}?PK=${updatedDailyEntry.PK}&SK=${updatedDailyEntry.SK}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -70,7 +71,7 @@ export class DataService {
   }
 
   public async createUserCycle(cycle: Cycle) {
-    const requestUrl = process.env.REACT_APP_API_USER!
+    const requestUrl = appConfig.api.userUrl
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
@@ -88,9 +89,7 @@ export class DataService {
   }
 
   public async updateUserCycle(updatedCycle: Cycle) {
-    const requestUrl = `${process.env.REACT_APP_API_USER!}?PK=${
-      updatedCycle.PK
-    }&SK=${updatedCycle.SK}`
+    const requestUrl = `${appConfig.api.userUrl}?PK=${updatedCycle.PK}&SK=${updatedCycle.SK}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -111,8 +110,7 @@ export class DataService {
   public async getUserCycles(userId: string): Promise<Cycle[] | undefined> {
     try {
       if (this.user) {
-        const requestUrl = `${process.env
-          .REACT_APP_API_USER!}?GSI2PK=U_${userId}&SGSI2SK=CYCLES`
+        const requestUrl = `${appConfig.api.userUrl}?GSI2PK=U_${userId}&SGSI2SK=CYCLES`
         const requestResult = await fetch(requestUrl, {
           method: 'GET',
           headers: {
@@ -135,8 +133,7 @@ export class DataService {
   ): Promise<DailyEntry[] | undefined> {
     try {
       if (this.user) {
-        const requestUrl = `${process.env
-          .REACT_APP_API_USER!}?GSI1PK=C_${cycleId}&GSI1SK=DAILYENTRIES`
+        const requestUrl = `${appConfig.api.userUrl}?GSI1PK=C_${cycleId}&GSI1SK=DAILYENTRIES`
         const requestResult = await fetch(requestUrl, {
           method: 'GET',
           headers: {
@@ -158,7 +155,7 @@ export class DataService {
     userId: string,
     date: string
   ): Promise<DailyEntry[] | undefined> {
-    const requestUrl = `${process.env.REACT_APP_API_USER}?PK=${userId}&SK=${date}`
+    const requestUrl = `${appConfig.api.userUrl}?PK=${userId}&SK=${date}`
     const requestResult = await fetch(requestUrl, {
       method: 'GET',
       headers: {
@@ -175,7 +172,7 @@ export class DataService {
   }
 
   public async getFoodCategories() {
-    const requestUrl = `${process.env.REACT_APP_API_FOODS}?PK=CATEGORIES`
+    const requestUrl = `${appConfig.api.foodsUrl}?PK=CATEGORIES`
 
     try {
       const requestResult = await fetch(requestUrl, {
@@ -192,7 +189,7 @@ export class DataService {
     }
   }
   public async getFoodSubCategories(categoryId: string) {
-    const requestUrl = `${process.env.REACT_APP_API_FOODS}?GSI2PK=C_${categoryId}&GSI2SK=METADATA`
+    const requestUrl = `${appConfig.api.foodsUrl}?GSI2PK=C_${categoryId}&GSI2SK=METADATA`
 
     try {
       const requestResult = await fetch(requestUrl, {
@@ -210,7 +207,7 @@ export class DataService {
   }
 
   public async getFoodItems(categoryId: string, subCategoryId: string) {
-    const requestUrl = `${process.env.REACT_APP_API_FOODS}?GSI1PK=C_${categoryId}&GSI1SK=S_${subCategoryId}`
+    const requestUrl = `${appConfig.api.foodsUrl}?GSI1PK=C_${categoryId}&GSI1SK=S_${subCategoryId}`
     try {
       const requestResult = await fetch(requestUrl, {
         method: 'GET',
@@ -227,7 +224,7 @@ export class DataService {
   }
 
   public async createFoodItem(newFoodItem: FitnessTrackFoodItem) {
-    const requestUrl = process.env.REACT_APP_API_FOODS!
+    const requestUrl = appConfig.api.foodsUrl
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
@@ -246,8 +243,7 @@ export class DataService {
   }
 
   public async deleteFoodItem(foodItemId: string) {
-    const requestUrl = `${process.env
-      .REACT_APP_API_FOODS!}?PK=F_${foodItemId}&SK=METADATA`
+    const requestUrl = `${appConfig.api.foodsUrl}?PK=F_${foodItemId}&SK=METADATA`
     try {
       const requestResult = await fetch(requestUrl, {
         method: 'DELETE',
@@ -264,7 +260,7 @@ export class DataService {
   }
 
   public async updateFoodItem(updatedFoodItem: FitnessTrackFoodItem) {
-    const requestUrl = `${process.env.REACT_APP_API_FOODS}?PK=${updatedFoodItem.PK}&SK=${updatedFoodItem.SK}`
+    const requestUrl = `${appConfig.api.foodsUrl}?PK=${updatedFoodItem.PK}&SK=${updatedFoodItem.SK}`
     const requestOptions: RequestInit = {
       method: 'PUT',
       headers: {
@@ -284,7 +280,7 @@ export class DataService {
 
   public async createFoodCategory(newFoodCategory: FoodCategory) {
     const userIdToken = this.getUserIdToken()
-    const requestUrl = process.env.REACT_APP_API_FOODS!
+    const requestUrl = appConfig.api.foodsUrl
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {
@@ -302,7 +298,7 @@ export class DataService {
     }
   }
   public async createFoodSubCategory(newFoodSubCategory: FoodSubCategory) {
-    const requestUrl = process.env.REACT_APP_API_FOODS!
+    const requestUrl = appConfig.api.foodsUrl
     const requestOptions: RequestInit = {
       method: 'POST',
       headers: {

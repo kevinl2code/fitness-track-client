@@ -1,0 +1,1 @@
+export { FoodsCatalogView } from './FoodsCatalogView'

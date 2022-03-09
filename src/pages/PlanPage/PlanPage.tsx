@@ -152,7 +152,7 @@ export const PlanPage: React.FC<Props> = () => {
         sx={{ marginTop: '1rem', width: '100%' }}
       >
         <Grid item>
-          <Typography variant="h4">MY GOAL</Typography>
+          <Typography variant="h4">GOAL</Typography>
         </Grid>
         <Grid item>
           <Typography variant="h6">{goalText[cycleType]}</Typography>
