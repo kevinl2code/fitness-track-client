@@ -45,15 +45,17 @@ export const DailyEntryMainView: React.FC<Props> = ({
         justifyContent="center"
         sx={{ marginTop: '1rem', marginBottom: '2rem' }}
       >
-        <Button
-          variant="contained"
-          sx={{ width: '50%' }}
-          onClick={() => {
-            setOpenConsumableDialog(true)
-          }}
-        >
-          Add Food
-        </Button>
+        {isEditable && (
+          <Button
+            variant="contained"
+            sx={{ width: '50%' }}
+            onClick={() => {
+              setOpenConsumableDialog(true)
+            }}
+          >
+            Add Food
+          </Button>
+        )}
       </Grid>
       <Grid
         container
@@ -82,6 +84,7 @@ export const DailyEntryMainView: React.FC<Props> = ({
       <DailyEntryConsumablesTable
         dataService={dataService}
         entry={dailyEntry}
+        isEditable={isEditable}
       />{' '}
     </>
   )

@@ -19,11 +19,13 @@ import { DataService } from '../../services/DataService'
 interface Props {
   entry: DailyEntry
   dataService: DataService
+  isEditable: boolean
 }
 
 export const DailyEntryConsumablesTable: React.FC<Props> = ({
   entry,
   dataService,
+  isEditable,
 }) => {
   const queryClient = useQueryClient()
   const { matchesMD } = useMediaQueries()
@@ -59,7 +61,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
         size="small"
         padding="none"
         scope="row"
-        sx={{ paddingLeft: '16px' }}
+        sx={{ padding: '8px 0px 8px 0px' }}
       >
         {consumable.name}
       </TableCell>
@@ -115,11 +117,14 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
       >
         {consumable.carbohydrates.toFixed(0)}
       </TableCell>
-      <TableCell size="small" padding="none" align="right">
-        <IconButton onClick={() => handleDeleteConsumable(index)}>
-          <DeleteIcon />
-        </IconButton>
-      </TableCell>
+
+      {isEditable && (
+        <TableCell size="small" padding="none" align="right">
+          <IconButton onClick={() => handleDeleteConsumable(index)}>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+      )}
     </TableRow>
   ))
 
@@ -127,14 +132,18 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
     <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
       <Grid container>
         <Grid item xs={12}>
-          <TableContainer component={Paper} elevation={0}>
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            sx={{ padding: '0px 8px 0px 8px' }}
+          >
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell
                     size="small"
                     padding="none"
-                    sx={{ padding: '16px 0 16px 16px' }}
+                    sx={{ padding: '16px 0 16px 0px' }}
                   >
                     Item
                   </TableCell>
@@ -170,11 +179,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
                   >
                     Carbs
                   </TableCell>
-                  <TableCell
-                    size="small"
-                    padding="none"
-                    align="right"
-                  ></TableCell>
+                  <TableCell size="small" padding="none" align="right" />
                 </TableRow>
               </TableHead>
               <TableBody>{generatedRows}</TableBody>
