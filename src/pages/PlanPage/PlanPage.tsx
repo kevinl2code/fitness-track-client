@@ -59,20 +59,48 @@ export const PlanPage: React.FC<Props> = () => {
     currentTense: '',
   }
 
-  const milestoneQuarter = sortedEntries.find((entry) => {
-    if (cycleType === 'CUT') {
-      const milestone =
-        (startingWeight - goalWeight) * 0.75 + parseInt(goalWeight.toString())
-      console.log({ milestone, goalWeight })
-      return entry.dailyEntryWeight < milestone
-    }
-  })
-  console.log(milestoneQuarter)
-  const milestoneQuarterDate = milestoneQuarter?.entryDate
-    ? DateTime.fromISO(milestoneQuarter?.entryDate).toLocaleString(
-        DateTime.DATE_MED
-      )
-    : '-'
+  const milestones = {
+    quarter: sortedEntries.find((entry) => {
+      if (cycleType === 'CUT') {
+        const milestone =
+          (startingWeight - goalWeight) * 0.75 + parseInt(goalWeight.toString())
+        console.log({ milestone, goalWeight })
+        return entry.dailyEntryWeight < milestone
+      }
+      return null
+    }),
+    half: sortedEntries.find((entry) => {
+      if (cycleType === 'CUT') {
+        const milestone =
+          (startingWeight - goalWeight) * 0.5 + parseInt(goalWeight.toString())
+        console.log({ milestone, goalWeight })
+        return entry.dailyEntryWeight < milestone
+      }
+      return null
+    }),
+    threeQuarters: sortedEntries.find((entry) => {
+      if (cycleType === 'CUT') {
+        const milestone =
+          (startingWeight - goalWeight) * 0.25 + parseInt(goalWeight.toString())
+        console.log({ milestone, goalWeight })
+        return entry.dailyEntryWeight < milestone
+      }
+      return null
+    }),
+    goal: sortedEntries.find((entry) => {
+      if (cycleType === 'CUT') {
+        return entry.dailyEntryWeight < goalWeight
+      }
+      return null
+    }),
+  }
+
+  const milestoneDate = (milestoneEntry: DailyEntry | undefined) =>
+    milestoneEntry?.entryDate
+      ? DateTime.fromISO(milestoneEntry?.entryDate).toLocaleString(
+          DateTime.DATE_MED
+        )
+      : '-'
 
   if (weightChanged > 0) {
     status.pastTense = 'lost'
@@ -127,19 +155,19 @@ export const PlanPage: React.FC<Props> = () => {
   const mileStoneSection: ListSectionDetails[] = [
     {
       itemName: 'Attained 25% of Goal',
-      secondaryText: milestoneQuarterDate,
+      secondaryText: milestoneDate(milestones.quarter),
     },
     {
       itemName: 'Attained 50% of Goal',
-      secondaryText: cycleStartDate.toLocaleString(DateTime.DATE_MED),
+      secondaryText: milestoneDate(milestones.half),
     },
     {
       itemName: 'Attained 75% of Goal',
-      secondaryText: cycleStartDate.toLocaleString(DateTime.DATE_MED),
+      secondaryText: milestoneDate(milestones.threeQuarters),
     },
     {
       itemName: 'Attained 100% of Goal',
-      secondaryText: cycleStartDate.toLocaleString(DateTime.DATE_MED),
+      secondaryText: milestoneDate(milestones.goal),
     },
   ]
 
