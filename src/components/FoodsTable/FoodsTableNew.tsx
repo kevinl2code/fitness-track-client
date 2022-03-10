@@ -94,8 +94,7 @@ export const FoodsTableNew: React.FC<Props> = ({
 
   const Row: React.FC<RowProps> = ({ foodItem }) => {
     const [open, setOpen] = React.useState(false)
-    const { foodItemName, calories, protein, fat, carbohydrates, foodItemId } =
-      foodItem
+    const { foodItemName, foodItemId } = foodItem
 
     const FoodItemData: React.FC<RowProps> = ({ foodItem }) => {
       const { calories, protein, fat, carbohydrates } = foodItem

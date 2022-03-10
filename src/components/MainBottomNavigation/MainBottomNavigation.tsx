@@ -44,7 +44,7 @@ export const MainBottomNavigation: React.FC = () => {
           onClick={() => navigate(ROUTES.dailyEntries)}
         />
         <BottomNavigationAction
-          label="Dashboard"
+          label="Overview"
           icon={<StackedLineChartIcon />}
           onClick={() => navigate(ROUTES.dashboard)}
         />

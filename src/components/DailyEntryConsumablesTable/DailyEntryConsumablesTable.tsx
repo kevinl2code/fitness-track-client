@@ -51,6 +51,10 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
     updateDailyEntry(updatedEntry)
   }
 
+  if (dailyEntryConsumables.length === 0) {
+    return null
+  }
+
   const generatedRows = dailyEntryConsumables?.map((consumable, index) => (
     <TableRow
       key={`${consumable.name} + ${index}`}

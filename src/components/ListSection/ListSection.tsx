@@ -22,12 +22,14 @@ interface Props {
   sectionSubHeader: string
   sectionItems: ListSectionDetails[]
   justify?: 'center' | 'flex-start'
+  dense?: boolean
 }
 
 export const ListSection: React.FC<Props> = ({
   sectionSubHeader,
   sectionItems,
   justify,
+  dense = false,
 }) => {
   const hasItemAction = sectionItems[0].itemAction !== undefined ? true : false
 
@@ -60,6 +62,7 @@ export const ListSection: React.FC<Props> = ({
       <List
         sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
         component="nav"
+        dense={dense}
         aria-labelledby="nested-list-subheader"
         subheader={
           <ListSubheader
