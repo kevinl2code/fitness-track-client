@@ -15,6 +15,7 @@ import {
   Box,
   Collapse,
   Button,
+  TablePagination,
 } from '@mui/material'
 import React, { useState } from 'react'
 import { FitnessTrackFoodItem, UserFoodItem } from '../../model/Model'
@@ -58,6 +59,8 @@ export const FoodsTable: React.FC<Props> = ({
   setConfirmDeleteDialogOpen,
 }) => {
   const [filterText, setFilterText] = useState('')
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
   const { matchesMD } = useMediaQueries()
   const sortedFoodItems: FitnessTrackFoodItem[] | UserFoodItem[] =
     foodItems.sort((a, b) => {
@@ -72,16 +75,48 @@ export const FoodsTable: React.FC<Props> = ({
       return 0
     })
 
-  const filteredFoodItems: FitnessTrackFoodItem[] | UserFoodItem[] =
-    sortedFoodItems.filter((foodItem) => {
-      return foodItem.foodItemName
-        .toLowerCase()
-        .includes(filterText.toLowerCase())
-    })
   const isFitnessTrackFoodItem = (
     foodItem: FitnessTrackFoodItem | UserFoodItem
   ): foodItem is FitnessTrackFoodItem => {
     return (foodItem as FitnessTrackFoodItem).subCategoryId !== undefined
+  }
+
+  const getFilteredFoodItems = () => {
+    if (sortedFoodItems.length > 0) {
+      if (isFitnessTrackFoodItem(sortedFoodItems[0])) {
+        const sortedFitnessTrackFoodItems: FitnessTrackFoodItem[] =
+          sortedFoodItems as FitnessTrackFoodItem[]
+        return sortedFitnessTrackFoodItems.filter(
+          (foodItem: FitnessTrackFoodItem) => {
+            return foodItem.foodItemName
+              .toLowerCase()
+              .includes(filterText.toLowerCase())
+          }
+        )
+      } else {
+        const sortedUserFoodItems: UserFoodItem[] =
+          sortedFoodItems as UserFoodItem[]
+        return sortedUserFoodItems.filter((foodItem) => {
+          return foodItem.foodItemName
+            .toLowerCase()
+            .includes(filterText.toLowerCase())
+        })
+      }
+    }
+    return []
+  }
+
+  const filteredFoodItems = getFilteredFoodItems()
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
   }
 
   const handleEditClick = (foodItem: FitnessTrackFoodItem | UserFoodItem) => {
@@ -209,14 +244,14 @@ export const FoodsTable: React.FC<Props> = ({
     )
   }
 
-  const generatedRows = filteredFoodItems.map(
-    (foodItem: FitnessTrackFoodItem | UserFoodItem, index) => {
+  const generatedRows = filteredFoodItems
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((foodItem: FitnessTrackFoodItem | UserFoodItem, index) => {
       // if (isFitnessTrackFoodItem(foodItem)) {
       //   return <Row foodItem={foodItem} />
       // }
       return <Row foodItem={foodItem} key={`row-${index}`} />
-    }
-  )
+    })
 
   const emptyTable = (
     <Table size="small" aria-label="empty-food-items-table">
@@ -302,6 +337,26 @@ export const FoodsTable: React.FC<Props> = ({
                 </Table>
               )}
             </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={filteredFoodItems.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              sx={[
+                {
+                  '& .MuiTablePagination-toolbar': {
+                    paddingLeft: '6px',
+                    paddingRight: '0px',
+                  },
+                  '& .MuiTablePagination-actions': {
+                    marginLeft: '12px',
+                  },
+                },
+              ]}
+            />
           </Grid>
           {isAdmin && (
             <Grid

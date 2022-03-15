@@ -7,6 +7,7 @@ import {
   FoodCategory,
   FoodSubCategory,
   User,
+  UserFoodItem,
 } from '../model/Model'
 
 config.update({
@@ -110,7 +111,7 @@ export class DataService {
   public async getUserCycles(userId: string): Promise<Cycle[] | undefined> {
     try {
       if (this.user) {
-        const requestUrl = `${appConfig.api.userUrl}?GSI2PK=U_${userId}&SGSI2SK=CYCLES`
+        const requestUrl = `${appConfig.api.userUrl}?GSI2PK=U_${userId}&GSI2SK=CYCLES`
         const requestResult = await fetch(requestUrl, {
           method: 'GET',
           headers: {
@@ -166,6 +167,46 @@ export class DataService {
       const responseJSON = await requestResult.json()
 
       return responseJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
+  }
+
+  public async createUserFoodItem(newFoodItem: UserFoodItem) {
+    const requestUrl = appConfig.api.userUrl
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify(newFoodItem),
+    }
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      const resultJSON = await result.json()
+
+      return JSON.stringify(resultJSON.id)
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
+  }
+
+  public async getUserFoodItems(
+    userId: string
+  ): Promise<UserFoodItem[] | undefined> {
+    try {
+      if (this.user) {
+        const requestUrl = `${appConfig.api.userUrl}?GSI2PK=U_${userId}&GSI2SK=FOODS`
+        const requestResult = await fetch(requestUrl, {
+          method: 'GET',
+          headers: {
+            Authorization: this.getUserIdToken(),
+          },
+        })
+        const responseJSON = await requestResult.json()
+
+        return responseJSON
+      }
     } catch (error) {
       console.log({ dataServiceError: error })
     }

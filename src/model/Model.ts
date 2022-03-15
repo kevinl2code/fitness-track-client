@@ -140,9 +140,13 @@ export interface FitnessTrackFoodItem {
 }
 
 //PK should be the users ID -- cognito sub value
+//SK should be in format F_foodItemId
+//GSI2PK should be in format U_userId
 export interface UserFoodItem {
   PK: string
-  SK: 'METADATA'
+  SK: string
+  GSI2PK: string
+  GSI2SK: 'FOODS'
   type: 'FOOD'
   foodItemName: string
   foodItemUnit: FoodItemUnits
