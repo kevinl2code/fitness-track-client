@@ -2,7 +2,7 @@ import { Box, Grid } from '@mui/material'
 import React, { useState } from 'react'
 import { FitnessTrackFoodItem, UserFoodItem } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
-import { FoodsTable, FoodsTableNew } from '../FoodsTable'
+import { FoodsTable } from '../FoodsTable'
 
 const demoFoodItems: UserFoodItem[] = [
   {
@@ -72,7 +72,7 @@ export const FoodsMyFoodsView: React.FC = () => {
   return (
     <Box sx={[{ width: '100%', marginTop: '2rem' }]}>
       <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
-        <FoodsTableNew
+        <FoodsTable
           foodItems={demoFoodItems}
           isAdmin={isAdmin}
           setAddFoodDialogOpen={setAddFoodDialogOpen}
