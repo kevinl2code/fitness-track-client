@@ -6,57 +6,8 @@ import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { AddUserFoodItemDialog } from '../dialogs/AddUserFoodItemDialog'
 import { FoodsTable } from '../FoodsTable'
 import { UserContext } from '../../app/App'
-import { useQuery } from 'react-query'
-
-// const demoFoodItems: UserFoodItem[] = [
-//   {
-//     PK: 'demmmmmoooooitemmmm',
-//     SK: 'F_ngjkrfosdgrjoihdrs',
-//     GSI2PK: 'U_demmmmmoooooitemmmm',
-//     GSI2SK: 'FOODS',
-//     type: 'FOOD',
-//     foodItemName: 'Banananana',
-//     foodItemUnit: 'EACH',
-//     servingSize: 1,
-//     calories: 90,
-//     protein: 3,
-//     fat: 1,
-//     carbohydrates: 22,
-//     foodItemId: 'ngjkrfosdgrjoihdrs',
-//   },
-//   {
-//     PK: 'demmmmmoooooitemmmm',
-//     SK: 'F_ngjkrfosdgrjoihdrs',
-//     GSI2PK: 'U_demmmmmoooooitemmmm',
-//     GSI2SK: 'FOODS',
-//     type: 'FOOD',
-//     foodItemName: 'Banananana',
-//     foodItemUnit: 'EACH',
-//     servingSize: 1,
-//     calories: 90,
-//     protein: 3,
-//     fat: 1,
-//     carbohydrates: 22,
-//     foodItemId: 'ngjkrfosdgrjoihdrs',
-//   },
-//   {
-//     PK: 'demmmmmoooooitemmmm',
-//     SK: 'F_ngjkrfosdgrjoihdrs',
-//     GSI2PK: 'U_demmmmmoooooitemmmm',
-//     GSI2SK: 'FOODS',
-//     type: 'FOOD',
-//     foodItemName: 'Banananana',
-//     foodItemUnit: 'EACH',
-//     servingSize: 1,
-//     calories: 90,
-//     protein: 3,
-//     fat: 1,
-//     carbohydrates: 22,
-//     foodItemId: 'ngjkrfosdgrjoihdrs',
-//   },
-// ]
-
-const demoFoodItems: UserFoodItem[] = []
+import { useMutation, useQuery } from 'react-query'
+import { ConfirmationDialog } from '../dialogs/ConfirmationDialog'
 
 const isAdmin = true
 
@@ -98,8 +49,36 @@ export const FoodsMyFoodsView: React.FC = () => {
     }
   )
 
+  const { mutate: deleteUserFoodItem, isLoading } = useMutation(
+    ({ userId, foodItemId }: { userId: string; foodItemId: string }) =>
+      dataService.deleteUserFoodItem(userId, foodItemId),
+    {
+      onSuccess: () => {
+        fetchFoodItems()
+        setConfirmationDialogOpen({
+          open: false,
+          deleteItem: null,
+        })
+      },
+    }
+  )
+
+  const handleDelete = async () => {
+    deleteUserFoodItem({
+      userId: user?.sub!,
+      foodItemId: confirmationDialogOpen.deleteItem?.id!,
+    })
+    fetchFoodItems()
+  }
+
   return (
     <>
+      <ConfirmationDialog
+        open={confirmationDialogOpen.open}
+        deleteItem={confirmationDialogOpen.deleteItem}
+        handleConfirmation={handleDelete}
+        setConfirmDeleteDialogOpen={setConfirmationDialogOpen}
+      />
       <AddUserFoodItemDialog
         open={addFoodDialogOpen}
         user={user!}

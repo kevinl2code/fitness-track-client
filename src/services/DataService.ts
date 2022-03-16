@@ -212,6 +212,23 @@ export class DataService {
     }
   }
 
+  public async deleteUserFoodItem(userId: string, foodItemId: string) {
+    const requestUrl = `${appConfig.api.userUrl}?PK=${userId}&SK=F_${foodItemId}`
+    try {
+      const requestResult = await fetch(requestUrl, {
+        method: 'DELETE',
+        headers: {
+          Authorization: this.getUserIdToken(),
+        },
+      })
+      const responseJSON = await requestResult.json()
+
+      return responseJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
+  }
+
   public async getFoodCategories() {
     const requestUrl = `${appConfig.api.foodsUrl}?PK=CATEGORIES`
 
