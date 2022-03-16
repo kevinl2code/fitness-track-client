@@ -17,12 +17,7 @@ import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
-import {
-  RefetchOptions,
-  RefetchQueryFilters,
-  QueryObserverResult,
-  useMutation,
-} from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import { DataService } from '../../../services/DataService'
 
 interface IFormInput {
@@ -40,9 +35,6 @@ interface Props {
   open: boolean
   user: UserState
   dataService: DataService
-  fetchFoodItems: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<any, unknown>>
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -100,7 +92,6 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
   open,
   user,
   dataService,
-  fetchFoodItems,
   setAddFoodDialogOpen,
 }) => {
   const {
@@ -113,12 +104,12 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
     resolver: yupResolver(validationSchema),
   })
   const { matchesMD } = useMediaQueries()
-
+  const queryClient = useQueryClient()
   const { mutate: createUserFoodItem, isLoading } = useMutation(
     (newFoodItem: UserFoodItem) => dataService.createUserFoodItem(newFoodItem),
     {
       onSuccess: () => {
-        fetchFoodItems()
+        queryClient.invalidateQueries('userFoodItems')
         reset()
         setAddFoodDialogOpen(false)
       },

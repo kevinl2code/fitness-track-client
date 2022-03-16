@@ -53,7 +53,6 @@ export const PlanPage: React.FC<Props> = () => {
         10
     ) / 10
   ).toFixed(1)
-  console.log(sortedEntries)
   let status = {
     pastTense: '',
     currentTense: '',
@@ -64,7 +63,6 @@ export const PlanPage: React.FC<Props> = () => {
       if (cycleType === 'CUT') {
         const milestone =
           (startingWeight - goalWeight) * 0.75 + parseInt(goalWeight.toString())
-        console.log({ milestone, goalWeight })
         return entry.dailyEntryWeight < milestone
       }
       return null
@@ -73,7 +71,6 @@ export const PlanPage: React.FC<Props> = () => {
       if (cycleType === 'CUT') {
         const milestone =
           (startingWeight - goalWeight) * 0.5 + parseInt(goalWeight.toString())
-        console.log({ milestone, goalWeight })
         return entry.dailyEntryWeight < milestone
       }
       return null
@@ -82,7 +79,7 @@ export const PlanPage: React.FC<Props> = () => {
       if (cycleType === 'CUT') {
         const milestone =
           (startingWeight - goalWeight) * 0.25 + parseInt(goalWeight.toString())
-        console.log({ milestone, goalWeight })
+        // console.log({ milestone, goalWeight })
         return entry.dailyEntryWeight < milestone
       }
       return null
