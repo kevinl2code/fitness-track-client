@@ -5,6 +5,7 @@ import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
+import { IngredientsInput } from '../../IngredientsInput'
 import { FoodBuilderSelectorDialog } from './FoodBuilderSelectorDialog'
 
 interface Props {
@@ -113,30 +114,7 @@ export const AddFoodBuilderUserFoodItem: React.FC<Props> = ({
           label: 'Food Name',
           placeholder: 'Food Name',
         })}
-        <Grid
-          item
-          container
-          sx={{
-            paddingLeft: '2rem',
-            paddingRight: '2rem',
-            paddingBottom: '1rem',
-          }}
-        >
-          <Grid
-            item
-            container
-            justifyContent="space-between"
-            alignItems="flex-end"
-          >
-            <Typography sx={{ opacity: 0.75 }}>Ingredients</Typography>
-            <Button
-              variant="outlined"
-              onClick={() => setFoodSelectorOpen(true)}
-            >
-              Add Ingredient
-            </Button>
-          </Grid>
-        </Grid>
+        <IngredientsInput setFoodSelectorOpen={setFoodSelectorOpen} />
         {generateSelectInput({
           name: 'foodItemUnit',
           values: foodItemUnitValues,

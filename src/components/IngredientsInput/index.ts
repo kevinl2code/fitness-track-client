@@ -1,0 +1,1 @@
+export { IngredientsInput } from './IngredientsInput'

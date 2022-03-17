@@ -137,16 +137,7 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
             handleSubCategoryChange={handleSubCategoryChange}
             isAdmin={false}
           />
-          <Grid
-            item
-            md={2}
-            xs={12}
-            sx={[
-              !matchesMD && {
-                margin: '0px 8px 0px 8px',
-              },
-            ]}
-          >
+          <Grid item md={2} xs={12}>
             <ConsumablesList
               foodItems={foodItems}
               foodItemsLoading={foodItemsLoading}
