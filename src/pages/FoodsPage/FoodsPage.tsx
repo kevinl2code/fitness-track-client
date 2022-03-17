@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Container } from '@mui/material'
 import React from 'react'
 import { FoodsCatalogView } from '../../components/FoodsCatalogView'
 import { FoodsMyFoodsView } from '../../components/FoodsMyFoodsView'
@@ -10,7 +10,7 @@ export const FoodsPage: React.FC = () => {
   const [view, setView] = React.useState<string | null>('catalog')
 
   return (
-    <>
+    <Container>
       <FoodsViewToggle view={view} setView={setView} />
       {view === 'catalog' && (
         <Box sx={{ width: '100%' }}>
@@ -22,6 +22,6 @@ export const FoodsPage: React.FC = () => {
           <FoodsMyFoodsView />
         </Box>
       )}
-    </>
+    </Container>
   )
 }

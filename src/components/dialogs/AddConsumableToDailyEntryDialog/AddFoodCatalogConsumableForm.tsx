@@ -1,18 +1,17 @@
-import { Grid, SelectChangeEvent } from '@mui/material'
+import { Button, Grid, SelectChangeEvent } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
-import {
-  Control,
-  FieldValues,
-  UseFormReset,
-  UseFormSetValue,
-} from 'react-hook-form'
-import { useQuery } from 'react-query'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { UseMutateFunction, useQuery } from 'react-query'
 import { UserContext } from '../../../app/App'
 import {
+  DailyEntry,
+  EntryConsumable,
   FitnessTrackFoodItem,
   FoodCategory,
   FoodSubCategory,
 } from '../../../model/Model'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { DataService } from '../../../services/DataService'
 import { ConsumablesList } from '../../ConsumablesList'
 import { FoodsCategorySelect } from '../../FoodsCategorySelect'
@@ -20,28 +19,83 @@ import { FoodsSubCategorySelect } from '../../FoodsSubCategorySelect'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormattedTextField } from '../../FormattedTextField/FormattedTextField'
+import { useMediaQueries } from '../../../utilities/useMediaQueries'
 
 interface Props {
-  control: Control<FieldValues, object>
-  reset: UseFormReset<FieldValues>
-  setValue: UseFormSetValue<FieldValues>
+  entry: DailyEntry
+  updateDailyEntry: UseMutateFunction<
+    string | undefined,
+    unknown,
+    DailyEntry,
+    unknown
+  >
 }
 
+interface IFormInput {
+  name: string
+  calories: string
+  protein: string
+  fat: string
+  carbohydrates: string
+}
+
+const validationSchema = yup.object({
+  // foodItemName regex specifies string cannot start with space or special characters
+  name: yup
+    .string()
+    .matches(/^[a-zA-Z0-9](.*[a-zA-Z0-9])?$/, 'Please enter a valid name')
+    .min(3)
+    .max(150)
+    .required(),
+  calories: yup
+    .number()
+    .typeError('Calories required')
+    .min(0, 'Must be at least 0')
+    .max(10000, 'Must be 10000 or less')
+    .required('Calories required'),
+  protein: yup
+    .number()
+    .typeError('Protein required')
+    .min(0, 'Must be at least 0')
+    .max(1000, 'Must be 1000 or less')
+    .required('Protein required'),
+  fat: yup
+    .number()
+    .typeError('Fat required')
+    .min(0, 'Must be at least 0')
+    .max(1000, 'Must be 1000 or less')
+    .required('Fat required'),
+  carbohydrates: yup
+    .number()
+    .typeError('Carbohydrates required')
+    .min(0, 'Must be at least 0')
+    .max(1000, 'Must be 1000 or less')
+    .required('Carbohydrates required'),
+})
+
 export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
-  control,
-  reset,
-  setValue,
+  entry,
+  updateDailyEntry,
 }) => {
   const [categories, setCategories] = useState<FoodCategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
   const [subCategories, setSubCategories] = useState<FoodSubCategory[]>([])
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
-
+  const [quantity, setQuantity] = useState('')
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
   const [selectedFoodItem, setSelectedFoodItem] =
     useState<FitnessTrackFoodItem | null>(null)
   const [filterText, setFilterText] = useState('')
-  const [quanity, setQuantity] = useState('')
+  const { matchesMD } = useMediaQueries()
+  const {
+    reset,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  })
 
   const user = useContext(UserContext)
 
@@ -113,27 +167,27 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
       carbohydrates:
         selectedFoodItem.carbohydrates / selectedFoodItem.servingSize,
     }
-    const hasQuantity = quanity.length > 0
+    const hasQuantity = quantity.length > 0
     const calories = hasQuantity
-      ? (parseFloat(quanity) * valuePerUnit.calories)
+      ? (parseFloat(quantity) * valuePerUnit.calories)
           .toFixed(2)
           .replace(/[.,]00$/, '')
           .toString()
       : ''
     const protein = hasQuantity
-      ? (parseFloat(quanity) * valuePerUnit.protein)
+      ? (parseFloat(quantity) * valuePerUnit.protein)
           .toFixed(2)
           .replace(/[.,]00$/, '')
           .toString()
       : ''
     const fat = hasQuantity
-      ? (parseFloat(quanity) * valuePerUnit.fat)
+      ? (parseFloat(quantity) * valuePerUnit.fat)
           .toFixed(2)
           .replace(/[.,]00$/, '')
           .toString()
       : ''
     const carbohydrates = hasQuantity
-      ? (parseFloat(quanity) * valuePerUnit.carbohydrates)
+      ? (parseFloat(quantity) * valuePerUnit.carbohydrates)
           .toFixed(2)
           .replace(/[.,]00$/, '')
           .toString()
@@ -143,6 +197,21 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
     setValue('protein', protein)
     setValue('fat', fat)
     setValue('carbohydrates', carbohydrates)
+  }
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    console.log(`Submit: ${data}`)
+    const { name, calories, protein, fat, carbohydrates } = data
+    const newConsumable: EntryConsumable = {
+      name: name,
+      calories: parseFloat(calories),
+      protein: parseFloat(protein),
+      fat: parseFloat(fat),
+      carbohydrates: parseFloat(carbohydrates),
+    }
+    const updatedConsumables = [...entry.dailyEntryConsumables, newConsumable]
+    const updatedEntry = { ...entry, dailyEntryConsumables: updatedConsumables }
+    updateDailyEntry(updatedEntry)
   }
 
   const generateFormTextInput = ({
@@ -181,101 +250,118 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
   const emptySubCategorySelected =
     selectedSubCategory && foodItems.length === 0 ? true : false
 
+  const hasQuantity = quantity.length > 0
+
+  let nameError
+  if (errors) {
+    if (errors.name) {
+      nameError = errors.name.message
+    }
+  }
+
   return (
-    <Grid container justifyContent="center">
-      <FoodsCategorySelect
-        categories={categories}
-        categoriesLoading={categoriesLoading}
-        selectedCategory={selectedCategory}
-        setAddFoodCategoryDialogOpen={() => null}
-        isAdmin={false}
-        handleCategoryChange={handleCategoryChange}
-      />
-      <FoodsSubCategorySelect
-        subCategories={subCategories}
-        subCategoriesLoading={subCategoriesLoading}
-        selectedCategory={selectedCategory}
-        selectedSubCategory={selectedSubCategory}
-        setAddFoodSubCategoryDialogOpen={() => null}
-        handleSubCategoryChange={handleSubCategoryChange}
-        isAdmin={false}
-      />
-      <ConsumablesList
-        foodItems={foodItems}
-        foodItemsLoading={foodItemsLoading}
-        emptySubCategorySelected={emptySubCategorySelected}
-        selectedSubCategory={selectedSubCategory}
-        selectedFoodItem={selectedFoodItem}
-        filterText={filterText}
-        setFilterText={setFilterText}
-        setQuantity={setQuantity}
-        reset={reset}
-        setSelectedFoodItem={setSelectedFoodItem}
-      />
-      {selectedFoodItem && (
-        <>
-          <FormattedTextField
-            label="Quantity"
-            type="number"
-            value={quanity}
-            onChange={(event) => setQuantity(event.target.value)}
-            inputProps={{
-              position: 'end',
-              child: selectedFoodItem?.foodItemUnit.toLowerCase(),
-            }}
-          />
-          {generateFormTextInput({
-            name: 'calories',
-            control: control,
-            required: true,
-            type: 'number',
-            label: 'Calories',
-            placeholder: 'Calories',
-            inputProps: {
-              position: 'end',
-              child: 'cals',
-            },
-          })}
-          {generateFormTextInput({
-            name: 'protein',
-            control: control,
-            required: true,
-            type: 'number',
-            label: 'Protein',
-            placeholder: 'Protein',
-            inputProps: {
-              position: 'end',
-              child: 'grams',
-            },
-          })}
-          {generateFormTextInput({
-            name: 'fat',
-            control: control,
-            required: true,
-            defaultValue: 10,
-            type: 'number',
-            label: 'Fat',
-            placeholder: 'Fat',
-            inputProps: {
-              position: 'end',
-              child: 'grams',
-            },
-          })}
-          {generateFormTextInput({
-            name: 'carbohydrates',
-            control: control,
-            required: true,
-            defaultValue: 0,
-            type: 'number',
-            label: 'Carbohydrates',
-            placeholder: 'Carbohydrates',
-            inputProps: {
-              position: 'end',
-              child: 'grams',
-            },
-          })}
-        </>
-      )}
-    </Grid>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Grid container justifyContent="center">
+        <FoodsCategorySelect
+          categories={categories}
+          categoriesLoading={categoriesLoading}
+          selectedCategory={selectedCategory}
+          setAddFoodCategoryDialogOpen={() => null}
+          isAdmin={false}
+          handleCategoryChange={handleCategoryChange}
+        />
+        <FoodsSubCategorySelect
+          subCategories={subCategories}
+          subCategoriesLoading={subCategoriesLoading}
+          selectedCategory={selectedCategory}
+          selectedSubCategory={selectedSubCategory}
+          setAddFoodSubCategoryDialogOpen={() => null}
+          handleSubCategoryChange={handleSubCategoryChange}
+          isAdmin={false}
+        />
+        <ConsumablesList
+          foodItems={foodItems}
+          foodItemsLoading={foodItemsLoading}
+          emptySubCategorySelected={emptySubCategorySelected}
+          selectedSubCategory={selectedSubCategory}
+          selectedFoodItem={selectedFoodItem}
+          filterText={filterText}
+          helperText={nameError}
+          setFilterText={setFilterText}
+          setQuantity={setQuantity}
+          reset={reset}
+          setSelectedFoodItem={setSelectedFoodItem}
+        />
+        {selectedFoodItem && (
+          <>
+            <FormattedTextField
+              label="Quantity"
+              autoComplete="off"
+              type="number"
+              value={quantity}
+              onChange={(event) => setQuantity(event.target.value)}
+              inputProps={{
+                position: 'end',
+                child: selectedFoodItem?.foodItemUnit.toLowerCase(),
+              }}
+            />
+            {generateFormTextInput({
+              name: 'calories',
+              control: control,
+              label: 'Calories',
+              placeholder: 'Calories',
+              inputProps: {
+                position: 'end',
+                child: 'cals',
+              },
+            })}
+            {generateFormTextInput({
+              name: 'protein',
+              control: control,
+              label: 'Protein',
+              placeholder: 'Protein',
+              inputProps: {
+                position: 'end',
+                child: 'grams',
+              },
+            })}
+            {generateFormTextInput({
+              name: 'fat',
+              control: control,
+              type: 'number',
+              label: 'Fat',
+              placeholder: 'Fat',
+              inputProps: {
+                position: 'end',
+                child: 'grams',
+              },
+            })}
+            {generateFormTextInput({
+              name: 'carbohydrates',
+              control: control,
+              label: 'Carbohydrates',
+              placeholder: 'Carbohydrates',
+              inputProps: {
+                position: 'end',
+                child: 'grams',
+              },
+            })}
+          </>
+        )}
+      </Grid>
+      <Grid container justifyContent="center">
+        <Button
+          variant="contained"
+          type="submit"
+          disabled={!hasQuantity}
+          sx={[
+            { marginTop: '1rem', marginBottom: '1rem' },
+            matchesMD && { marginTop: 0 },
+          ]}
+        >
+          Submit
+        </Button>
+      </Grid>
+    </form>
   )
 }

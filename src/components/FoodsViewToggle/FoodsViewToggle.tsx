@@ -24,7 +24,7 @@ export const FoodsViewToggle: React.FC<Props> = ({ view, setView }) => {
           height: '60px',
           backgroundColor: 'white',
           border: 'none',
-          padding: '1rem 1rem 0 1rem',
+          padding: '1rem 0 0 0',
           position: 'sticky',
           top: -1,
           zIndex: (theme) => theme.zIndex.drawer + 1,

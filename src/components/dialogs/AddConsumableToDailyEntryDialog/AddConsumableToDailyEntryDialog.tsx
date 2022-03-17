@@ -1,19 +1,18 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry, EntryConsumable } from '../../../model/Model'
+import React, { useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
+import { DailyEntry } from '../../../model/Model'
+import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { AddCustomConsumableForm } from './AddCustomConsumableForm'
 import { AddFoodCatalogConsumableForm } from './AddFoodCatalogConsumableForm'
-import { DataService } from '../../../services/DataService'
 
 interface IFormInput {
   name: string
@@ -39,18 +38,11 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
   setDialogOpenState,
 }) => {
   const [entryMethod, setEntryMethod] = useState<EntryMethod>(null)
-  const {
-    reset,
-    handleSubmit,
-    control,
-    setValue,
-    formState: { errors },
-  } = useForm()
+
   const queryClient = useQueryClient()
   const { matchesMD } = useMediaQueries()
   const handleCloseDialog = () => {
     setDialogOpenState(false)
-    reset()
     setEntryMethod(null)
   }
 
@@ -64,20 +56,6 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
       },
     }
   )
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const { name, calories, protein, fat, carbohydrates } = data
-    const newConsumable: EntryConsumable = {
-      name: name,
-      calories: parseFloat(calories),
-      protein: parseFloat(protein),
-      fat: parseFloat(fat),
-      carbohydrates: parseFloat(carbohydrates),
-    }
-    const updatedConsumables = [...entry.dailyEntryConsumables, newConsumable]
-    const updatedEntry = { ...entry, dailyEntryConsumables: updatedConsumables }
-    updateDailyEntry(updatedEntry)
-  }
 
   return (
     <Dialog open={open} onClose={handleCloseDialog} fullScreen={!matchesMD}>
@@ -112,42 +90,16 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
           </Grid>
         )}
         {entryMethod === 'CUSTOM' && (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <AddCustomConsumableForm control={control} />
-            <Grid container justifyContent="center">
-              <Button
-                variant="contained"
-                type="submit"
-                sx={[
-                  { marginTop: '1rem', marginBottom: '1rem' },
-                  matchesMD && { marginTop: 0 },
-                ]}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </form>
+          <AddCustomConsumableForm
+            entry={entry}
+            updateDailyEntry={updateDailyEntry}
+          />
         )}
         {entryMethod === 'CATALOG' && (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <AddFoodCatalogConsumableForm
-              control={control}
-              setValue={setValue}
-              reset={reset}
-            />
-            <Grid container justifyContent="center">
-              <Button
-                variant="contained"
-                type="submit"
-                sx={[
-                  { marginTop: '1rem', marginBottom: '1rem' },
-                  matchesMD && { marginTop: 0 },
-                ]}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </form>
+          <AddFoodCatalogConsumableForm
+            entry={entry}
+            updateDailyEntry={updateDailyEntry}
+          />
         )}
       </DialogContent>
       <DialogActions>

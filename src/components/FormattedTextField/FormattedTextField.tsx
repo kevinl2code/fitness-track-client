@@ -3,8 +3,10 @@ import React from 'react'
 
 interface IFormattedTextField {
   label: string
+  autoComplete?: 'on' | 'off'
   placeholder?: string
   value?: string | number | null
+  helperText?: string
   onChange?:
     | React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>
     | undefined
@@ -19,8 +21,10 @@ interface IFormattedTextField {
 
 export const FormattedTextField: React.FC<IFormattedTextField> = ({
   label,
+  autoComplete = 'on',
   placeholder,
   value,
+  helperText,
   onChange,
   required = false,
   type,
@@ -41,8 +45,10 @@ export const FormattedTextField: React.FC<IFormattedTextField> = ({
           variant="standard"
           sx={{ width: '100%' }}
           required={required}
+          helperText={helperText}
           type={type}
           label={label}
+          autoComplete={autoComplete}
           value={value}
           onChange={onChange}
           placeholder={placeholder}

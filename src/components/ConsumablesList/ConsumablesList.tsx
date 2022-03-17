@@ -22,6 +22,7 @@ interface Props {
   foodItemsLoading: boolean
   selectedFoodItem: FitnessTrackFoodItem | null
   filterText: string
+  helperText?: string
   reset: UseFormReset<FieldValues>
   setFilterText: React.Dispatch<React.SetStateAction<string>>
   setSelectedFoodItem: React.Dispatch<
@@ -37,6 +38,7 @@ export const ConsumablesList: React.FC<Props> = ({
   foodItemsLoading,
   selectedFoodItem,
   filterText,
+  helperText,
   reset,
   setFilterText,
   setSelectedFoodItem,
@@ -75,6 +77,7 @@ export const ConsumablesList: React.FC<Props> = ({
               <FormattedTextField
                 label="Consumable"
                 value={selectedFoodItem.foodItemName}
+                helperText={helperText}
                 onChange={(event) => setFilterText(event.target.value)}
                 inputProps={{
                   position: 'end',

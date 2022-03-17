@@ -51,7 +51,7 @@ const validationSchema = yup.object({
   // foodItemName regex specifies string cannot start with space or special characters
   foodItemName: yup
     .string()
-    .matches(/^[a-z0-9](?!.*?[^\na-z0-9]{2})/i, 'Please enter a valid name')
+    .matches(/^[a-zA-Z0-9](.*[a-zA-Z0-9])?$/, 'Please enter a valid name')
     .min(3)
     .max(40)
     .required(),

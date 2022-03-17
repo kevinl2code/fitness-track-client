@@ -45,7 +45,7 @@ export const FoodsCategorySelect: React.FC<Props> = ({
       xs={12}
       sx={[
         !matchesMD && {
-          margin: '2rem 8px 1rem 8px',
+          margin: '2rem 0px 1rem 0px',
         },
       ]}
     >

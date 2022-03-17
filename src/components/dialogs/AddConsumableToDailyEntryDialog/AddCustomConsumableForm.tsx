@@ -1,14 +1,84 @@
-import { Grid } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import React from 'react'
-import { Control, Controller, FieldValues } from 'react-hook-form'
+import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
+import { useMediaQueries } from '../../../utilities/useMediaQueries'
+import { UseMutateFunction } from 'react-query'
+import { DailyEntry, EntryConsumable } from '../../../model/Model'
 
 interface Props {
-  control: Control<FieldValues, object>
+  entry: DailyEntry
+  updateDailyEntry: UseMutateFunction<
+    string | undefined,
+    unknown,
+    DailyEntry,
+    unknown
+  >
 }
 
-export const AddCustomConsumableForm: React.FC<Props> = ({ control }) => {
+interface IFormInput {
+  name: string
+  calories: string
+  protein: string
+  fat: string
+  carbohydrates: string
+}
+
+const validationSchema = yup.object({
+  // foodItemName regex specifies string cannot start or end with space or special characters
+  name: yup
+    .string()
+    .matches(/^[a-zA-Z0-9](.*[a-zA-Z0-9])?$/, 'Please enter a valid name')
+    .min(3)
+    .max(40)
+    .required(),
+  calories: yup
+    .number()
+    .typeError('Calories required')
+    .min(0, 'Must be at least 0')
+    .max(10000, 'Must be 10000 or less')
+    .positive()
+    .required('Calories required'),
+  protein: yup
+    .number()
+    .typeError('Protein required')
+    .min(0, 'Must be at least 0')
+    .max(1000, 'Must be 1000 or less')
+    .positive()
+    .required('Protein required'),
+  fat: yup
+    .number()
+    .typeError('Fat required')
+    .min(0, 'Must be at least 0')
+    .max(1000, 'Must be 1000 or less')
+    .positive()
+    .required('Fat required'),
+  carbohydrates: yup
+    .number()
+    .typeError('Carbohydrates required')
+    .min(0, 'Must be at least 0')
+    .max(1000, 'Must be 1000 or less')
+    .positive()
+    .required('Carbohydrates required'),
+})
+
+export const AddCustomConsumableForm: React.FC<Props> = ({
+  entry,
+  updateDailyEntry,
+}) => {
+  const {
+    reset,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  })
+  const { matchesMD } = useMediaQueries()
   const generateFormTextInput = ({
     name,
     control,
@@ -43,68 +113,87 @@ export const AddCustomConsumableForm: React.FC<Props> = ({ control }) => {
     )
   }
 
-  return (
-    <Grid container justifyContent="center">
-      {generateFormTextInput({
-        name: 'name',
-        control: control,
-        required: true,
-        defaultValue: '',
-        label: 'Consumable Name',
-        placeholder: 'Consumable Name',
-      })}
-      {generateFormTextInput({
-        name: 'calories',
-        control: control,
-        required: true,
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const { name, calories, protein, fat, carbohydrates } = data
+    const newConsumable: EntryConsumable = {
+      name: name,
+      calories: parseFloat(calories),
+      protein: parseFloat(protein),
+      fat: parseFloat(fat),
+      carbohydrates: parseFloat(carbohydrates),
+    }
+    const updatedConsumables = [...entry.dailyEntryConsumables, newConsumable]
+    const updatedEntry = { ...entry, dailyEntryConsumables: updatedConsumables }
+    updateDailyEntry(updatedEntry)
+  }
 
-        defaultValue: 0,
-        type: 'number',
-        label: 'Calories',
-        placeholder: 'Calories',
-        inputProps: {
-          position: 'end',
-          child: 'cals',
-        },
-      })}
-      {generateFormTextInput({
-        name: 'protein',
-        control: control,
-        required: true,
-        type: 'number',
-        label: 'Protein',
-        placeholder: 'Protein',
-        inputProps: {
-          position: 'end',
-          child: 'grams',
-        },
-      })}
-      {generateFormTextInput({
-        name: 'fat',
-        control: control,
-        required: true,
-        defaultValue: 0,
-        type: 'number',
-        label: 'Fat',
-        placeholder: 'Fat',
-        inputProps: {
-          position: 'end',
-          child: 'grams',
-        },
-      })}
-      {generateFormTextInput({
-        name: 'carbohydrates',
-        control: control,
-        required: true,
-        defaultValue: 0,
-        type: 'number',
-        label: 'Carbohydrates',
-        placeholder: 'Carbohydrates',
-        inputProps: {
-          position: 'end',
-          child: 'grams',
-        },
-      })}
-    </Grid>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Grid container justifyContent="center">
+        {generateFormTextInput({
+          name: 'name',
+          control: control,
+          defaultValue: '',
+          label: 'Consumable Name',
+          placeholder: 'Consumable Name',
+        })}
+        {generateFormTextInput({
+          name: 'calories',
+          control: control,
+          type: 'number',
+          label: 'Calories',
+          placeholder: 'Calories',
+          inputProps: {
+            position: 'end',
+            child: 'cals',
+          },
+        })}
+        {generateFormTextInput({
+          name: 'protein',
+          control: control,
+          type: 'number',
+          label: 'Protein',
+          placeholder: 'Protein',
+          inputProps: {
+            position: 'end',
+            child: 'grams',
+          },
+        })}
+        {generateFormTextInput({
+          name: 'fat',
+          control: control,
+          type: 'number',
+          label: 'Fat',
+          placeholder: 'Fat',
+          inputProps: {
+            position: 'end',
+            child: 'grams',
+          },
+        })}
+        {generateFormTextInput({
+          name: 'carbohydrates',
+          control: control,
+          type: 'number',
+          label: 'Carbohydrates',
+          placeholder: 'Carbohydrates',
+          inputProps: {
+            position: 'end',
+            child: 'grams',
+          },
+        })}
+      </Grid>
+      <Grid container justifyContent="center">
+        <Button
+          variant="contained"
+          type="submit"
+          sx={[
+            { marginTop: '1rem', marginBottom: '1rem' },
+            matchesMD && { marginTop: 0 },
+          ]}
+        >
+          Submit
+        </Button>
+      </Grid>
+    </form>
   )
 }
