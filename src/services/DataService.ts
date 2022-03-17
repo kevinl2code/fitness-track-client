@@ -63,6 +63,9 @@ export class DataService {
     }
     try {
       const result = await fetch(requestUrl, requestOptions)
+      if (result.status === 401) {
+        console.log('Not authorized')
+      }
       const resultJSON = await result.json()
 
       return JSON.stringify(resultJSON)
@@ -100,6 +103,9 @@ export class DataService {
     }
     try {
       const result = await fetch(requestUrl, requestOptions)
+      if (result.status === 401) {
+        console.log('Not authorized')
+      }
       const resultJSON = await result.json()
 
       return resultJSON
@@ -118,6 +124,9 @@ export class DataService {
             Authorization: this.getUserIdToken(),
           },
         })
+        if (requestResult.status === 401) {
+          console.log('Not authorized')
+        }
         const responseJSON = await requestResult.json()
 
         return responseJSON
@@ -141,6 +150,9 @@ export class DataService {
             Authorization: this.getUserIdToken(),
           },
         })
+        if (requestResult.status === 401) {
+          console.log('Not authorized')
+        }
         const responseJSON = await requestResult.json()
 
         return responseJSON
@@ -165,7 +177,9 @@ export class DataService {
     })
     try {
       const responseJSON = await requestResult.json()
-
+      if (requestResult.status === 401) {
+        console.log('Not authorized')
+      }
       return responseJSON
     } catch (error) {
       console.log({ dataServiceError: error })
@@ -183,6 +197,9 @@ export class DataService {
     }
     try {
       const result = await fetch(requestUrl, requestOptions)
+      if (result.status === 401) {
+        console.log('Not authorized')
+      }
       const resultJSON = await result.json()
 
       return JSON.stringify(resultJSON.id)

@@ -58,6 +58,9 @@ function App() {
           sortedCycles.length > 0 && setCycleContext(sortedCycles[0])
         }
       },
+      onError: (error) => {
+        console.log(`Network Error: ${error}`)
+      },
     }
   )
   // console.log(cycleContext)
@@ -72,6 +75,9 @@ function App() {
             setEntriesContext(data)
           }
         },
+        onError: (error) => {
+          console.log(`Network Error: ${error}`)
+        },
       }
     )
 
@@ -85,6 +91,9 @@ function App() {
           if (data) {
             setUserFoodItemsContext(data)
           }
+        },
+        onError: (error) => {
+          console.log(`Network Error: ${error}`)
         },
       }
     )
@@ -120,6 +129,10 @@ function App() {
       setUserContext(null)
       setCycleContext(null)
     }
+  }
+
+  window.onerror = (e) => {
+    console.log(e)
   }
 
   const handleLogout = () => {

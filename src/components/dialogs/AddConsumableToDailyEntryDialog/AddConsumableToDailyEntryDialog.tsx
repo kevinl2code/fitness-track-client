@@ -89,6 +89,7 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
               variant="outlined"
               size="large"
               onClick={() => setEntryMethod('CATALOG')}
+              sx={{ marginBottom: '1rem' }}
             >
               Food Catalog
             </Button>
@@ -96,6 +97,7 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
               variant="outlined"
               size="large"
               onClick={() => setEntryMethod('MYFOODS')}
+              sx={{ marginBottom: '1rem' }}
             >
               My Foods
             </Button>
@@ -103,6 +105,7 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
               variant="outlined"
               size="large"
               onClick={() => setEntryMethod('CUSTOM')}
+              sx={{ marginBottom: '1rem' }}
             >
               Custom
             </Button>
