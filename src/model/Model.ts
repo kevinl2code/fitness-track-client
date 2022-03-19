@@ -19,6 +19,18 @@ export interface EntryConsumable {
   carbohydrates: number
 }
 
+export interface FoodBuilderIngredient {
+  name: string
+  foodItemId: string
+  foodItemUnit: FoodItemUnits
+  servingSize: number
+  quantity: number
+  calories: number
+  protein: number
+  fat: number
+  carbohydrates: number
+}
+
 export type ActivityLevel =
   | 'SEDENTARY'
   | 'LIGHTLY_ACTIVE'

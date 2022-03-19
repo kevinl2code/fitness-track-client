@@ -12,13 +12,34 @@ import AddIcon from '@mui/icons-material/Add'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import ClearIcon from '@mui/icons-material/Clear'
 import { borders } from '@mui/system'
-import React from 'react'
+import React, { useState } from 'react'
+import { FitnessTrackFoodItem, FoodBuilderIngredient } from '../../model/Model'
+import { ContactMail } from '@mui/icons-material'
 
 interface Props {
+  ingredients: FoodBuilderIngredient[]
+  setIngredients: React.Dispatch<React.SetStateAction<FoodBuilderIngredient[]>>
   setFoodSelectorOpen: (value: React.SetStateAction<boolean>) => void
 }
 
-export const IngredientsInput: React.FC<Props> = ({ setFoodSelectorOpen }) => {
+export const IngredientsInput: React.FC<Props> = ({
+  ingredients,
+  setIngredients,
+  setFoodSelectorOpen,
+}) => {
+  const hasIngredients = ingredients.length > 0
+
+  const handleDelete = (ingredient: FoodBuilderIngredient) => {
+    const updatedIngredients = ingredients.filter(({ foodItemId }) => {
+      return foodItemId !== ingredient.foodItemId
+    })
+    console.log({
+      foodItem: ingredient,
+      ingredients: ingredients,
+    })
+    setIngredients(updatedIngredients)
+  }
+
   return (
     <Grid
       item
@@ -36,6 +57,7 @@ export const IngredientsInput: React.FC<Props> = ({ setFoodSelectorOpen }) => {
         container
         sx={{
           borderBottom: '1.5px solid rgba(0, 0, 0, 0.22)',
+          position: 'relative',
         }}
       >
         <Grid
@@ -45,43 +67,63 @@ export const IngredientsInput: React.FC<Props> = ({ setFoodSelectorOpen }) => {
           alignItems="flex-end"
           sx={{ height: '48px' }}
         >
-          <Typography sx={{ opacity: 0.75, paddingBottom: '1px' }}>
+          <Typography
+            sx={[
+              {
+                opacity: 0.75,
+                paddingBottom: '1px',
+                position: 'absolute',
+                height: '30px',
+                bottom: 0,
+                left: 0,
+              },
+              hasIngredients && {
+                top: 0,
+                fontSize: '14px',
+                // color: 'rgba(0, 0, 0, 0.6)',
+              },
+            ]}
+          >
             Ingredients
           </Typography>
-          {/* <Button variant="outlined" onClick={() => setFoodSelectorOpen(true)}>
-          Add Ingredient
-        </Button> */}
           <IconButton
             aria-label="delete"
             size="small"
             onClick={() => setFoodSelectorOpen(true)}
+            sx={{
+              position: 'absolute',
+              bottom: '0',
+              right: 0,
+            }}
           >
-            {/* <AddIcon sx={{ color: 'white' }} fontSize="large" /> */}
             <AddCircleOutlineIcon />
           </IconButton>
         </Grid>
-        <Chip
-          label={
-            <Typography
-              sx={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              dhdthdthtdjfzzzzzzzzzzzzzzvhjfghjgkhhjgkjhghjk
-            </Typography>
-          }
-          onDelete={() => null}
-          sx={[
-            {
-              width: '100%',
-              maxWidth: '100%',
-              marginBottom: '4px',
-              justifyContent: 'space-between',
-            },
-          ]}
-        />
+        {ingredients.map((ingredient, index) => (
+          <Chip
+            key={`${ingredient.name}-${index}`}
+            label={
+              <Typography
+                sx={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {ingredient.name}
+              </Typography>
+            }
+            onDelete={() => handleDelete(ingredient)}
+            sx={[
+              {
+                width: '85%',
+                maxWidth: '85%',
+                marginBottom: '4px',
+                justifyContent: 'space-between',
+              },
+            ]}
+          />
+        ))}
       </Grid>
     </Grid>
   )

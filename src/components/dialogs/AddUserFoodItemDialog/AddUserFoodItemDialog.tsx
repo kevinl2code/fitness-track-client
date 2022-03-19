@@ -1,26 +1,15 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  Dialog,
-  Grid,
-  Typography,
-} from '@mui/material'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Button, Dialog, DialogContent, DialogTitle, Grid } from '@mui/material'
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { FoodItemUnits, UserFoodItem, UserState } from '../../../model/Model'
-import { useMediaQueries } from '../../../utilities/useMediaQueries'
-import { v4 } from 'uuid'
-import { FormTextInput } from '../../form/FormTextInput'
-import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
-import { FormSelectInput } from '../../form/FormSelectInput'
-import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
 import { useMutation, useQueryClient } from 'react-query'
+import { v4 } from 'uuid'
+import * as yup from 'yup'
+import { FoodItemUnits, UserFoodItem, UserState } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
+import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { AddCustomUserFoodItemForm } from './AddCustomUserFoodItemForm'
-import { AddFoodBuilderUserFoodItem } from './AddFoodBuilderUserFoodItem'
+import { AddFoodBuilderUserFoodItemForm } from './AddFoodBuilderUserFoodItemForm'
 
 interface IFormInput {
   foodItemName: string
@@ -150,86 +139,69 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
   }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>
+      <DialogTitle>
+        {' '}
+        {entryMethod === 'BUILDER' ? 'Build A Food Item' : 'Create A Food Item'}
+      </DialogTitle>
       <Grid container sx={{ height: '100%' }}>
-        <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h4" align="center">
-              {entryMethod === 'BUILDER'
-                ? 'Build A Food Item'
-                : 'Create A Food Item'}
-            </Typography>
-          </CardContent>
-          <CardContent>
-            {entryMethod === null && (
-              <Grid container direction={matchesMD ? 'row' : 'column'}>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={() => setEntryMethod('BUILDER')}
-                  sx={{ marginBottom: '1rem' }}
-                >
-                  Food Builder
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={() => setEntryMethod('CUSTOM')}
-                  sx={{ marginBottom: '1rem' }}
-                >
-                  Custom
-                </Button>
-              </Grid>
-            )}
-            {entryMethod === 'CUSTOM' && (
-              <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-                <AddCustomUserFoodItemForm
-                  control={control}
-                  register={register}
-                />
-                <Grid item xs={12} container justifyContent="center">
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    sx={[
-                      { marginTop: '1rem', marginBottom: '1rem' },
-                      matchesMD && { marginTop: 0 },
-                    ]}
-                  >
-                    Create
-                  </Button>
-                </Grid>
-              </form>
-            )}
-            {entryMethod === 'BUILDER' && (
-              <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-                <AddFoodBuilderUserFoodItem
-                  control={control}
-                  register={register}
-                />
-                <Grid item xs={12} container justifyContent="center">
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    sx={[
-                      { marginTop: '1rem', marginBottom: '1rem' },
-                      matchesMD && { marginTop: 0 },
-                    ]}
-                  >
-                    Create
-                  </Button>
-                </Grid>
-              </form>
-            )}
-            <Grid item xs={12} container justifyContent="center">
+        <DialogContent sx={{ paddingBottom: 0 }}>
+          {entryMethod === null && (
+            <Grid container direction={matchesMD ? 'row' : 'column'}>
               <Button
-                onClick={() => handleCancel()}
+                variant="outlined"
+                size="large"
+                onClick={() => setEntryMethod('BUILDER')}
                 sx={{ marginBottom: '1rem' }}
               >
-                Cancel
+                Food Builder
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={() => setEntryMethod('CUSTOM')}
+                sx={{ marginBottom: '1rem' }}
+              >
+                Custom
               </Button>
             </Grid>
-          </CardContent>
-        </Card>
+          )}
+          {entryMethod === 'CUSTOM' && (
+            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+              <AddCustomUserFoodItemForm
+                control={control}
+                register={register}
+              />
+              <Grid item xs={12} container justifyContent="center">
+                <Button
+                  variant="contained"
+                  type="submit"
+                  sx={[
+                    { marginTop: '1rem', marginBottom: '1rem' },
+                    matchesMD && { marginTop: 0 },
+                  ]}
+                >
+                  Create
+                </Button>
+              </Grid>
+            </form>
+          )}
+          {entryMethod === 'BUILDER' && (
+            // <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+            <AddFoodBuilderUserFoodItemForm
+              user={user}
+              dataService={dataService}
+              setAddFoodDialogOpen={setAddFoodDialogOpen}
+            />
+          )}
+          <Grid item xs={12} container justifyContent="center">
+            <Button
+              onClick={() => handleCancel()}
+              sx={{ marginBottom: '1rem' }}
+            >
+              Cancel
+            </Button>
+          </Grid>
+        </DialogContent>
       </Grid>
     </Dialog>
   )

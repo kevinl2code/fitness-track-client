@@ -159,48 +159,50 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
     setQuantity('')
     reset()
   }
-  if (selectedFoodItem) {
-    const valuePerUnit = {
-      calories: selectedFoodItem.calories / selectedFoodItem.servingSize,
-      protein: selectedFoodItem.protein / selectedFoodItem.servingSize,
-      fat: selectedFoodItem.fat / selectedFoodItem.servingSize,
-      carbohydrates:
-        selectedFoodItem.carbohydrates / selectedFoodItem.servingSize,
+
+  useEffect(() => {
+    if (selectedFoodItem) {
+      const valuePerUnit = {
+        calories: selectedFoodItem.calories / selectedFoodItem.servingSize,
+        protein: selectedFoodItem.protein / selectedFoodItem.servingSize,
+        fat: selectedFoodItem.fat / selectedFoodItem.servingSize,
+        carbohydrates:
+          selectedFoodItem.carbohydrates / selectedFoodItem.servingSize,
+      }
+      const hasQuantity = quantity.length > 0
+      const calories = hasQuantity
+        ? (parseFloat(quantity) * valuePerUnit.calories)
+            .toFixed(2)
+            .replace(/[.,]00$/, '')
+            .toString()
+        : ''
+      const protein = hasQuantity
+        ? (parseFloat(quantity) * valuePerUnit.protein)
+            .toFixed(2)
+            .replace(/[.,]00$/, '')
+            .toString()
+        : ''
+      const fat = hasQuantity
+        ? (parseFloat(quantity) * valuePerUnit.fat)
+            .toFixed(2)
+            .replace(/[.,]00$/, '')
+            .toString()
+        : ''
+      const carbohydrates = hasQuantity
+        ? (parseFloat(quantity) * valuePerUnit.carbohydrates)
+            .toFixed(2)
+            .replace(/[.,]00$/, '')
+            .toString()
+        : ''
+      setValue('name', selectedFoodItem?.foodItemName)
+      setValue('calories', calories)
+      setValue('protein', protein)
+      setValue('fat', fat)
+      setValue('carbohydrates', carbohydrates)
     }
-    const hasQuantity = quantity.length > 0
-    const calories = hasQuantity
-      ? (parseFloat(quantity) * valuePerUnit.calories)
-          .toFixed(2)
-          .replace(/[.,]00$/, '')
-          .toString()
-      : ''
-    const protein = hasQuantity
-      ? (parseFloat(quantity) * valuePerUnit.protein)
-          .toFixed(2)
-          .replace(/[.,]00$/, '')
-          .toString()
-      : ''
-    const fat = hasQuantity
-      ? (parseFloat(quantity) * valuePerUnit.fat)
-          .toFixed(2)
-          .replace(/[.,]00$/, '')
-          .toString()
-      : ''
-    const carbohydrates = hasQuantity
-      ? (parseFloat(quantity) * valuePerUnit.carbohydrates)
-          .toFixed(2)
-          .replace(/[.,]00$/, '')
-          .toString()
-      : ''
-    setValue('name', selectedFoodItem?.foodItemName)
-    setValue('calories', calories)
-    setValue('protein', protein)
-    setValue('fat', fat)
-    setValue('carbohydrates', carbohydrates)
-  }
+  }, [quantity, selectedFoodItem, setValue])
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(`Submit: ${data}`)
     const { name, calories, protein, fat, carbohydrates } = data
     const newConsumable: EntryConsumable = {
       name: name,
@@ -260,7 +262,7 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form key="addFoodCatalogConsumableForm" onSubmit={handleSubmit(onSubmit)}>
       <Grid container justifyContent="center">
         <FoodsCategorySelect
           categories={categories}
