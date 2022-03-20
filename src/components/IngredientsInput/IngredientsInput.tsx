@@ -65,7 +65,15 @@ export const IngredientsInput: React.FC<Props> = ({
           container
           justifyContent="space-between"
           alignItems="flex-end"
-          sx={{ height: '48px' }}
+          sx={[
+            { height: '48px' },
+            hasIngredients && {
+              height: '26px',
+              // top: 0,
+              // fontSize: '14px',
+              // color: 'rgba(0, 0, 0, 0.6)',
+            },
+          ]}
         >
           <Typography
             sx={[

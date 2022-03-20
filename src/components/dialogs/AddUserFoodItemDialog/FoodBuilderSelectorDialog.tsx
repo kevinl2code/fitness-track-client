@@ -133,8 +133,11 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
     () => dataService.getFoodItems(selectedCategory, selectedSubCategory),
     {
       enabled: !!selectedSubCategory,
-      onSuccess: (data) => {
-        setFoodItems(data)
+      onSuccess: (data: FitnessTrackFoodItem[]) => {
+        const filteredFoodItems = data.filter((foodItem) => {
+          return foodItem.foodItemUnit === 'GRAMS'
+        })
+        setFoodItems(filteredFoodItems)
       },
     }
   )
@@ -339,7 +342,7 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
                 xs={12}
                 sx={[
                   !matchesMD && {
-                    margin: '0px 8px 1rem 8px',
+                    margin: '0px 0px 1rem 0px',
                   },
                 ]}
               >

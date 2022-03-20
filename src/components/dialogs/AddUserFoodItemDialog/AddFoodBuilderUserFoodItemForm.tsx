@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Grid } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { v4 } from 'uuid'
@@ -29,7 +29,7 @@ interface Props {
 interface IFormInput {
   foodItemName: string
   foodItemUnit: FoodItemUnits
-  servingSize: string
+  quantity: string
   calories: string
   protein: string
   fat: string
@@ -49,41 +49,35 @@ const validationSchema = yup.object({
     .string()
     .typeError('Selection required')
     .matches(/^GRAMS$|^OUNCES$|^EACH$/g, 'Selection required'),
-  servingSize: yup
+  quantity: yup
     .number()
-    .typeError('Serving size required')
-    .min(1, 'Must be over 1')
+    .typeError('Quantity required')
+    .min(1, 'Must be at least 1')
     .max(2000, 'Must be under 2000')
-    .positive()
-    .integer()
     .required('Serving size required'),
   calories: yup
     .number()
     .typeError('Calories required')
     .min(0, 'Must be at least 0')
     .max(10000, 'Must be 10000 or less')
-    .positive()
     .required('Calories required'),
   protein: yup
     .number()
     .typeError('Protein required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Protein required'),
   fat: yup
     .number()
     .typeError('Fat required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Fat required'),
   carbohydrates: yup
     .number()
     .typeError('Carbohydrates required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Carbohydrates required'),
 })
 
@@ -97,6 +91,8 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     reset,
     control,
     formState: { errors },
@@ -105,6 +101,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
   })
   const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
+  const foodItemUnit = watch('foodItemUnit')
   const { mutate: createUserFoodItem, isLoading } = useMutation(
     (newFoodItem: UserFoodItem) => dataService.createUserFoodItem(newFoodItem),
     {
@@ -121,6 +118,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
     control,
     label,
     placeholder,
+    disabled,
     required,
     type,
     inputProps,
@@ -141,6 +139,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
           control={control}
           label={label}
           required={required}
+          disabled={disabled}
           type={type}
           name={name}
           placeholder={placeholder}
@@ -154,10 +153,6 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
     {
       name: 'Grams',
       value: 'GRAMS',
-    },
-    {
-      name: 'Ounces',
-      value: 'OUNCES',
     },
     {
       name: 'Each',
@@ -199,6 +194,80 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
     )
   }
 
+  console.log({ ingredients: ingredients })
+  console.log({ unit: foodItemUnit })
+  useEffect(() => {
+    if (ingredients.length > 0) {
+      const builderFoodItemValues: {
+        quantity: number
+        calories: number
+        protein: number
+        fat: number
+        carbohydrates: number
+      } = ingredients.reduce(
+        (values, ingredient) => {
+          return {
+            ...values,
+            quantity: values.quantity + ingredient.quantity,
+            calories: values.calories + ingredient.calories,
+            protein: values.protein + ingredient.protein,
+            fat: values.fat + ingredient.fat,
+            carbohydrates: values.carbohydrates + ingredient.carbohydrates,
+          }
+        },
+        {
+          quantity: 0,
+          calories: 0,
+          protein: 0,
+          fat: 0,
+          carbohydrates: 0,
+        }
+      )
+      const { calories, protein, fat, carbohydrates, quantity } =
+        builderFoodItemValues
+      // const valuePerUnit = {
+      //   calories: selectedFoodItem.calories / selectedFoodItem.servingSize,
+      //   protein: selectedFoodItem.protein / selectedFoodItem.servingSize,
+      //   fat: selectedFoodItem.fat / selectedFoodItem.servingSize,
+      //   carbohydrates:
+      //     selectedFoodItem.carbohydrates / selectedFoodItem.servingSize,
+      // }
+      // const hasQuantity = quantity.length > 0
+      // const calories = hasQuantity
+      //   ? (parseFloat(quantity) * valuePerUnit.calories)
+      //       .toFixed(2)
+      //       .replace(/[.,]00$/, '')
+      //       .toString()
+      //   : ''
+      // const protein = hasQuantity
+      //   ? (parseFloat(quantity) * valuePerUnit.protein)
+      //       .toFixed(2)
+      //       .replace(/[.,]00$/, '')
+      //       .toString()
+      //   : ''
+      // const fat = hasQuantity
+      //   ? (parseFloat(quantity) * valuePerUnit.fat)
+      //       .toFixed(2)
+      //       .replace(/[.,]00$/, '')
+      //       .toString()
+      //   : ''
+      // const carbohydrates = hasQuantity
+      //   ? (parseFloat(quantity) * valuePerUnit.carbohydrates)
+      //       .toFixed(2)
+      //       .replace(/[.,]00$/, '')
+      //       .toString()
+      //   : ''
+
+      const dynamicAmount = foodItemUnit === 'EACH' ? 1 : quantity
+
+      setValue('quantity', dynamicAmount)
+      setValue('calories', calories)
+      setValue('protein', protein)
+      setValue('fat', fat)
+      setValue('carbohydrates', carbohydrates)
+    }
+  }, [foodItemUnit, ingredients, setValue])
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const newFoodItemId = v4()
 
@@ -210,7 +279,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
       type: 'FOOD',
       foodItemName: data.foodItemName,
       foodItemUnit: data.foodItemUnit,
-      servingSize: parseFloat(data.servingSize),
+      servingSize: parseFloat(data.quantity),
       calories: parseFloat(data.calories),
       protein: parseFloat(data.protein),
       fat: parseFloat(data.fat),
@@ -245,17 +314,18 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
           {generateSelectInput({
             name: 'foodItemUnit',
             values: foodItemUnitValues,
-            defaultValue: '',
+            defaultValue: 'GRAMS',
             label: 'Food Units',
             control: control,
             register: register,
           })}
           {generateFormTextInput({
-            name: 'servingSize',
+            name: 'quantity',
             control: control,
             type: 'number',
-            label: 'Serving Size',
-            placeholder: 'Serving Size',
+            label: 'Quantity',
+            placeholder: 'Quantity',
+            disabled: true,
           })}
           {generateFormTextInput({
             name: 'calories',
@@ -263,6 +333,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
             type: 'number',
             label: 'Calories',
             placeholder: 'Calories',
+            disabled: true,
           })}
           {generateFormTextInput({
             name: 'protein',
@@ -270,6 +341,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
             type: 'number',
             label: 'Protein',
             placeholder: 'Protein',
+            disabled: true,
           })}
           {generateFormTextInput({
             name: 'fat',
@@ -277,6 +349,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
             type: 'number',
             label: 'Fat',
             placeholder: 'Fat',
+            disabled: true,
           })}
           {generateFormTextInput({
             name: 'carbohydrates',
@@ -284,6 +357,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
             type: 'number',
             label: 'Carbohydrates',
             placeholder: 'Carbohydrates',
+            disabled: true,
           })}
         </Grid>
         <Grid item xs={12} container justifyContent="center">
