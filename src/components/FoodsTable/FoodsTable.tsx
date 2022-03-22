@@ -6,7 +6,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Card,
   Grid,
   Typography,
   TextField,
@@ -26,17 +25,13 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import { EditFitnessTrackFoodItemDialog } from '../dialogs/EditFitnessTrackFoodItemDialog/EditFitnessTrackFoodItemDialog'
+import { EditUserFoodItemDialog } from '../dialogs/EditUserFoodItemDialog'
 
 interface Props {
   isAdmin: boolean
   foodItems: FitnessTrackFoodItem[] | UserFoodItem[]
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setEditFoodDialogOpen: React.Dispatch<
-    React.SetStateAction<{
-      open: boolean
-      foodItem: FitnessTrackFoodItem | null
-    }>
-  >
   setConfirmDeleteDialogOpen: React.Dispatch<
     React.SetStateAction<{
       open: boolean
@@ -55,12 +50,26 @@ export const FoodsTable: React.FC<Props> = ({
   isAdmin,
   foodItems,
   setAddFoodDialogOpen,
-  setEditFoodDialogOpen,
   setConfirmDeleteDialogOpen,
 }) => {
   const [filterText, setFilterText] = useState('')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [editFitnessTrackFoodDialogOpen, setEditFitnessTrackFoodDialogOpen] =
+    useState<{
+      open: boolean
+      foodItem: FitnessTrackFoodItem | null
+    }>({
+      open: false,
+      foodItem: null,
+    })
+  const [editUserFoodDialogOpen, setEditUserFoodDialogOpen] = useState<{
+    open: boolean
+    foodItem: UserFoodItem | null
+  }>({
+    open: false,
+    foodItem: null,
+  })
   const { matchesMD } = useMediaQueries()
   const sortedFoodItems: FitnessTrackFoodItem[] | UserFoodItem[] =
     foodItems.sort((a, b) => {
@@ -121,7 +130,12 @@ export const FoodsTable: React.FC<Props> = ({
 
   const handleEditClick = (foodItem: FitnessTrackFoodItem | UserFoodItem) => {
     if (isFitnessTrackFoodItem(foodItem)) {
-      setEditFoodDialogOpen({
+      setEditFitnessTrackFoodDialogOpen({
+        open: true,
+        foodItem: foodItem,
+      })
+    } else {
+      setEditUserFoodDialogOpen({
         open: true,
         foodItem: foodItem,
       })
@@ -265,112 +279,126 @@ export const FoodsTable: React.FC<Props> = ({
   )
 
   return (
-    <Grid item md={8} xs={12}>
-      <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
-        <Grid container>
-          <Grid
-            container
-            item
-            xs={12}
-            justifyContent="flex-end"
-            alignItems="center"
-          >
-            <Grid container justifyContent="space-between" item xs={6}>
-              <TextField
-                variant="standard"
-                id="outlined-start-adornment"
-                placeholder="Search"
-                sx={{ width: '100%', paddingLeft: 0 }}
-                onChange={(event) => setFilterText(event.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <TableContainer component={Paper} elevation={0}>
-              {foodItems.length === 0 ? (
-                emptyTable
-              ) : (
-                <Table size="small" aria-label="food-items-table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        sx={{
-                          width: '10%',
-                          paddingLeft: '0px',
-                          paddingRight: '0px',
-                        }}
-                      />
-                      <TableCell>Name</TableCell>
-                      {isAdmin && (
-                        <>
-                          <TableCell
-                            align="center"
-                            size="small"
-                            colSpan={2}
-                            sx={{
-                              paddingLeft: '0px',
-                              paddingRight: '0px',
-                            }}
-                          >
-                            Actions
-                          </TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>{generatedRows}</TableBody>
-                </Table>
-              )}
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={filteredFoodItems.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              sx={[
-                {
-                  '& .MuiTablePagination-toolbar': {
-                    paddingLeft: '6px',
-                    paddingRight: '0px',
-                  },
-                  '& .MuiTablePagination-actions': {
-                    marginLeft: '12px',
-                  },
-                },
-              ]}
-            />
-          </Grid>
-          {isAdmin && (
+    <>
+      <EditFitnessTrackFoodItemDialog
+        open={editFitnessTrackFoodDialogOpen.open}
+        // dataService={dataService}
+        foodItem={editFitnessTrackFoodDialogOpen.foodItem}
+        setEditFoodDialogOpen={setEditFitnessTrackFoodDialogOpen}
+        // fetchFoodItems={fetchFoodItems}
+      />
+      <EditUserFoodItemDialog
+        open={editUserFoodDialogOpen.open}
+        foodItem={editUserFoodDialogOpen.foodItem}
+        setEditFoodDialogOpen={setEditUserFoodDialogOpen}
+      />
+      <Grid item md={8} xs={12}>
+        <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
+          <Grid container>
             <Grid
+              container
               item
               xs={12}
-              container
-              justifyContent="center"
-              sx={{ marginTop: '1rem' }}
+              justifyContent="flex-end"
+              alignItems="center"
             >
-              <Button
-                color="primary"
-                variant="contained"
-                aria-label="add consumable"
-                onClick={() => setAddFoodDialogOpen(true)}
-                endIcon={<AddCircleIcon fontSize="large" />}
-              >
-                Add New
-              </Button>
+              <Grid container justifyContent="space-between" item xs={6}>
+                <TextField
+                  variant="standard"
+                  id="outlined-start-adornment"
+                  placeholder="Search"
+                  sx={{ width: '100%', paddingLeft: 0 }}
+                  onChange={(event) => setFilterText(event.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
             </Grid>
-          )}
-        </Grid>
-      </Paper>
-    </Grid>
+            <Grid item xs={12}>
+              <TableContainer component={Paper} elevation={0}>
+                {foodItems.length === 0 ? (
+                  emptyTable
+                ) : (
+                  <Table size="small" aria-label="food-items-table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          sx={{
+                            width: '10%',
+                            paddingLeft: '0px',
+                            paddingRight: '0px',
+                          }}
+                        />
+                        <TableCell>Name</TableCell>
+                        {isAdmin && (
+                          <>
+                            <TableCell
+                              align="center"
+                              size="small"
+                              colSpan={2}
+                              sx={{
+                                paddingLeft: '0px',
+                                paddingRight: '0px',
+                              }}
+                            >
+                              Actions
+                            </TableCell>
+                          </>
+                        )}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{generatedRows}</TableBody>
+                  </Table>
+                )}
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={filteredFoodItems.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={[
+                  {
+                    '& .MuiTablePagination-toolbar': {
+                      paddingLeft: '6px',
+                      paddingRight: '0px',
+                    },
+                    '& .MuiTablePagination-actions': {
+                      marginLeft: '12px',
+                    },
+                  },
+                ]}
+              />
+            </Grid>
+            {isAdmin && (
+              <Grid
+                item
+                xs={12}
+                container
+                justifyContent="center"
+                sx={{ marginTop: '1rem' }}
+              >
+                <Button
+                  color="primary"
+                  variant="contained"
+                  aria-label="add consumable"
+                  onClick={() => setAddFoodDialogOpen(true)}
+                  endIcon={<AddCircleIcon fontSize="large" />}
+                >
+                  Add New
+                </Button>
+              </Grid>
+            )}
+          </Grid>
+        </Paper>
+      </Grid>
+    </>
   )
 }

@@ -1,11 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Grid } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
-import { v4 } from 'uuid'
 import * as yup from 'yup'
-import { FoodItemUnits, UserFoodItem, UserState } from '../../../model/Model'
+import { FoodItemUnits, UserFoodItem } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormSelectInput } from '../../form/FormSelectInput'
@@ -16,30 +15,28 @@ import {
 } from '../../form/FormTextInput/FormTextInput'
 
 interface Props {
-  user: UserState
+  foodItem: UserFoodItem | null
   dataService: DataService
-  setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setEditFoodDialogOpen: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean
+      foodItem: UserFoodItem | null
+    }>
+  >
 }
 
 interface IFormInput {
   foodItemName: string
   foodItemUnit: FoodItemUnits
-  servingSize: string
+  quantity: string
   calories: string
   protein: string
   fat: string
   carbohydrates: string
-  foodItemReference: string
 }
 
 const validationSchema = yup.object({
-  // foodItemName regex specifies string cannot start with space or special characters
-  foodItemName: yup
-    .string()
-    .matches(/^[a-z0-9](?!.*?[^\na-z0-9]{2})/i, 'Please enter a valid name')
-    .min(3)
-    .max(40)
-    .required(),
+  foodItemName: yup.string().max(80).required(),
   foodItemUnit: yup
     .string()
     .typeError('Selection required')
@@ -47,8 +44,9 @@ const validationSchema = yup.object({
   servingSize: yup
     .number()
     .typeError('Serving size required')
-    .min(1, 'Must be at least 1')
+    .min(1, 'Must be over 1')
     .max(2000, 'Must be under 2000')
+    .integer()
     .required('Serving size required'),
   calories: yup
     .number()
@@ -76,15 +74,17 @@ const validationSchema = yup.object({
     .required('Carbohydrates required'),
 })
 
-export const AddCustomUserFoodItemForm: React.FC<Props> = ({
-  user,
+export const EditCustomUserFoodItemForm: React.FC<Props> = ({
+  foodItem,
   dataService,
-  setAddFoodDialogOpen,
+  setEditFoodDialogOpen,
 }) => {
   const {
     register,
     handleSubmit,
+    watch,
     reset,
+    setValue,
     control,
     formState: { errors },
   } = useForm({
@@ -92,16 +92,45 @@ export const AddCustomUserFoodItemForm: React.FC<Props> = ({
   })
   const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
-  const { mutate: createUserFoodItem, isLoading } = useMutation(
-    (newFoodItem: UserFoodItem) => dataService.createUserFoodItem(newFoodItem),
+
+  useEffect(() => {
+    setValue('foodItemName', foodItem?.foodItemName)
+    setValue('foodItemUnit', foodItem?.foodItemUnit)
+    setValue('servingSize', foodItem?.servingSize)
+    setValue('calories', foodItem?.calories)
+    setValue('protein', foodItem?.protein)
+    setValue('fat', foodItem?.fat)
+    setValue('carbohydrates', foodItem?.carbohydrates)
+  }, [
+    foodItem?.calories,
+    foodItem?.carbohydrates,
+    foodItem?.fat,
+    foodItem?.foodItemName,
+    foodItem?.foodItemUnit,
+    foodItem?.protein,
+    foodItem?.servingSize,
+    setValue,
+  ])
+
+  const { mutate: updateFoodItem, isLoading } = useMutation(
+    (updatedFoodItem: UserFoodItem) =>
+      dataService.updateUserFoodItem(updatedFoodItem),
     {
       onSuccess: () => {
+        // fetchFoodItems()
         queryClient.invalidateQueries('userFoodItems')
-        reset()
-        setAddFoodDialogOpen(false)
+        setEditFoodDialogOpen({
+          open: false,
+          foodItem: null,
+        })
       },
     }
   )
+
+  if (!foodItem) {
+    return null
+  }
+
   const generateFormTextInput = ({
     name,
     control,
@@ -186,25 +215,25 @@ export const AddCustomUserFoodItemForm: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const newFoodItemId = v4()
-
-    const newFoodItem: UserFoodItem = {
-      PK: user.sub,
-      SK: `F_${newFoodItemId}`,
-      GSI2PK: `U_${user.sub}`,
-      GSI2SK: 'FOODS',
-      type: 'FOOD',
+    // const newFoodItemId = v4()
+    console.log(data)
+    const updatedFoodItem: UserFoodItem = {
+      PK: foodItem?.PK,
+      SK: foodItem?.SK,
+      GSI2PK: foodItem?.GSI2PK,
+      GSI2SK: foodItem?.GSI2SK,
+      type: foodItem.type,
       foodItemName: data.foodItemName,
       foodItemUnit: data.foodItemUnit,
-      servingSize: parseFloat(data.servingSize),
+      servingSize: parseFloat(data.quantity),
       calories: parseFloat(data.calories),
       protein: parseFloat(data.protein),
       fat: parseFloat(data.fat),
       carbohydrates: parseFloat(data.carbohydrates),
-      foodItemId: newFoodItemId,
+      foodItemId: foodItem?.foodItemId,
     }
 
-    createUserFoodItem(newFoodItem)
+    updateFoodItem(updatedFoodItem)
   }
 
   return (
@@ -269,7 +298,7 @@ export const AddCustomUserFoodItemForm: React.FC<Props> = ({
             matchesMD && { marginTop: 0 },
           ]}
         >
-          Create
+          Update
         </Button>
       </Grid>
     </form>

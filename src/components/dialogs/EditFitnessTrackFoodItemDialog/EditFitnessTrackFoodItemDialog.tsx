@@ -7,15 +7,11 @@ import {
   Grid,
   Typography,
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useMutation,
-} from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import * as yup from 'yup'
+import { UserContext } from '../../../app/App'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
@@ -46,10 +42,6 @@ interface IFormInput {
 interface Props {
   open: boolean
   foodItem: FitnessTrackFoodItem | null
-  dataService: DataService
-  fetchFoodItems: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<any, unknown>>
   setEditFoodDialogOpen: React.Dispatch<
     React.SetStateAction<{
       open: boolean
@@ -101,11 +93,11 @@ const validationSchema = yup.object({
     .required('Reference URL required'),
 })
 
-export const EditFoodItemDialog: React.FC<Props> = ({
+export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
   open,
   foodItem,
-  dataService,
-  fetchFoodItems,
+  // dataService,
+  // fetchFoodItems,
   setEditFoodDialogOpen,
 }) => {
   const {
@@ -118,6 +110,11 @@ export const EditFoodItemDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
+  const user = useContext(UserContext)
+  const dataService = new DataService()
+  const queryClient = useQueryClient()
+
+  dataService.setUser(user?.user!)
   useEffect(() => {
     setValue('foodItemName', foodItem?.foodItemName)
     setValue('foodItemUnit', foodItem?.foodItemUnit)
@@ -146,7 +143,8 @@ export const EditFoodItemDialog: React.FC<Props> = ({
       dataService.updateFoodItem(updatedFoodItem),
     {
       onSuccess: () => {
-        fetchFoodItems()
+        // fetchFoodItems()
+        queryClient.invalidateQueries('foodsFoodItems')
         setEditFoodDialogOpen({
           open: false,
           foodItem: null,

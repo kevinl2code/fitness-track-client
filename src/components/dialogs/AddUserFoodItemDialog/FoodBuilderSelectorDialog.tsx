@@ -244,13 +244,11 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
       ingredientCarbohydrates,
     } = data
     const foodItemUnit = selectedFoodItem?.foodItemUnit!
-    const servingSize = selectedFoodItem?.servingSize!
     const foodItemId = selectedFoodItem?.foodItemId!
     const newIngredient: FoodBuilderIngredient = {
       name: ingredientName,
       foodItemId: foodItemId,
       foodItemUnit: foodItemUnit,
-      servingSize: servingSize,
       quantity: parseFloat(quantity),
       calories: parseFloat(ingredientCalories),
       protein: parseFloat(ingredientProtein),

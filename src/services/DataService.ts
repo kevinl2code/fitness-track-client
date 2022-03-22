@@ -229,6 +229,28 @@ export class DataService {
     }
   }
 
+  public async updateUserFoodItem(updatedFoodItem: UserFoodItem) {
+    const requestUrl = `${appConfig.api.userUrl}?PK=${updatedFoodItem.PK}&SK=${updatedFoodItem.SK}`
+    const requestOptions: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: this.getUserIdToken(),
+      },
+      body: JSON.stringify({ ...updatedFoodItem }),
+    }
+    try {
+      const result = await fetch(requestUrl, requestOptions)
+      if (result.status === 401) {
+        console.log('Not authorized')
+      }
+      const resultJSON = await result.json()
+
+      return resultJSON
+    } catch (error) {
+      console.log({ dataServiceError: error })
+    }
+  }
+
   public async deleteUserFoodItem(userId: string, foodItemId: string) {
     const requestUrl = `${appConfig.api.userUrl}?PK=${userId}&SK=F_${foodItemId}`
     try {

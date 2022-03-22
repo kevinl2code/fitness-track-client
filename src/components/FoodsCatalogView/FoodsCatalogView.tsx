@@ -13,7 +13,6 @@ import { AddFoodCategoryDialog } from '../dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../dialogs/AddFoodItemDialog'
 import { AddFoodSubCategoryDialog } from '../dialogs/AddFoodSubCategoryDialog'
 import { ConfirmationDialog } from '../dialogs/ConfirmationDialog'
-import { EditFoodItemDialog } from '../dialogs/EditFoodItemDialog'
 import { FoodsCategorySelect } from '../FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../FoodsSubCategorySelect'
 import { FoodsTable } from '../FoodsTable'
@@ -25,13 +24,6 @@ export const FoodsCatalogView: React.FC = () => {
   const [foodItems, setFoodItems] = useState<FitnessTrackFoodItem[]>([])
   const [selectedSubCategory, setSelectedSubCategory] = useState('')
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
-  const [editFoodDialogOpen, setEditFoodDialogOpen] = useState<{
-    open: boolean
-    foodItem: FitnessTrackFoodItem | null
-  }>({
-    open: false,
-    foodItem: null,
-  })
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<{
     open: boolean
     deleteItem: {
@@ -146,13 +138,6 @@ export const FoodsCatalogView: React.FC = () => {
         setAddFoodSubCategoryDialogOpen={setAddFoodSubCategoryDialogOpen}
         categoryId={selectedCategory}
       />
-      <EditFoodItemDialog
-        open={editFoodDialogOpen.open}
-        dataService={dataService}
-        foodItem={editFoodDialogOpen.foodItem}
-        setEditFoodDialogOpen={setEditFoodDialogOpen}
-        fetchFoodItems={fetchFoodItems}
-      />
       <Box sx={[{ width: '100%' }, matchesMD && { marginTop: '2rem' }]}>
         <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
           <FoodsCategorySelect
@@ -177,7 +162,6 @@ export const FoodsCatalogView: React.FC = () => {
               foodItems={foodItems}
               isAdmin={isAdmin}
               setAddFoodDialogOpen={setAddFoodDialogOpen}
-              setEditFoodDialogOpen={setEditFoodDialogOpen}
               setConfirmDeleteDialogOpen={setConfirmationDialogOpen}
             />
           )}

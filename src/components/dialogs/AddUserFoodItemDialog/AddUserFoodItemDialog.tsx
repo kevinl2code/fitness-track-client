@@ -88,55 +88,13 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
   setAddFoodDialogOpen,
 }) => {
   const [entryMethod, setEntryMethod] = useState<EntryMethod>(null)
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  })
   const { matchesMD } = useMediaQueries()
-  const queryClient = useQueryClient()
-  const { mutate: createUserFoodItem, isLoading } = useMutation(
-    (newFoodItem: UserFoodItem) => dataService.createUserFoodItem(newFoodItem),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('userFoodItems')
-        reset()
-        setAddFoodDialogOpen(false)
-      },
-    }
-  )
 
   const handleCancel = () => {
-    reset()
     setAddFoodDialogOpen(false)
     setEntryMethod(null)
   }
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const newFoodItemId = v4()
-
-    const newFoodItem: UserFoodItem = {
-      PK: user.sub,
-      SK: `F_${newFoodItemId}`,
-      GSI2PK: `U_${user.sub}`,
-      GSI2SK: 'FOODS',
-      type: 'FOOD',
-      foodItemName: data.foodItemName,
-      foodItemUnit: data.foodItemUnit,
-      servingSize: parseFloat(data.servingSize),
-      calories: parseFloat(data.calories),
-      protein: parseFloat(data.protein),
-      fat: parseFloat(data.fat),
-      carbohydrates: parseFloat(data.carbohydrates),
-      foodItemId: newFoodItemId,
-    }
-
-    createUserFoodItem(newFoodItem)
-  }
   return (
     <Dialog open={open} fullScreen={!matchesMD}>
       <DialogTitle>
@@ -166,27 +124,13 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
             </Grid>
           )}
           {entryMethod === 'CUSTOM' && (
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-              <AddCustomUserFoodItemForm
-                control={control}
-                register={register}
-              />
-              <Grid item xs={12} container justifyContent="center">
-                <Button
-                  variant="contained"
-                  type="submit"
-                  sx={[
-                    { marginTop: '1rem', marginBottom: '1rem' },
-                    matchesMD && { marginTop: 0 },
-                  ]}
-                >
-                  Create
-                </Button>
-              </Grid>
-            </form>
+            <AddCustomUserFoodItemForm
+              user={user}
+              dataService={dataService}
+              setAddFoodDialogOpen={setAddFoodDialogOpen}
+            />
           )}
           {entryMethod === 'BUILDER' && (
-            // <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <AddFoodBuilderUserFoodItemForm
               user={user}
               dataService={dataService}

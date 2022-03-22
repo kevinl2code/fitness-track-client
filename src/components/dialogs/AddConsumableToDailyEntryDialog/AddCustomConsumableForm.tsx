@@ -47,21 +47,18 @@ const validationSchema = yup.object({
     .typeError('Protein required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Protein required'),
   fat: yup
     .number()
     .typeError('Fat required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Fat required'),
   carbohydrates: yup
     .number()
     .typeError('Carbohydrates required')
     .min(0, 'Must be at least 0')
     .max(1000, 'Must be 1000 or less')
-    .positive()
     .required('Carbohydrates required'),
 })
 

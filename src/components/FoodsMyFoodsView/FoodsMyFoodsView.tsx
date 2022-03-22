@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material'
 import React, { useContext, useState } from 'react'
-import { FitnessTrackFoodItem } from '../../model/Model'
+import { FitnessTrackFoodItem, UserFoodItem } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { AddUserFoodItemDialog } from '../dialogs/AddUserFoodItemDialog'
@@ -88,7 +88,7 @@ export const FoodsMyFoodsView: React.FC = () => {
               foodItems={foodItems}
               isAdmin={isAdmin}
               setAddFoodDialogOpen={setAddFoodDialogOpen}
-              setEditFoodDialogOpen={setEditFoodDialogOpen}
+              // setEditFoodDialogOpen={setEditFoodDialogOpen}
               setConfirmDeleteDialogOpen={setConfirmationDialogOpen}
             />
           )}

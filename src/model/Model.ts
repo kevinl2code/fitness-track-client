@@ -23,7 +23,6 @@ export interface FoodBuilderIngredient {
   name: string
   foodItemId: string
   foodItemUnit: FoodItemUnits
-  servingSize: number
   quantity: number
   calories: number
   protein: number
@@ -168,6 +167,7 @@ export interface UserFoodItem {
   fat: number
   carbohydrates: number
   foodItemId: string
+  ingredients?: FoodBuilderIngredient[]
 }
 
 //PK should be the users ID -- cognito sub value

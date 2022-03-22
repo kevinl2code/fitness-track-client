@@ -225,38 +225,6 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
       )
       const { calories, protein, fat, carbohydrates, quantity } =
         builderFoodItemValues
-      // const valuePerUnit = {
-      //   calories: selectedFoodItem.calories / selectedFoodItem.servingSize,
-      //   protein: selectedFoodItem.protein / selectedFoodItem.servingSize,
-      //   fat: selectedFoodItem.fat / selectedFoodItem.servingSize,
-      //   carbohydrates:
-      //     selectedFoodItem.carbohydrates / selectedFoodItem.servingSize,
-      // }
-      // const hasQuantity = quantity.length > 0
-      // const calories = hasQuantity
-      //   ? (parseFloat(quantity) * valuePerUnit.calories)
-      //       .toFixed(2)
-      //       .replace(/[.,]00$/, '')
-      //       .toString()
-      //   : ''
-      // const protein = hasQuantity
-      //   ? (parseFloat(quantity) * valuePerUnit.protein)
-      //       .toFixed(2)
-      //       .replace(/[.,]00$/, '')
-      //       .toString()
-      //   : ''
-      // const fat = hasQuantity
-      //   ? (parseFloat(quantity) * valuePerUnit.fat)
-      //       .toFixed(2)
-      //       .replace(/[.,]00$/, '')
-      //       .toString()
-      //   : ''
-      // const carbohydrates = hasQuantity
-      //   ? (parseFloat(quantity) * valuePerUnit.carbohydrates)
-      //       .toFixed(2)
-      //       .replace(/[.,]00$/, '')
-      //       .toString()
-      //   : ''
 
       const dynamicAmount = foodItemUnit === 'EACH' ? 1 : quantity
 
