@@ -27,6 +27,7 @@ export const UserFoodItemsContext = React.createContext<UserFoodItem[]>([])
 
 const authService = new AuthService()
 const dataService = new DataService()
+const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 
 function App() {
   const [user, setUser] = React.useState<User | null>(null)
@@ -61,6 +62,11 @@ function App() {
       onError: (error) => {
         console.log(`Network Error: ${error}`)
       },
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: twentyFourHoursInMs,
     }
   )
   // console.log(cycleContext)
@@ -78,6 +84,11 @@ function App() {
         onError: (error) => {
           console.log(`Network Error: ${error}`)
         },
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        retry: false,
+        staleTime: twentyFourHoursInMs,
       }
     )
 
