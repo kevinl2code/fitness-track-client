@@ -23,12 +23,7 @@ import { useMediaQueries } from '../../../utilities/useMediaQueries'
 
 interface Props {
   entry: DailyEntry
-  updateDailyEntry: UseMutateFunction<
-    string | undefined,
-    unknown,
-    DailyEntry,
-    unknown
-  >
+  updateDailyEntry: UseMutateFunction<DailyEntry, unknown, DailyEntry, unknown>
 }
 
 interface IFormInput {

@@ -67,8 +67,7 @@ export class DataService {
         console.log('Not authorized')
       }
       const resultJSON = await result.json()
-
-      return JSON.stringify(resultJSON)
+      return resultJSON.Attributes
     } catch (error) {
       console.log({ dataServiceError: error })
     }

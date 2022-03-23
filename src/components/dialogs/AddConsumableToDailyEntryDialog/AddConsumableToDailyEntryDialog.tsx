@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { DailyEntry } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
+import { DailyEntryConsumablesTable } from '../../DailyEntryConsumablesTable/DailyEntryConsumablesTable'
 import { AddCustomConsumableForm } from './AddCustomConsumableForm'
 import { AddFoodCatalogConsumableForm } from './AddFoodCatalogConsumableForm'
 
@@ -49,10 +50,21 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
   const { mutate: updateDailyEntry, isLoading } = useMutation(
     (dailyEntry: DailyEntry) => dataService.updateDailyEntry(dailyEntry),
     {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries('dailyEntries')
+      onSuccess: (data: DailyEntry) => {
+        // queryClient.invalidateQueries('dailyEntries')
+        queryClient.setQueryData(
+          'dailyEntries',
+          (oldDailyEntries: DailyEntry[] | undefined) => {
+            const filteredOldDailyEntries = oldDailyEntries?.filter(
+              (oldDailyEntry) => oldDailyEntry.SK !== data.SK
+            )
+            return [...filteredOldDailyEntries!, data]
+          }
+        )
+        const queriesData = queryClient.getQueriesData('dailyEntries')
         handleCloseDialog()
-        console.log({ mutationData: data })
+        // console.log({ mutationData: data })
+        console.log({ cacheData: queriesData })
       },
     }
   )

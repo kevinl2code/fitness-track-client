@@ -11,12 +11,7 @@ import { DailyEntry, EntryConsumable } from '../../../model/Model'
 
 interface Props {
   entry: DailyEntry
-  updateDailyEntry: UseMutateFunction<
-    string | undefined,
-    unknown,
-    DailyEntry,
-    unknown
-  >
+  updateDailyEntry: UseMutateFunction<DailyEntry, unknown, DailyEntry, unknown>
 }
 
 interface IFormInput {
