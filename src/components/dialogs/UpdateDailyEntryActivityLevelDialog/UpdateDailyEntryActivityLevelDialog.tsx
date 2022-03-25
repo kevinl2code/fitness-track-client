@@ -61,7 +61,6 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
       onSuccess: (data) => {
         queryClient.invalidateQueries('dailyEntries')
         setDialogOpenState(false)
-        console.log({ mutationData: data })
       },
     }
   )

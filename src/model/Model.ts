@@ -21,7 +21,7 @@ export interface EntryConsumable {
 
 export interface FoodBuilderIngredient {
   name: string
-  foodItemId: string
+  ingredientId: string
   foodItemUnit: FoodItemUnits
   quantity: number
   calories: number

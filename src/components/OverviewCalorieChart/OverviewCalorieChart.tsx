@@ -45,7 +45,6 @@ export const OverviewCalorieChart: React.FC<Props> = ({ entries }) => {
       targetCalories: entry.targetCalories,
     }
   })
-  console.log({ graphData })
 
   const defaultTooltipValues = {
     name: last(graphData)?.name ?? '-',

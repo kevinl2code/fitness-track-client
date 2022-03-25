@@ -37,7 +37,6 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries('dailyEntries')
-        console.log({ mutationData: data })
       },
     }
   )

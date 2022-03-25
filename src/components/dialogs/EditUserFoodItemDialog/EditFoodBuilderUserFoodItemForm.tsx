@@ -9,7 +9,6 @@ import {
   FoodBuilderIngredient,
   FoodItemUnits,
   UserFoodItem,
-  UserState,
 } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
@@ -18,12 +17,17 @@ import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { IngredientsInput } from '../../IngredientsInput'
-import { FoodBuilderSelectorDialog } from './FoodBuilderSelectorDialog'
+import { FoodBuilderSelectorDialog } from '../AddUserFoodItemDialog/FoodBuilderSelectorDialog'
 
 interface Props {
-  user: UserState
+  foodItem: UserFoodItem | null
   dataService: DataService
-  setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setEditFoodDialogOpen: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean
+      foodItem: UserFoodItem | null
+    }>
+  >
 }
 
 interface IFormInput {
@@ -81,13 +85,15 @@ const validationSchema = yup.object({
     .required('Carbohydrates required'),
 })
 
-export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
-  user,
+export const EditFoodBuilderUserFoodItemForm: React.FC<Props> = ({
+  foodItem,
   dataService,
-  setAddFoodDialogOpen,
+  setEditFoodDialogOpen,
 }) => {
   const [foodSelectorOpen, setFoodSelectorOpen] = useState(false)
-  const [ingredients, setIngredients] = useState<FoodBuilderIngredient[]>([])
+  const [ingredients, setIngredients] = useState<FoodBuilderIngredient[]>(
+    foodItem?.ingredients || []
+  )
   const {
     register,
     handleSubmit,
@@ -99,19 +105,92 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
+
   const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
   const foodItemUnit = watch('foodItemUnit')
-  const { mutate: createUserFoodItem, isLoading } = useMutation(
-    (newFoodItem: UserFoodItem) => dataService.createUserFoodItem(newFoodItem),
+
+  useEffect(() => {
+    setValue('foodItemName', foodItem?.foodItemName)
+    setValue('foodItemUnit', foodItem?.foodItemUnit)
+    setValue('servingSize', foodItem?.servingSize)
+
+    // setValue('calories', foodItem?.calories)
+    // setValue('protein', foodItem?.protein)
+    // setValue('fat', foodItem?.fat)
+    // setValue('carbohydrates', foodItem?.carbohydrates)
+  }, [
+    foodItem?.foodItemName,
+    foodItem?.foodItemUnit,
+    foodItem?.servingSize,
+    setValue,
+  ])
+
+  useEffect(() => {
+    console.log({ length: ingredients.length })
+    if (ingredients.length > 0) {
+      const builderFoodItemValues: {
+        quantity: number
+        calories: number
+        protein: number
+        fat: number
+        carbohydrates: number
+      } = ingredients.reduce(
+        (values, ingredient) => {
+          return {
+            ...values,
+            quantity: values.quantity + ingredient.quantity,
+            calories: values.calories + ingredient.calories,
+            protein: values.protein + ingredient.protein,
+            fat: values.fat + ingredient.fat,
+            carbohydrates: values.carbohydrates + ingredient.carbohydrates,
+          }
+        },
+        {
+          quantity: 0,
+          calories: 0,
+          protein: 0,
+          fat: 0,
+          carbohydrates: 0,
+        }
+      )
+      const { calories, protein, fat, carbohydrates, quantity } =
+        builderFoodItemValues
+
+      const dynamicAmount = foodItemUnit === 'EACH' ? 1 : quantity
+
+      setValue('quantity', dynamicAmount)
+      setValue('calories', calories)
+      setValue('protein', protein)
+      setValue('fat', fat)
+      setValue('carbohydrates', carbohydrates)
+    } else if (ingredients.length === 0) {
+      setValue('quantity', 0)
+      setValue('calories', 0)
+      setValue('protein', 0)
+      setValue('fat', 0)
+      setValue('carbohydrates', 0)
+    }
+  }, [foodItemUnit, ingredients, setValue])
+
+  const { mutate: updateFoodItem, isLoading } = useMutation(
+    (updatedFoodItem: UserFoodItem) =>
+      dataService.updateUserFoodItem(updatedFoodItem),
     {
       onSuccess: () => {
+        // fetchFoodItems()
         queryClient.invalidateQueries('userFoodItems')
-        reset()
-        setAddFoodDialogOpen(false)
+        setEditFoodDialogOpen({
+          open: false,
+          foodItem: null,
+        })
       },
     }
   )
+
+  if (!foodItem) {
+    return null
+  }
 
   const generateFormTextInput = ({
     name,
@@ -193,62 +272,13 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
       </Grid>
     )
   }
-
-  useEffect(() => {
-    if (ingredients.length > 0) {
-      const builderFoodItemValues: {
-        quantity: number
-        calories: number
-        protein: number
-        fat: number
-        carbohydrates: number
-      } = ingredients.reduce(
-        (values, ingredient) => {
-          return {
-            ...values,
-            quantity: values.quantity + ingredient.quantity,
-            calories: values.calories + ingredient.calories,
-            protein: values.protein + ingredient.protein,
-            fat: values.fat + ingredient.fat,
-            carbohydrates: values.carbohydrates + ingredient.carbohydrates,
-          }
-        },
-        {
-          quantity: 0,
-          calories: 0,
-          protein: 0,
-          fat: 0,
-          carbohydrates: 0,
-        }
-      )
-      const { calories, protein, fat, carbohydrates, quantity } =
-        builderFoodItemValues
-
-      const dynamicAmount = foodItemUnit === 'EACH' ? 1 : quantity
-
-      setValue('quantity', dynamicAmount)
-      setValue('calories', calories)
-      setValue('protein', protein)
-      setValue('fat', fat)
-      setValue('carbohydrates', carbohydrates)
-    } else if (ingredients.length === 0) {
-      setValue('quantity', 0)
-      setValue('calories', 0)
-      setValue('protein', 0)
-      setValue('fat', 0)
-      setValue('carbohydrates', 0)
-    }
-  }, [foodItemUnit, ingredients, setValue])
-
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const newFoodItemId = v4()
-
-    const newFoodItem: UserFoodItem = {
-      PK: user.sub,
-      SK: `F_${newFoodItemId}`,
-      GSI2PK: `U_${user.sub}`,
-      GSI2SK: 'FOODS',
-      type: 'FOOD',
+    const updatedFoodItem: UserFoodItem = {
+      PK: foodItem?.PK,
+      SK: foodItem?.SK,
+      GSI2PK: foodItem?.GSI2PK,
+      GSI2SK: foodItem?.GSI2SK,
+      type: foodItem.type,
       foodItemName: data.foodItemName,
       foodItemUnit: data.foodItemUnit,
       servingSize: parseFloat(data.quantity),
@@ -257,10 +287,10 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
       fat: parseFloat(data.fat),
       carbohydrates: parseFloat(data.carbohydrates),
       ingredients: ingredients,
-      foodItemId: newFoodItemId,
+      foodItemId: foodItem?.foodItemId,
     }
 
-    createUserFoodItem(newFoodItem)
+    updateFoodItem(updatedFoodItem)
   }
 
   return (
@@ -342,7 +372,7 @@ export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
               matchesMD && { marginTop: 0 },
             ]}
           >
-            Create
+            Update
           </Button>
         </Grid>
       </form>

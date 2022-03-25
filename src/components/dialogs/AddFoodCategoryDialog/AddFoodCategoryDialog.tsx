@@ -82,7 +82,6 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries('categoryList')
-        console.log({ mutationData: data })
       },
     }
   )

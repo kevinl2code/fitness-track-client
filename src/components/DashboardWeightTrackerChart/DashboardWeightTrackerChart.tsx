@@ -87,9 +87,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
 
     const daysSinceLastActive =
       currentDateTime.diff(previousDateTime, 'days').toObject().days ?? 0
-    console.log({
-      diff: currentDateTime.diff(previousDateTime, 'days').toObject().days,
-    })
+
     const missedPriorDay = daysSinceLastActive > 1 ? true : false
 
     calculatedEntries.push({
@@ -101,7 +99,6 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
     })
     return currentValue
   })
-  console.log(calculatedEntries)
   const defaultTooltipValues = {
     name: last(calculatedEntries)?.name ?? '-',
     projectedValue: last(calculatedEntries)?.projectedValue ?? 0,
@@ -129,7 +126,6 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   const domainMax = Math.round(
     Math.max(actualWeightMax, projectedWeightMax) * 1.01
   )
-  console.log(domainMax)
   const domainMin = Math.round(
     Math.min(actualWeightMin, projectedWeightMin) * 0.99
   )

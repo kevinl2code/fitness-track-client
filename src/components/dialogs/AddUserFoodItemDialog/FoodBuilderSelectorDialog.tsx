@@ -17,6 +17,7 @@ import {
   FoodBuilderIngredient,
 } from '../../../model/Model'
 import * as yup from 'yup'
+import { v4 } from 'uuid'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { DataService } from '../../../services/DataService'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -244,10 +245,10 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
       ingredientCarbohydrates,
     } = data
     const foodItemUnit = selectedFoodItem?.foodItemUnit!
-    const foodItemId = selectedFoodItem?.foodItemId!
+    const ingredientId = v4()
     const newIngredient: FoodBuilderIngredient = {
       name: ingredientName,
-      foodItemId: foodItemId,
+      ingredientId: ingredientId,
       foodItemUnit: foodItemUnit,
       quantity: parseFloat(quantity),
       calories: parseFloat(ingredientCalories),

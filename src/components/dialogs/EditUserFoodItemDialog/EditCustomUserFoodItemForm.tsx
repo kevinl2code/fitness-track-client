@@ -28,7 +28,7 @@ interface Props {
 interface IFormInput {
   foodItemName: string
   foodItemUnit: FoodItemUnits
-  quantity: string
+  servingSize: string
   calories: string
   protein: string
   fat: string
@@ -215,8 +215,6 @@ export const EditCustomUserFoodItemForm: React.FC<Props> = ({
   }
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    // const newFoodItemId = v4()
-    console.log(data)
     const updatedFoodItem: UserFoodItem = {
       PK: foodItem?.PK,
       SK: foodItem?.SK,
@@ -225,7 +223,7 @@ export const EditCustomUserFoodItemForm: React.FC<Props> = ({
       type: foodItem.type,
       foodItemName: data.foodItemName,
       foodItemUnit: data.foodItemUnit,
-      servingSize: parseFloat(data.quantity),
+      servingSize: parseFloat(data.servingSize),
       calories: parseFloat(data.calories),
       protein: parseFloat(data.protein),
       fat: parseFloat(data.fat),

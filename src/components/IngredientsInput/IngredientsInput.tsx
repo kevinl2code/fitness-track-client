@@ -1,20 +1,7 @@
-import {
-  Grid,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-  Paper,
-  Chip,
-  Divider,
-} from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import ClearIcon from '@mui/icons-material/Clear'
-import { borders } from '@mui/system'
-import React, { useState } from 'react'
-import { FitnessTrackFoodItem, FoodBuilderIngredient } from '../../model/Model'
-import { ContactMail } from '@mui/icons-material'
+import { Chip, Grid, IconButton, Typography } from '@mui/material'
+import React from 'react'
+import { FoodBuilderIngredient } from '../../model/Model'
 
 interface Props {
   ingredients: FoodBuilderIngredient[]
@@ -30,12 +17,8 @@ export const IngredientsInput: React.FC<Props> = ({
   const hasIngredients = ingredients.length > 0
 
   const handleDelete = (ingredient: FoodBuilderIngredient) => {
-    const updatedIngredients = ingredients.filter(({ foodItemId }) => {
-      return foodItemId !== ingredient.foodItemId
-    })
-    console.log({
-      foodItem: ingredient,
-      ingredients: ingredients,
+    const updatedIngredients = ingredients.filter(({ ingredientId }) => {
+      return ingredientId !== ingredient.ingredientId
     })
     setIngredients(updatedIngredients)
   }

@@ -167,13 +167,6 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
     )
   }
 
-  // console.log({
-  //   consumed: caloriesConsumed,
-  //   target: targetCalories,
-  //   calsOverTarget: calsOverTarget,
-  //   tdee: tdee,
-  // })
-
   return (
     <PieChart
       width={parentDivWidth}

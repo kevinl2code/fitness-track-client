@@ -1,41 +1,17 @@
-import { yupResolver } from '@hookform/resolvers/yup'
-import {
-  Button,
-  Card,
-  CardContent,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Typography,
-} from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useMutation,
-  useQueryClient,
-} from 'react-query'
-import * as yup from 'yup'
+import { Button, Dialog, DialogContent, DialogTitle, Grid } from '@mui/material'
+import React, { useContext, useState } from 'react'
+import { useQueryClient } from 'react-query'
 import { UserContext } from '../../../app/App'
 import {
-  FitnessTrackFoodItem,
   FoodBuilderIngredient,
   FoodItemUnits,
   UserFoodItem,
-  UserState,
 } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
-import { FormSelectInput } from '../../form/FormSelectInput'
-import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
-import { FormTextInput } from '../../form/FormTextInput'
-import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
-import { IngredientsInput } from '../../IngredientsInput'
 import { FoodBuilderSelectorDialog } from '../AddUserFoodItemDialog/FoodBuilderSelectorDialog'
 import { EditCustomUserFoodItemForm } from './EditCustomUserFoodItemForm'
+import { EditFoodBuilderUserFoodItemForm } from './EditFoodBuilderUserFoodItemForm'
 
 interface IFormInput {
   foodItemName: string
@@ -85,6 +61,8 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
     return null
   }
 
+  const isFoodBuilderFoodItem = foodItem.ingredients !== undefined
+
   return (
     <>
       <FoodBuilderSelectorDialog
@@ -97,11 +75,19 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
         <DialogTitle> {'Edit Food Item'}</DialogTitle>
         <Grid container sx={{ height: '100%' }}>
           <DialogContent sx={{ paddingBottom: 0 }}>
-            <EditCustomUserFoodItemForm
-              foodItem={foodItem}
-              dataService={dataService}
-              setEditFoodDialogOpen={setEditFoodDialogOpen}
-            />
+            {isFoodBuilderFoodItem ? (
+              <EditFoodBuilderUserFoodItemForm
+                foodItem={foodItem}
+                dataService={dataService}
+                setEditFoodDialogOpen={setEditFoodDialogOpen}
+              />
+            ) : (
+              <EditCustomUserFoodItemForm
+                foodItem={foodItem}
+                dataService={dataService}
+                setEditFoodDialogOpen={setEditFoodDialogOpen}
+              />
+            )}
             <Grid item xs={12} container justifyContent="center">
               <Grid item xs={12} container justifyContent="center">
                 <Button

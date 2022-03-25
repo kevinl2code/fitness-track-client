@@ -11,7 +11,9 @@ export const FoodsViewToggle: React.FC<Props> = ({ view, setView }) => {
     event: React.MouseEvent<HTMLElement>,
     newView: string | null
   ) => {
-    setView(newView)
+    if (newView !== null) {
+      setView(newView)
+    }
   }
 
   return (
