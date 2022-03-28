@@ -223,72 +223,70 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
     })
 
   return (
-    <Grid item md={8} xs={12}>
-      <Paper
-        elevation={0}
-        variant={'elevation'}
-        sx={{ padding: '2rem 8px 1rem 8px' }}
+    <Paper
+      elevation={0}
+      variant={'elevation'}
+      sx={{ padding: '2rem 8px 1rem 8px' }}
+    >
+      <Typography
+        sx={{ marginBottom: 1, color: 'primary.main' }}
+        align="center"
+        fontWeight={700}
+        fontSize="1.5rem"
       >
-        <Typography
-          sx={{ marginBottom: 1, color: 'primary.main' }}
-          align="center"
-          fontWeight={700}
-          fontSize="1.5rem"
-        >
-          Entry Log
-        </Typography>
-        <Grid container>
-          <Grid item xs={12}>
-            <TableContainer component={Paper} elevation={0}>
-              <Table
-                // sx={{ minWidth: 650 }}
-                size="small"
-                aria-label="food-items-table"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      sx={{
-                        width: '10%',
-                        paddingLeft: '0px',
-                        paddingRight: '0px',
-                      }}
-                    />
-                    <TableCell sx={{ paddingLeft: '0px' }}>Date</TableCell>
-                    <TableCell sx={{ paddingLeft: '0px' }} align="right">
-                      Activity Level
-                    </TableCell>
-                    <TableCell sx={{ paddingLeft: '0px' }} align="right">
-                      Relative Calories
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>{generatedRows}</TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={entries.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              sx={[
-                {
-                  '& .MuiTablePagination-toolbar': {
-                    paddingLeft: '6px',
-                    paddingRight: '0px',
-                  },
-                  '& .MuiTablePagination-actions': {
-                    marginLeft: '12px',
-                  },
+        Entry Log
+      </Typography>
+      <Grid container>
+        <Grid item xs={12}>
+          <TableContainer component={Paper} elevation={0}>
+            <Table
+              // sx={{ minWidth: 650 }}
+              size="small"
+              aria-label="food-items-table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      width: '10%',
+                      paddingLeft: '0px',
+                      paddingRight: '0px',
+                    }}
+                  />
+                  <TableCell sx={{ paddingLeft: '0px' }}>Date</TableCell>
+                  <TableCell sx={{ paddingLeft: '0px' }} align="right">
+                    Activity Level
+                  </TableCell>
+                  <TableCell sx={{ paddingLeft: '0px' }} align="right">
+                    Relative Calories
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{generatedRows}</TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={entries.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={[
+              {
+                '& .MuiTablePagination-toolbar': {
+                  paddingLeft: '6px',
+                  paddingRight: '0px',
                 },
-              ]}
-            />
-          </Grid>
+                '& .MuiTablePagination-actions': {
+                  marginLeft: '12px',
+                },
+              },
+            ]}
+          />
         </Grid>
-      </Paper>
-    </Grid>
+      </Grid>
+    </Paper>
   )
 }

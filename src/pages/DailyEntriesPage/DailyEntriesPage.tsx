@@ -1,25 +1,23 @@
-import { Box, Grid, LinearProgress } from '@mui/material'
-import TextField from '@mui/material/TextField'
 import DatePicker from '@mui/lab/DatePicker'
-import React, { useContext, useEffect, useState } from 'react'
+import { Box, Grid, LinearProgress } from '@mui/material'
 import { DateTime } from 'luxon'
-import { Cycle, DailyEntry } from '../../model/Model'
+import React, { useContext, useEffect, useState } from 'react'
+import { CycleContext, EntriesContext, UserContext } from '../../app/App'
 import { DailyEntryCreateNew } from '../../components'
-import {
-  UpdateDailyEntryWeightDialog,
-  UpdateDailyEntryActivityLevelDialog,
-  AddConsumableToDailyEntryDialog,
-} from '../../components/dialogs'
-import { CycleContext, UserContext, EntriesContext } from '../../app/App'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
-import { formattedActivityLevel } from '../../utilities/Convert'
-import { Calculate } from '../../utilities/Calculate'
-import { MobileDateView } from '../../components/MobileDateView'
 import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
 import { DailyEntryMissedDay } from '../../components/DailyEntryMissedDay/DailyEntryMissedDay'
-import { DataService } from '../../services/DataService'
+import {
+  AddConsumableToDailyEntryDialog,
+  UpdateDailyEntryActivityLevelDialog,
+  UpdateDailyEntryWeightDialog,
+} from '../../components/dialogs'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialog'
+import { MobileDateView } from '../../components/MobileDateView'
+import { DailyEntry } from '../../model/Model'
+import { DataService } from '../../services/DataService'
+import { Calculate } from '../../utilities/Calculate'
+import { formattedActivityLevel } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
 
 const today = DateTime.now().startOf('day')
@@ -67,7 +65,6 @@ export const DailyEntriesPage: React.FC = () => {
   const userAwaySeveralDays = daysSinceLastActive > 2
 
   const isFirstDay = cycle?.startDate === currentlySelectedDate
-  // console.log(daysSinceLastActive)
   useEffect(() => {
     if (!isFirstDay && cycle?.isActive && userAwaySeveralDays) {
       setOpenReturningUserDialog(true)
@@ -195,8 +192,7 @@ export const DailyEntriesPage: React.FC = () => {
         setDatePickerOpen={setDatePickerOpen}
       />
       <Grid container>
-        <Grid item xs={12} md={4} container justifyContent="flex-start">
-          {/* <Grid item xs={12} sx={{ marginBottom: '2rem' }}> */}
+        <Grid item xs={12} container justifyContent="center">
           <DatePicker
             value={pickerDate}
             minDate={cycleStartDate}
@@ -210,19 +206,11 @@ export const DailyEntriesPage: React.FC = () => {
               }
             }}
             renderInput={({ inputRef, inputProps, InputProps }) => (
-              <Box ref={inputRef}>
-                {/* <Typography>{pickerDate?.toISODate}</Typography> */}
-                {/* {InputProps?.endAdornment} */}
-              </Box>
+              <Box ref={inputRef}></Box>
             )}
           />
-          {/* </Grid> */}
         </Grid>
-        <Grid item xs={12} md={8} id="dailyEntryMainContentContainer">
-          {/* {dailyEntriesLoading && <LinearProgress />}
-          {!dailyEntriesLoading && mainContent}
-          {!dailyEntriesLoading && newDayNoEntry}
-          {!dailyEntriesLoading && missedDay} */}
+        <Grid item xs={12} id="dailyEntryMainContentContainer">
           {entries === null && <LinearProgress />}
           {entries !== null && mainContent}
           {entries !== null && !openNewUserDialog && newDayNoEntry}

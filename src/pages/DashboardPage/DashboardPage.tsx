@@ -27,14 +27,13 @@ export const DashboardPage: React.FC = () => {
           <Grid
             item
             xs={12}
-            md={8}
             container
             justifyContent="flex-end"
             // sx={{ margin: '0 8px 0 8px' }}
           >
             <DashboardWeightTrackerChart entries={sortedEntries} user={user!} />
           </Grid>
-          <Grid item xs={12} md={8} container justifyContent="flex-end">
+          <Grid item xs={12} container justifyContent="flex-end">
             <OverviewCalorieChart entries={entries} />
           </Grid>
           <Grid item xs={12}>
