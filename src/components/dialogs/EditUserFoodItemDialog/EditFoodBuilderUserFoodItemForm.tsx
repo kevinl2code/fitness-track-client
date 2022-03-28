@@ -106,7 +106,6 @@ export const EditFoodBuilderUserFoodItemForm: React.FC<Props> = ({
     resolver: yupResolver(validationSchema),
   })
 
-  const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
   const foodItemUnit = watch('foodItemUnit')
 
@@ -367,10 +366,7 @@ export const EditFoodBuilderUserFoodItemForm: React.FC<Props> = ({
           <Button
             variant="contained"
             type="submit"
-            sx={[
-              { marginTop: '1rem', marginBottom: '1rem' },
-              matchesMD && { marginTop: 0 },
-            ]}
+            sx={{ marginTop: '1rem', marginBottom: '1rem' }}
           >
             Update
           </Button>

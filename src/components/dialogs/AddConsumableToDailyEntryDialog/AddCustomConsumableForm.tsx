@@ -70,7 +70,6 @@ export const AddCustomConsumableForm: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  const { matchesMD } = useMediaQueries()
   const generateFormTextInput = ({
     name,
     control,
@@ -178,10 +177,7 @@ export const AddCustomConsumableForm: React.FC<Props> = ({
         <Button
           variant="contained"
           type="submit"
-          sx={[
-            { marginTop: '1rem', marginBottom: '1rem' },
-            matchesMD && { marginTop: 0 },
-          ]}
+          sx={{ marginTop: '1rem', marginBottom: '1rem' }}
         >
           Submit
         </Button>

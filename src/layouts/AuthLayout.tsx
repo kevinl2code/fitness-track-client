@@ -11,25 +11,13 @@ interface Props {
 }
 
 export const AuthLayout: React.FC<Props> = ({ children, setAppUser }) => {
-  const { matchesMD } = useMediaQueries()
-
   return (
-    <Container sx={{ display: 'flex' }} disableGutters={!matchesMD}>
-      {matchesMD && <MainAppBar setAppUser={setAppUser} />}
-      <Box
-        component="main"
-        sx={[
-          { flexGrow: 1, width: '100%' },
-          matchesMD && {
-            padding: '1rem',
-          },
-        ]}
-      >
-        {matchesMD && <Toolbar />}
+    <Container sx={{ display: 'flex' }} disableGutters={true}>
+      <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
         <Outlet />
-        {!matchesMD && <Toolbar />}
+        <Toolbar />
       </Box>
-      {!matchesMD && <MainBottomNavigation />}
+      <MainBottomNavigation />
     </Container>
   )
 }

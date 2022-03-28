@@ -118,8 +118,6 @@ export const AddFoodItemDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  const { matchesMD } = useMediaQueries()
-
   const { mutate: createFoodItem, isLoading } = useMutation(
     (newFoodItem: FitnessTrackFoodItem) =>
       dataService.createFoodItem(newFoodItem),
@@ -243,7 +241,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
     createFoodItem(newFoodItem)
   }
   return (
-    <Dialog open={open} fullScreen={!matchesMD}>
+    <Dialog open={open} fullScreen={true}>
       <Grid container>
         <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
           <CardContent>
@@ -314,10 +312,7 @@ export const AddFoodItemDialog: React.FC<Props> = ({
                 <Button
                   variant="contained"
                   type="submit"
-                  sx={[
-                    { marginTop: '1rem', marginBottom: '1rem' },
-                    matchesMD && { marginTop: 0 },
-                  ]}
+                  sx={{ marginTop: '1rem', marginBottom: '1rem' }}
                 >
                   Create
                 </Button>

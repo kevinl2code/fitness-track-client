@@ -90,7 +90,6 @@ export const AddCustomUserFoodItemForm: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
   const { mutate: createUserFoodItem, isLoading } = useMutation(
     (newFoodItem: UserFoodItem) => dataService.createUserFoodItem(newFoodItem),
@@ -264,10 +263,7 @@ export const AddCustomUserFoodItemForm: React.FC<Props> = ({
         <Button
           variant="contained"
           type="submit"
-          sx={[
-            { marginTop: '1rem', marginBottom: '1rem' },
-            matchesMD && { marginTop: 0 },
-          ]}
+          sx={{ marginTop: '1rem', marginBottom: '1rem' }}
         >
           Create
         </Button>

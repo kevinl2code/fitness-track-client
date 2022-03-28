@@ -94,7 +94,6 @@ export const AddMyFoodsConsumableForm: React.FC<Props> = ({
   )
   const [filterText, setFilterText] = useState('')
   const [quantity, setQuantity] = useState('')
-  const { matchesMD } = useMediaQueries()
   const {
     reset,
     handleSubmit,
@@ -289,10 +288,7 @@ export const AddMyFoodsConsumableForm: React.FC<Props> = ({
           variant="contained"
           type="submit"
           disabled={!hasQuantity}
-          sx={[
-            { marginTop: '1rem', marginBottom: '1rem' },
-            matchesMD && { marginTop: 0 },
-          ]}
+          sx={{ marginTop: '1rem', marginBottom: '1rem' }}
         >
           Submit
         </Button>

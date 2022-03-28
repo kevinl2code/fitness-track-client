@@ -13,24 +13,19 @@ interface Props {
 
 export const AppLoadingPage: React.FC<Props> = ({ color }) => {
   const ftlogo = `${process.env.PUBLIC_URL}/ftlogo.png`
-  const { matchesMD } = useMediaQueries()
   const contentHeight = vh * 0.75
   return (
     <Container
       maxWidth={false}
       disableGutters={true}
       component="div"
-      sx={[
-        {
-          display: 'flex',
-          alignItems: 'stretch',
-          minHeight: '100vh',
-          backgroundColor: color,
-        },
-        !matchesMD && {
-          flexDirection: 'column',
-        },
-      ]}
+      sx={{
+        display: 'flex',
+        alignItems: 'stretch',
+        minHeight: '100vh',
+        backgroundColor: color,
+        flexDirection: 'column',
+      }}
     >
       <Grid
         container

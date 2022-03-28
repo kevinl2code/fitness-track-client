@@ -104,7 +104,6 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(ingredientValidationSchema),
   })
-  const { matchesMD } = useMediaQueries()
   const user = useContext(UserContext)
 
   const dataService = new DataService()
@@ -339,11 +338,9 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
                 item
                 md={2}
                 xs={12}
-                sx={[
-                  !matchesMD && {
-                    margin: '0px 0px 1rem 0px',
-                  },
-                ]}
+                sx={{
+                  margin: '0px 0px 1rem 0px',
+                }}
               >
                 <FormattedTextField
                   label="Quantity"
@@ -404,10 +401,7 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
               variant="contained"
               type="submit"
               disabled={!hasQuantity}
-              sx={[
-                { marginTop: '1rem', marginBottom: '1rem' },
-                matchesMD && { marginTop: 0 },
-              ]}
+              sx={{ marginTop: '1rem', marginBottom: '1rem' }}
             >
               Submit
             </Button>

@@ -29,7 +29,6 @@ export const MainAppBar: React.FC<Props> = ({ setAppUser }) => {
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
-  const { matchesMD } = useMediaQueries()
   const handleLogoutClick = async (route: string) => {
     await authService.logOut()
     setAppUser(null)

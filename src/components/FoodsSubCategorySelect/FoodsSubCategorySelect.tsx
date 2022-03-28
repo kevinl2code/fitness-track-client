@@ -30,7 +30,6 @@ export const FoodsSubCategorySelect: React.FC<Props> = ({
   handleSubCategoryChange,
   setAddFoodSubCategoryDialogOpen,
 }) => {
-  const { matchesMD } = useMediaQueries()
   const generatedSubCategories = subCategories?.map((subCategory, index) => {
     const name = subCategory.name
     const value = subCategory.subCategoryId
@@ -46,11 +45,9 @@ export const FoodsSubCategorySelect: React.FC<Props> = ({
       item
       md={2}
       xs={12}
-      sx={[
-        !matchesMD && {
-          margin: '0 0px 1rem 0px',
-        },
-      ]}
+      sx={{
+        margin: '0 0px 1rem 0px',
+      }}
     >
       {selectedCategory.length > 1 && (
         <FormControl fullWidth variant="standard">

@@ -28,7 +28,6 @@ export const FoodsCategorySelect: React.FC<Props> = ({
   handleCategoryChange,
   setAddFoodCategoryDialogOpen,
 }) => {
-  const { matchesMD } = useMediaQueries()
   const generatedCategories = categories?.map((category, index) => {
     const name = category.name
     const value = category.categoryId
@@ -43,11 +42,9 @@ export const FoodsCategorySelect: React.FC<Props> = ({
       item
       md={2}
       xs={12}
-      sx={[
-        !matchesMD && {
-          margin: '2rem 0px 1rem 0px',
-        },
-      ]}
+      sx={{
+        margin: '2rem 0px 1rem 0px',
+      }}
     >
       <FormControl fullWidth variant="standard">
         <InputLabel id="category">Category</InputLabel>

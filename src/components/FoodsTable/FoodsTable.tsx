@@ -70,7 +70,6 @@ export const FoodsTable: React.FC<Props> = ({
     open: false,
     foodItem: null,
   })
-  const { matchesMD } = useMediaQueries()
   const sortedFoodItems: FitnessTrackFoodItem[] | UserFoodItem[] =
     foodItems.sort((a, b) => {
       const nameA = a.foodItemName.toUpperCase()
@@ -293,7 +292,7 @@ export const FoodsTable: React.FC<Props> = ({
         setEditFoodDialogOpen={setEditUserFoodDialogOpen}
       />
       <Grid item md={8} xs={12}>
-        <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
+        <Paper elevation={0} variant={'elevation'}>
           <Grid container>
             <Grid
               container

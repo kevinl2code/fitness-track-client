@@ -58,8 +58,6 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
   handleSubmit,
   setDialogOpenState,
 }) => {
-  const { matchesMD } = useMediaQueries()
-
   const queryClient = useQueryClient()
   const calculate = new Calculate()
   const cycleStart = DateTime.fromISO(cycle.startDate)
@@ -190,10 +188,7 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
             container
             direction="column"
             alignItems="center"
-            sx={[
-              { padding: '2rem' },
-              !matchesMD && { padding: '2rem 0 2rem 0' },
-            ]}
+            sx={{ padding: '2rem 0 2rem 0' }}
           >
             <Grid item>
               <Controller
@@ -233,10 +228,7 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
             container
             direction="column"
             alignItems="center"
-            sx={[
-              { padding: '2rem' },
-              !matchesMD && { padding: '2rem 0 2rem 0' },
-            ]}
+            sx={{ padding: '2rem 0 2rem 0' }}
           >
             <Grid item>
               <Controller

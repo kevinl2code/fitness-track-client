@@ -82,7 +82,6 @@ export const DailyEntriesPage: React.FC = () => {
     setDailyEntry(selectedEntry)
   }, [currentlySelectedDate, entries])
 
-  const { matchesMD } = useMediaQueries()
   const calculate = new Calculate()
 
   if (!user) {
@@ -188,16 +187,14 @@ export const DailyEntriesPage: React.FC = () => {
         daysSinceLastActive={daysSinceLastActive}
         setDialogOpenState={setOpenReturningUserDialog}
       />
-      {!matchesMD && (
-        <MobileDateView
-          pickerDate={pickerDate}
-          minDate={cycleStartDate}
-          maxDate={calendarMaxDate}
-          setPickerDate={setPickerDate}
-          setDatePickerOpen={setDatePickerOpen}
-        />
-      )}
-      <Grid container sx={[matchesMD && { marginTop: '2rem' }]}>
+      <MobileDateView
+        pickerDate={pickerDate}
+        minDate={cycleStartDate}
+        maxDate={calendarMaxDate}
+        setPickerDate={setPickerDate}
+        setDatePickerOpen={setDatePickerOpen}
+      />
+      <Grid container>
         <Grid item xs={12} md={4} container justifyContent="flex-start">
           {/* <Grid item xs={12} sx={{ marginBottom: '2rem' }}> */}
           <DatePicker
@@ -212,16 +209,12 @@ export const DailyEntriesPage: React.FC = () => {
                 setPickerDate(newValue)
               }
             }}
-            renderInput={
-              matchesMD
-                ? (params) => <TextField {...params} />
-                : ({ inputRef, inputProps, InputProps }) => (
-                    <Box ref={inputRef}>
-                      {/* <Typography>{pickerDate?.toISODate}</Typography> */}
-                      {/* {InputProps?.endAdornment} */}
-                    </Box>
-                  )
-            }
+            renderInput={({ inputRef, inputProps, InputProps }) => (
+              <Box ref={inputRef}>
+                {/* <Typography>{pickerDate?.toISODate}</Typography> */}
+                {/* {InputProps?.endAdornment} */}
+              </Box>
+            )}
           />
           {/* </Grid> */}
         </Grid>

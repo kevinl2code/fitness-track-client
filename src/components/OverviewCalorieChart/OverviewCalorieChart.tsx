@@ -26,8 +26,6 @@ interface Props {
 }
 
 export const OverviewCalorieChart: React.FC<Props> = ({ entries }) => {
-  const { matchesMD } = useMediaQueries()
-
   const calculateEntryActualCalories = (consumables: EntryConsumable[]) => {
     const confirmedConsumables = consumables?.length > 0 ? consumables : null
     const caloriesConsumed =
@@ -55,7 +53,7 @@ export const OverviewCalorieChart: React.FC<Props> = ({ entries }) => {
   return (
     <Paper
       elevation={0}
-      variant={matchesMD ? 'outlined' : 'elevation'}
+      variant={'elevation'}
       sx={{
         padding: '2rem 8px 1rem 8px',
         borderRadius: '2rem',

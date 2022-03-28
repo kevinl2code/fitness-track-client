@@ -13,7 +13,6 @@ export const DashboardPage: React.FC = () => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const entries = useContext(EntriesContext)
-  const { matchesMD } = useMediaQueries()
   const minimumEntries = 4
   const currentEntries = entries.length
   const daysRemaining = minimumEntries - currentEntries

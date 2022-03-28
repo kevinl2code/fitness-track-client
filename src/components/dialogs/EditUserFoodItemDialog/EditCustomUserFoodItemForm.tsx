@@ -90,7 +90,6 @@ export const EditCustomUserFoodItemForm: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -291,10 +290,7 @@ export const EditCustomUserFoodItemForm: React.FC<Props> = ({
         <Button
           variant="contained"
           type="submit"
-          sx={[
-            { marginTop: '1rem', marginBottom: '1rem' },
-            matchesMD && { marginTop: 0 },
-          ]}
+          sx={{ marginTop: '1rem', marginBottom: '1rem' }}
         >
           Update
         </Button>

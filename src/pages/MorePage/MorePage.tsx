@@ -3,6 +3,8 @@ import React, { useContext } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import LiveHelpIcon from '@mui/icons-material/LiveHelp'
+import SettingsIcon from '@mui/icons-material/Settings'
+import ArticleIcon from '@mui/icons-material/Article'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
 import { UserContext } from '../../app/App'
@@ -17,6 +19,11 @@ interface Props {
   setUser: (user: User | null) => Promise<void>
   handleLogout: () => void
 }
+
+// const vh = Math.max(
+//   document.documentElement.clientHeight || 0,
+//   window.innerHeight || 0
+// )
 
 export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
   const user = useContext(UserContext)
@@ -51,25 +58,47 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
     },
   ]
 
+  const applicationSection: ListSectionDetails[] = [
+    {
+      itemName: 'Settings',
+      itemIcon: <SettingsIcon />,
+      itemAction: () => null,
+    },
+    {
+      itemName: 'Terms and Conditions',
+      itemIcon: <ArticleIcon />,
+      itemAction: () => null,
+    },
+  ]
+
   return (
-    <Container>
+    <Container sx={{ height: '100%' }}>
       <Grid
         container
         direction="column"
-        alignItems="center"
-        sx={{ marginTop: '1rem' }}
+        alignItems="flex-start"
+        justifyContent="space-between"
+        sx={{ paddingTop: '1rem', height: '100%' }}
       >
-        <ListSection sectionSubHeader="User" sectionItems={userSection} />
-        <ListSection sectionSubHeader="Info" sectionItems={infoSection} />
-        <Divider sx={{ width: '100%', marginBottom: '1rem' }} />
-        <Button
-          variant="outlined"
-          size="medium"
-          onClick={() => handleLogout()}
-          sx={{ marginBottom: '8px' }}
-        >
-          Sign Out
-        </Button>
+        <Grid item container>
+          <ListSection sectionSubHeader="User" sectionItems={userSection} />
+          <ListSection sectionSubHeader="Info" sectionItems={infoSection} />
+          <ListSection
+            sectionSubHeader="App"
+            sectionItems={applicationSection}
+          />
+        </Grid>
+        {/* <Divider sx={{ width: '100%', marginBottom: '1rem' }} /> */}
+        <Grid item container>
+          <Button
+            variant="outlined"
+            size="medium"
+            onClick={() => handleLogout()}
+            sx={{ width: '100%' }}
+          >
+            Sign Out
+          </Button>
+        </Grid>
       </Grid>
     </Container>
   )

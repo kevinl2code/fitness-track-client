@@ -44,7 +44,6 @@ export const ConsumablesList: React.FC<Props> = ({
   setSelectedFoodItem,
   setQuantity,
 }) => {
-  const { matchesMD } = useMediaQueries()
   const filteredListItems = foodItems.filter((foodItem) => {
     return foodItem.foodItemName
       .toLowerCase()
@@ -71,7 +70,7 @@ export const ConsumablesList: React.FC<Props> = ({
       }}
     >
       {selectedSubCategory.length > 0 && !foodItemsLoading && (
-        <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
+        <Paper elevation={0} variant={'elevation'}>
           <Grid container>
             {selectedFoodItem ? (
               <FormattedTextField

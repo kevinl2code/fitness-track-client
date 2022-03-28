@@ -136,8 +136,6 @@ export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
     setValue,
   ])
 
-  const { matchesMD } = useMediaQueries()
-
   const { mutate: updateFoodItem, isLoading } = useMutation(
     (updatedFoodItem: FitnessTrackFoodItem) =>
       dataService.updateFoodItem(updatedFoodItem),
@@ -268,7 +266,7 @@ export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
     updateFoodItem(updatedFoodItem)
   }
   return (
-    <Dialog open={open} fullScreen={!matchesMD}>
+    <Dialog open={open} fullScreen={true}>
       <Grid container>
         <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
           <CardContent>
@@ -338,10 +336,7 @@ export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
                 <Button
                   variant="contained"
                   type="submit"
-                  sx={[
-                    { marginTop: '1rem', marginBottom: '1rem' },
-                    matchesMD && { marginTop: 0 },
-                  ]}
+                  sx={{ marginTop: '1rem', marginBottom: '1rem' }}
                 >
                   Update
                 </Button>

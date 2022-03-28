@@ -16,13 +16,13 @@ export const FoodsMyFoodsView: React.FC = () => {
   const foodItems = useContext(UserFoodItemsContext)
   // const [foodItems, setFoodItems] = useState<UserFoodItem[]>([])
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
-  const [editFoodDialogOpen, setEditFoodDialogOpen] = useState<{
-    open: boolean
-    foodItem: FitnessTrackFoodItem | null
-  }>({
-    open: false,
-    foodItem: null,
-  })
+  // const [editFoodDialogOpen, setEditFoodDialogOpen] = useState<{
+  //   open: boolean
+  //   foodItem: FitnessTrackFoodItem | null
+  // }>({
+  //   open: false,
+  //   foodItem: null,
+  // })
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<{
     open: boolean
     deleteItem: {
@@ -33,7 +33,6 @@ export const FoodsMyFoodsView: React.FC = () => {
     open: false,
     deleteItem: null,
   })
-  const { matchesMD } = useMediaQueries()
   const user = useContext(UserContext)
   const dataService = new DataService()
   const queryClient = useQueryClient()
@@ -78,7 +77,7 @@ export const FoodsMyFoodsView: React.FC = () => {
         setAddFoodDialogOpen={setAddFoodDialogOpen}
       />
       <Box sx={[{ width: '100%', marginTop: '2rem' }]}>
-        <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
+        <Grid container spacing={0} sx={{ width: '100%' }}>
           {noUserFoodsFound ? (
             <FoodsMyFoodsViewEmpty
               setAddFoodDialogOpen={setAddFoodDialogOpen}

@@ -40,7 +40,6 @@ export const FoodsCatalogView: React.FC = () => {
     useState(false)
   const user = useContext(UserContext)
   const isAdmin = user?.user.isAdmin!
-  const { matchesMD } = useMediaQueries()
 
   const dataService = new DataService()
 
@@ -138,8 +137,8 @@ export const FoodsCatalogView: React.FC = () => {
         setAddFoodSubCategoryDialogOpen={setAddFoodSubCategoryDialogOpen}
         categoryId={selectedCategory}
       />
-      <Box sx={[{ width: '100%' }, matchesMD && { marginTop: '2rem' }]}>
-        <Grid container spacing={matchesMD ? 1 : 0} sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%' }}>
+        <Grid container spacing={0} sx={{ width: '100%' }}>
           <FoodsCategorySelect
             categories={categories}
             categoriesLoading={categoriesLoading}

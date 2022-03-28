@@ -16,7 +16,6 @@ import {
 } from 'recharts/types/component/DefaultTooltipContent'
 import { DailyEntry, UserState } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { first, last } from 'lodash'
 
 interface Props {
@@ -29,7 +28,6 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   user,
 }) => {
   const [alignment, setAlignment] = React.useState('week')
-  const { matchesMD } = useMediaQueries()
   const { birthday, sex, height } = user
   const calculate = new Calculate()
 
@@ -146,12 +144,14 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
           dataKey="actualValue"
           stroke="#8884d8"
           strokeWidth={2}
+          dot={false}
         />
         <Line
           type="monotone"
           dataKey="projectedValue"
           stroke="green"
           strokeWidth={2}
+          dot={false}
         />
         <XAxis dataKey="name" interval="preserveStartEnd" minTickGap={30} />
         <YAxis
@@ -181,7 +181,7 @@ export const DashboardWeightTrackerChart: React.FC<Props> = ({
   return (
     <Paper
       elevation={0}
-      variant={matchesMD ? 'outlined' : 'elevation'}
+      variant={'elevation'}
       sx={{
         padding: '2rem 8px 1rem 8px',
         borderRadius: '2rem',

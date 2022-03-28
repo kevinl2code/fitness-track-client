@@ -4,14 +4,12 @@ import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 const donutLove = `${process.env.PUBLIC_URL}/donutlove.svg`
 export const DailyEntryMissedDay: React.FC = () => {
-  const { matchesMD } = useMediaQueries()
-
   return (
     <Grid
       container
       direction="column"
       alignItems="center"
-      sx={[!matchesMD && { marginTop: '2rem' }]}
+      sx={{ marginTop: '2rem' }}
     >
       <Typography
         textAlign="center"

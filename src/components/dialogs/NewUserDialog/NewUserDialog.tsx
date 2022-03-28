@@ -82,9 +82,7 @@ export const NewUserDialog: React.FC<Props> = ({
   const errors = formState.errors
   const hasErrors = Object.keys(errors).length !== 0
   const queryClient = useQueryClient()
-  const { matchesMD, orientation } = useMediaQueries()
   const navigate = useNavigate()
-  const showLogo = !matchesMD || orientation === 0
 
   useEffect(() => {
     return () => {
@@ -187,38 +185,33 @@ export const NewUserDialog: React.FC<Props> = ({
     )
 
   return (
-    <Dialog open={open} fullWidth fullScreen={!matchesMD}>
-      {!matchesMD && (
-        <DialogTitle sx={{ textAlign: 'center', padding: 0 }}>
-          <Box
-            component="div"
-            sx={[
-              {
-                width: '50%',
-                backgroundColor: 'primary.main',
-                flexGrow: 1,
-                display: 'flex',
-              },
-              !matchesMD && {
-                width: '100%',
-              },
-            ]}
-          >
-            <img
-              src={ftlogo}
-              style={{
-                width: vh * 0.5,
-                height: vh * 0.5,
-                overflow: 'hidden',
-                position: 'sticky',
-                top: '25%',
-                left: '15%',
-              }}
-              alt="Fitness Track logo"
-            />
-          </Box>
-        </DialogTitle>
-      )}
+    <Dialog open={open} fullWidth fullScreen={true}>
+      <DialogTitle sx={{ textAlign: 'center', padding: 0 }}>
+        <Box
+          component="div"
+          sx={[
+            {
+              width: '100%',
+              backgroundColor: 'primary.main',
+              flexGrow: 1,
+              display: 'flex',
+            },
+          ]}
+        >
+          <img
+            src={ftlogo}
+            style={{
+              width: vh * 0.5,
+              height: vh * 0.5,
+              overflow: 'hidden',
+              position: 'sticky',
+              top: '25%',
+              left: '15%',
+            }}
+            alt="Fitness Track logo"
+          />
+        </Box>
+      </DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <Grid
           container

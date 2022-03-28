@@ -88,7 +88,6 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
   setAddFoodDialogOpen,
 }) => {
   const [entryMethod, setEntryMethod] = useState<EntryMethod>(null)
-  const { matchesMD } = useMediaQueries()
 
   const handleCancel = () => {
     setAddFoodDialogOpen(false)
@@ -96,7 +95,7 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
   }
 
   return (
-    <Dialog open={open} fullScreen={!matchesMD}>
+    <Dialog open={open} fullScreen={true}>
       <DialogTitle>
         {' '}
         {entryMethod === 'BUILDER' ? 'Build A Food Item' : 'Create A Food Item'}
@@ -104,7 +103,7 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
       <Grid container sx={{ height: '100%' }}>
         <DialogContent sx={{ paddingBottom: 0 }}>
           {entryMethod === null && (
-            <Grid container direction={matchesMD ? 'row' : 'column'}>
+            <Grid container direction={'column'}>
               <Button
                 variant="outlined"
                 size="large"

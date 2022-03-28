@@ -11,15 +11,13 @@ const plottingData = `${process.env.PUBLIC_URL}/plottingData.svg`
 export const DashboardInsufficientData: React.FC<Props> = ({
   daysRemaining,
 }) => {
-  const { matchesMD } = useMediaQueries()
-
   return (
     <Grid
       container
       direction="column"
       justifyContent="center"
       alignItems="center"
-      sx={[{ height: '100%' }, !matchesMD && { marginTop: '2rem' }]}
+      sx={{ height: '100%', marginTop: '2rem' }}
     >
       <img
         src={plottingData}

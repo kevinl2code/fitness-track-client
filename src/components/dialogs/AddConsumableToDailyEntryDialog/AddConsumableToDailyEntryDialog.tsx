@@ -41,7 +41,6 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
   const [entryMethod, setEntryMethod] = useState<EntryMethod>(null)
 
   const queryClient = useQueryClient()
-  const { matchesMD } = useMediaQueries()
   const handleCloseDialog = () => {
     setDialogOpenState(false)
     setEntryMethod(null)
@@ -70,11 +69,11 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
   )
 
   return (
-    <Dialog open={open} onClose={handleCloseDialog} fullScreen={!matchesMD}>
+    <Dialog open={open} onClose={handleCloseDialog} fullScreen={true}>
       <DialogTitle>Add Consumable</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         {entryMethod === null && (
-          <Grid container direction={matchesMD ? 'row' : 'column'}>
+          <Grid container direction={'column'}>
             <Button
               variant="outlined"
               size="large"

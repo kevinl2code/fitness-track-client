@@ -49,7 +49,6 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   } = useForm()
   const calculate = new Calculate()
   const queryClient = useQueryClient()
-  const { matchesMD } = useMediaQueries()
   const handleCloseDialog = () => {
     setDialogOpenState(false)
     reset()
@@ -92,10 +91,7 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
               item
               container
               alignItems="center"
-              sx={[
-                { padding: '2rem 0 2rem 0' },
-                matchesMD && { padding: '2rem' },
-              ]}
+              sx={{ padding: '2rem 0 2rem 0' }}
             >
               <Grid item md={8} xs={5}>
                 Acivity Level

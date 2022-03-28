@@ -28,7 +28,6 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
   isEditable,
 }) => {
   const queryClient = useQueryClient()
-  const { matchesMD } = useMediaQueries()
 
   const { dailyEntryConsumables } = entry
 
@@ -132,7 +131,7 @@ export const DailyEntryConsumablesTable: React.FC<Props> = ({
   ))
 
   return (
-    <Paper elevation={0} variant={matchesMD ? 'outlined' : 'elevation'}>
+    <Paper elevation={0} variant={'elevation'}>
       <Grid container>
         <Grid item xs={12}>
           <TableContainer

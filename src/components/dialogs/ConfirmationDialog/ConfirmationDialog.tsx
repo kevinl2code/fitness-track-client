@@ -56,7 +56,6 @@ export const ConfirmationDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  const { matchesMD } = useMediaQueries()
   const handleCancel = () => {
     reset()
     setConfirmDeleteDialogOpen({
@@ -75,7 +74,7 @@ export const ConfirmationDialog: React.FC<Props> = ({
   }
 
   return (
-    <Dialog open={open} fullScreen={!matchesMD}>
+    <Dialog open={open} fullScreen={true}>
       <Grid container>
         <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
           <CardContent>
@@ -109,10 +108,7 @@ export const ConfirmationDialog: React.FC<Props> = ({
                 <Button
                   variant="contained"
                   type="submit"
-                  sx={[
-                    { marginTop: '1rem', marginBottom: '1rem' },
-                    matchesMD && { marginTop: 0 },
-                  ]}
+                  sx={{ marginTop: '1rem', marginBottom: '1rem' }}
                 >
                   Delete
                 </Button>

@@ -37,7 +37,6 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
-  const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
   const handleCancel = () => {
     reset()
@@ -101,7 +100,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
     setAddFoodCategoryDialogOpen(false)
   }
   return (
-    <Dialog open={open} fullScreen={!matchesMD}>
+    <Dialog open={open} fullScreen={true}>
       <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
         <CardContent>
           <Typography variant="h4" align="center">
@@ -121,10 +120,7 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
               <Button
                 variant="contained"
                 type="submit"
-                sx={[
-                  { marginTop: '1rem', marginBottom: '1rem' },
-                  matchesMD && { marginTop: 0 },
-                ]}
+                sx={{ marginTop: '1rem', marginBottom: '1rem' }}
               >
                 Create
               </Button>

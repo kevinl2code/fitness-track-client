@@ -41,7 +41,6 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
   const { birthday, sex, height } = user
   const calculate = new Calculate()
   const sort = new Sort()
-  const { matchesMD } = useMediaQueries()
   const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries).reverse()
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
@@ -227,13 +226,8 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
     <Grid item md={8} xs={12}>
       <Paper
         elevation={0}
-        variant={matchesMD ? 'outlined' : 'elevation'}
-        sx={[
-          { borderRadius: '2rem' },
-          !matchesMD && {
-            padding: '2rem 8px 1rem 8px',
-          },
-        ]}
+        variant={'elevation'}
+        sx={{ padding: '2rem 8px 1rem 8px' }}
       >
         <Typography
           sx={{ marginBottom: 1, color: 'primary.main' }}

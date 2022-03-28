@@ -44,11 +44,8 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
 
   const user = useContext(UserContext)
   const dataService = new DataService()
-  const queryClient = useQueryClient()
 
   dataService.setUser(user?.user!)
-
-  const { matchesMD } = useMediaQueries()
 
   const handleCancel = () => {
     setEditFoodDialogOpen({
@@ -71,7 +68,7 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
         setIngredients={setIngredients}
         setOpen={setFoodSelectorOpen}
       />
-      <Dialog open={open} fullScreen={!matchesMD}>
+      <Dialog open={open} fullScreen={true}>
         <DialogTitle> {'Edit Food Item'}</DialogTitle>
         <Grid container sx={{ height: '100%' }}>
           <DialogContent sx={{ paddingBottom: 0 }}>

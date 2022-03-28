@@ -54,7 +54,6 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
     formState: { errors },
   } = useForm()
 
-  const { matchesMD } = useMediaQueries()
   const queryClient = useQueryClient()
   const calculate = new Calculate()
   const { birthday, sex, height, sub } = user
@@ -128,7 +127,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
         container
         direction="column"
         alignItems="center"
-        sx={[!matchesMD && { marginTop: '2rem' }]}
+        sx={{ marginTop: '2rem' }}
       >
         <Typography
           textAlign="center"
@@ -151,10 +150,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
               container
               direction="column"
               alignItems="center"
-              sx={[
-                { padding: '2rem' },
-                !matchesMD && { padding: '2rem 0 2rem 0' },
-              ]}
+              sx={{ padding: '2rem 0 2rem 0' }}
             >
               <Grid item>
                 <Controller
@@ -196,10 +192,7 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
               container
               direction="column"
               alignItems="center"
-              sx={[
-                { padding: '2rem' },
-                !matchesMD && { padding: '2rem 0 2rem 0' },
-              ]}
+              sx={{ padding: '2rem 0 2rem 0' }}
             >
               <Grid item>
                 <Controller

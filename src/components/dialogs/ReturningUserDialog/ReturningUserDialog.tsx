@@ -40,20 +40,19 @@ export const ReturningUserDialog: React.FC<Props> = ({
     formState: { errors },
   } = useForm()
   const user = useContext(UserContext)
-  const { matchesMD } = useMediaQueries()
 
   if (!user || !cycle) {
     return null
   }
 
   const longHiatus = daysSinceLastActive > 6
-  const longHiatusText = `Looks like you've been away for quite some time so we've closed out the plan you had been.  Once you're ready, pick up where you left off by starting a new plan.`
+  const longHiatusText = `Looks like you've been away for quite some time so we've closed out the plan you had been on.  Once you're ready, pick up where you left off by starting a new plan.`
   const shortHiatusText = `Looks like you've been away for a few days. Go ahead and weigh in for today and we'll auto generate entries for the days you were gone based on where you currently stand.`
 
   const dialogText = longHiatus ? longHiatusText : shortHiatusText
 
   return (
-    <Dialog open={open} fullScreen={!matchesMD}>
+    <Dialog open={open} fullScreen={true}>
       <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
         <CardContent>
           <Typography variant="h4" align="center">

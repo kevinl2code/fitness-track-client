@@ -1,7 +1,6 @@
 import { Button, Grid, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import React from 'react'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 interface Props {
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -12,15 +11,13 @@ const onlineGroceries = `${process.env.PUBLIC_URL}/onlinegroceries.svg`
 export const FoodsMyFoodsViewEmpty: React.FC<Props> = ({
   setAddFoodDialogOpen,
 }) => {
-  const { matchesMD } = useMediaQueries()
-
   return (
     <Grid
       container
       direction="column"
       justifyContent="center"
       alignItems="center"
-      sx={[{ height: '100%' }, !matchesMD && { marginTop: '2rem' }]}
+      sx={{ height: '100%', marginTop: '2rem' }}
     >
       <img
         src={onlineGroceries}

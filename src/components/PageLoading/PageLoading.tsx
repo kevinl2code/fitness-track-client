@@ -16,24 +16,19 @@ export const PageLoading: React.FC = () => {
   // )
 
   const ftlogo = `${process.env.PUBLIC_URL}/ftlogo.png`
-  const { matchesMD } = useMediaQueries()
   // const contentHeight = vh * 0.75
   return (
     <Container
       maxWidth={false}
       disableGutters={true}
       component="div"
-      sx={[
-        {
-          display: 'flex',
-          alignItems: 'stretch',
-          height: '100%',
-          backgroundColor: '#fff',
-        },
-        !matchesMD && {
-          flexDirection: 'column',
-        },
-      ]}
+      sx={{
+        display: 'flex',
+        alignItems: 'stretch',
+        height: '100%',
+        backgroundColor: '#fff',
+        flexDirection: 'column',
+      }}
     >
       <Grid
         container
