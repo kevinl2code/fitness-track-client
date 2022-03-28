@@ -3,6 +3,9 @@ import {
   Card,
   CardContent,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   Typography,
 } from '@mui/material'
@@ -118,41 +121,40 @@ export const AddFoodSubCategoryDialog: React.FC<Props> = ({
   }
   return (
     <Dialog open={open} fullScreen={true}>
-      <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
-        <CardContent>
-          <Typography variant="h4" align="center">
-            Add Food Sub-Category
-          </Typography>
-        </CardContent>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <Grid container justifyContent="center">
-              {generateFormTextInput({
-                name: 'subCategoryName',
-                control: control,
-                required: true,
-                label: 'Sub-Category Name',
-                placeholder: 'Sub-Category Name',
-              })}
+      <DialogTitle>Add Food Sub-Category</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+          <Grid container justifyContent="center">
+            {generateFormTextInput({
+              name: 'subCategoryName',
+              control: control,
+              required: true,
+              label: 'Sub-Category Name',
+              placeholder: 'Sub-Category Name',
+            })}
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+            >
+              Create
+            </Button>
+            <Grid item xs={12} container justifyContent="center">
               <Button
-                variant="contained"
-                type="submit"
-                sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+                onClick={() => handleCancel()}
+                sx={{ marginBottom: '1rem' }}
               >
-                Create
+                Cancel
               </Button>
-              <Grid item xs={12} container justifyContent="center">
-                <Button
-                  onClick={() => handleCancel()}
-                  sx={{ marginBottom: '1rem' }}
-                >
-                  Cancel
-                </Button>
-              </Grid>
             </Grid>
-          </form>
-        </CardContent>
-      </Card>
+          </Grid>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleCancel()} sx={{ marginBottom: '1rem' }}>
+          Cancel
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }

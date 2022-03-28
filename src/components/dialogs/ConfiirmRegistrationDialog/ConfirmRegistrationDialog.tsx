@@ -57,7 +57,6 @@ export const ConfirmRegistrationDialog: React.FC<Props> = ({
     <Dialog open={open} onClose={handleCloseDialog}>
       <DialogTitle>Confirm Registration</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
-        <DialogContentText></DialogContentText>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justifyContent="center">
             <Grid item container alignItems="center" sx={{ padding: '2rem' }}>

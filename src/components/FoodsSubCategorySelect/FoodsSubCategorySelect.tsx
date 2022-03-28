@@ -43,7 +43,6 @@ export const FoodsSubCategorySelect: React.FC<Props> = ({
   return (
     <Grid
       item
-      md={2}
       xs={12}
       sx={{
         margin: '0 0px 1rem 0px',

@@ -3,6 +3,9 @@ import {
   Card,
   CardContent,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   Typography,
 } from '@mui/material'
@@ -101,41 +104,32 @@ export const AddFoodCategoryDialog: React.FC<Props> = ({
   }
   return (
     <Dialog open={open} fullScreen={true}>
-      <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
-        <CardContent>
-          <Typography variant="h4" align="center">
-            Add Food Category
-          </Typography>
-        </CardContent>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <Grid container justifyContent="center">
-              {generateFormTextInput({
-                name: 'categoryName',
-                control: control,
-                required: true,
-                label: 'Category Name',
-                placeholder: 'Category Name',
-              })}
-              <Button
-                variant="contained"
-                type="submit"
-                sx={{ marginTop: '1rem', marginBottom: '1rem' }}
-              >
-                Create
-              </Button>
-              <Grid item xs={12} container justifyContent="center">
-                <Button
-                  onClick={() => handleCancel()}
-                  sx={{ marginBottom: '1rem' }}
-                >
-                  Cancel
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        </CardContent>
-      </Card>
+      <DialogTitle>Add Food Category</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+          <Grid container justifyContent="center">
+            {generateFormTextInput({
+              name: 'categoryName',
+              control: control,
+              required: true,
+              label: 'Category Name',
+              placeholder: 'Category Name',
+            })}
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+            >
+              Create
+            </Button>
+          </Grid>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleCancel()} sx={{ marginBottom: '1rem' }}>
+          Cancel
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }

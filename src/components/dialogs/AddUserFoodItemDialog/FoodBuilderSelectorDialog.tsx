@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Button,
   Dialog,
@@ -7,27 +7,25 @@ import {
   Grid,
   SelectChangeEvent,
 } from '@mui/material'
+import React, { useContext, useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
+import { v4 } from 'uuid'
+import * as yup from 'yup'
 import { UserContext } from '../../../app/App'
 import {
+  FitnessTrackFoodItem,
+  FoodBuilderIngredient,
   FoodCategory,
   FoodSubCategory,
-  FitnessTrackFoodItem,
-  EntryConsumable,
-  FoodBuilderIngredient,
 } from '../../../model/Model'
-import * as yup from 'yup'
-import { v4 } from 'uuid'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { DataService } from '../../../services/DataService'
-import { SubmitHandler, useForm } from 'react-hook-form'
 import { ConsumablesList } from '../../ConsumablesList'
 import { FoodsCategorySelect } from '../../FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../../FoodsSubCategorySelect'
-import { FormattedTextField } from '../../FormattedTextField/FormattedTextField'
-import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
+import { FormattedTextField } from '../../FormattedTextField/FormattedTextField'
 
 interface Props {
   open: boolean

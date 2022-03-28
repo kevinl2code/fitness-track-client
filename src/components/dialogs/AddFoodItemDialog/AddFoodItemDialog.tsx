@@ -3,6 +3,9 @@ import {
   Card,
   CardContent,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   Typography,
 } from '@mui/material'
@@ -242,93 +245,82 @@ export const AddFoodItemDialog: React.FC<Props> = ({
   }
   return (
     <Dialog open={open} fullScreen={true}>
-      <Grid container>
-        <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h4" align="center">
-              Create Food Item
-            </Typography>
-          </CardContent>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-              <Grid container justifyContent="center">
-                {generateFormTextInput({
-                  name: 'foodItemName',
-                  control: control,
-                  label: 'Food Name',
-                  placeholder: 'Food Name',
-                })}
-                {generateSelectInput({
-                  name: 'foodItemUnit',
-                  values: foodItemUnitValues,
-                  defaultValue: '',
-                  label: 'Food Units',
-                  control: control,
-                  register: register,
-                })}
-                {generateFormTextInput({
-                  name: 'servingSize',
-                  control: control,
-                  type: 'number',
-                  label: 'Serving Size',
-                  placeholder: 'Serving Size',
-                })}
-                {generateFormTextInput({
-                  name: 'calories',
-                  control: control,
-                  type: 'number',
-                  label: 'Calories',
-                  placeholder: 'Calories',
-                })}
-                {generateFormTextInput({
-                  name: 'protein',
-                  control: control,
-                  type: 'number',
-                  label: 'Protein',
-                  placeholder: 'Protein',
-                })}
-                {generateFormTextInput({
-                  name: 'fat',
-                  control: control,
-                  type: 'number',
-                  label: 'Fat',
-                  placeholder: 'Fat',
-                })}
-                {generateFormTextInput({
-                  name: 'carbohydrates',
-                  control: control,
-                  type: 'number',
-                  label: 'Carbohydrates',
-                  placeholder: 'Carbohydrates',
-                })}
-                {generateFormTextInput({
-                  name: 'foodItemReference',
-                  control: control,
-                  type: 'text',
-                  label: 'Reference Link',
-                  placeholder: 'Reference Link',
-                })}
+      <DialogTitle>Create Food Item</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+          <Grid container justifyContent="center">
+            {generateFormTextInput({
+              name: 'foodItemName',
+              control: control,
+              label: 'Food Name',
+              placeholder: 'Food Name',
+            })}
+            {generateSelectInput({
+              name: 'foodItemUnit',
+              values: foodItemUnitValues,
+              defaultValue: '',
+              label: 'Food Units',
+              control: control,
+              register: register,
+            })}
+            {generateFormTextInput({
+              name: 'servingSize',
+              control: control,
+              type: 'number',
+              label: 'Serving Size',
+              placeholder: 'Serving Size',
+            })}
+            {generateFormTextInput({
+              name: 'calories',
+              control: control,
+              type: 'number',
+              label: 'Calories',
+              placeholder: 'Calories',
+            })}
+            {generateFormTextInput({
+              name: 'protein',
+              control: control,
+              type: 'number',
+              label: 'Protein',
+              placeholder: 'Protein',
+            })}
+            {generateFormTextInput({
+              name: 'fat',
+              control: control,
+              type: 'number',
+              label: 'Fat',
+              placeholder: 'Fat',
+            })}
+            {generateFormTextInput({
+              name: 'carbohydrates',
+              control: control,
+              type: 'number',
+              label: 'Carbohydrates',
+              placeholder: 'Carbohydrates',
+            })}
+            {generateFormTextInput({
+              name: 'foodItemReference',
+              control: control,
+              type: 'text',
+              label: 'Reference Link',
+              placeholder: 'Reference Link',
+            })}
 
-                <Button
-                  variant="contained"
-                  type="submit"
-                  sx={{ marginTop: '1rem', marginBottom: '1rem' }}
-                >
-                  Create
-                </Button>
-                <Grid item xs={12} container justifyContent="center">
-                  <Button
-                    onClick={() => handleCancel()}
-                    sx={{ marginBottom: '1rem' }}
-                  >
-                    Cancel
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      </Grid>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+            >
+              Create
+            </Button>
+          </Grid>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleCancel()} sx={{ marginBottom: '1rem' }}>
+          Cancel
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }

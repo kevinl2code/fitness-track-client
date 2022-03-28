@@ -1,23 +1,22 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  TextField,
-  DialogActions,
-  Button,
-  Divider,
+  DialogTitle,
   FormControl,
   Grid,
   InputAdornment,
+  TextField,
 } from '@mui/material'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { DailyEntry, UserState } from '../../../model/Model'
 import { useMutation, useQueryClient } from 'react-query'
+import * as yup from 'yup'
+import { DailyEntry, UserState } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { Calculate } from '../../../utilities/Calculate'
 
@@ -143,14 +142,13 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
                 />
               </Grid>
             </Grid>
-            <Divider variant="middle" sx={{ minWidth: '100%' }} />
           </Grid>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button type="submit">Confirm</Button>
-          </DialogActions>
         </form>
       </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog}>Cancel</Button>
+        <Button type="submit">Confirm</Button>
+      </DialogActions>
     </Dialog>
   )
 }

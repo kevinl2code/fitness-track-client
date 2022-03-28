@@ -125,14 +125,13 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
                 />
               </Grid>
             </Grid>
-            <Divider variant="middle" sx={{ minWidth: '100%' }} />
           </Grid>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button type="submit">Confirm</Button>
-          </DialogActions>
         </form>
       </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog}>Cancel</Button>
+        <Button type="submit">Confirm</Button>
+      </DialogActions>
     </Dialog>
   )
 }

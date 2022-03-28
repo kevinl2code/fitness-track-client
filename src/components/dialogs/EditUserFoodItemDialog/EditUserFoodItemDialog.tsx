@@ -1,4 +1,11 @@
-import { Button, Dialog, DialogContent, DialogTitle, Grid } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+} from '@mui/material'
 import React, { useContext, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { UserContext } from '../../../app/App'
@@ -70,33 +77,26 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
       />
       <Dialog open={open} fullScreen={true}>
         <DialogTitle> {'Edit Food Item'}</DialogTitle>
-        <Grid container sx={{ height: '100%' }}>
-          <DialogContent sx={{ paddingBottom: 0 }}>
-            {isFoodBuilderFoodItem ? (
-              <EditFoodBuilderUserFoodItemForm
-                foodItem={foodItem}
-                dataService={dataService}
-                setEditFoodDialogOpen={setEditFoodDialogOpen}
-              />
-            ) : (
-              <EditCustomUserFoodItemForm
-                foodItem={foodItem}
-                dataService={dataService}
-                setEditFoodDialogOpen={setEditFoodDialogOpen}
-              />
-            )}
-            <Grid item xs={12} container justifyContent="center">
-              <Grid item xs={12} container justifyContent="center">
-                <Button
-                  onClick={() => handleCancel()}
-                  sx={{ marginBottom: '1rem' }}
-                >
-                  Cancel
-                </Button>
-              </Grid>
-            </Grid>
-          </DialogContent>
-        </Grid>
+        <DialogContent sx={{ paddingBottom: 0 }}>
+          {isFoodBuilderFoodItem ? (
+            <EditFoodBuilderUserFoodItemForm
+              foodItem={foodItem}
+              dataService={dataService}
+              setEditFoodDialogOpen={setEditFoodDialogOpen}
+            />
+          ) : (
+            <EditCustomUserFoodItemForm
+              foodItem={foodItem}
+              dataService={dataService}
+              setEditFoodDialogOpen={setEditFoodDialogOpen}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleCancel()} sx={{ marginBottom: '1rem' }}>
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   )

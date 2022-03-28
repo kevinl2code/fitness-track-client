@@ -1,4 +1,12 @@
-import { Dialog, Card, CardContent, Typography } from '@mui/material'
+import {
+  Dialog,
+  Card,
+  CardContent,
+  Typography,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+} from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext } from 'react'
 import { useForm } from 'react-hook-form'
@@ -53,36 +61,30 @@ export const ReturningUserDialog: React.FC<Props> = ({
 
   return (
     <Dialog open={open} fullScreen={true}>
-      <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
-        <CardContent>
-          <Typography variant="h4" align="center">
-            Welcome Back!
-          </Typography>
-          <Typography align="center">{dialogText}</Typography>
-        </CardContent>
-        <CardContent>
-          {!longHiatus && (
-            <ReturningUserDialogShortHiatusForm
-              entries={entries}
-              cycle={cycle}
-              user={user}
-              dataService={dataService}
-              control={control}
-              register={register}
-              handleSubmit={handleSubmit}
-              setDialogOpenState={setDialogOpenState}
-            />
-          )}
-          {longHiatus && (
-            <ReturningUserDialogLongHiatusView
-              cycle={cycle}
-              finalEntry={entries[0]}
-              dataService={dataService}
-              setDialogOpenState={setDialogOpenState}
-            />
-          )}
-        </CardContent>
-      </Card>
+      <DialogTitle>Welcome Back!</DialogTitle>
+      <DialogContentText>{dialogText}</DialogContentText>
+      <DialogContent>
+        {!longHiatus && (
+          <ReturningUserDialogShortHiatusForm
+            entries={entries}
+            cycle={cycle}
+            user={user}
+            dataService={dataService}
+            control={control}
+            register={register}
+            handleSubmit={handleSubmit}
+            setDialogOpenState={setDialogOpenState}
+          />
+        )}
+        {longHiatus && (
+          <ReturningUserDialogLongHiatusView
+            cycle={cycle}
+            finalEntry={entries[0]}
+            dataService={dataService}
+            setDialogOpenState={setDialogOpenState}
+          />
+        )}
+      </DialogContent>
     </Dialog>
   )
 }

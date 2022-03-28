@@ -291,7 +291,7 @@ export const FoodsTable: React.FC<Props> = ({
         foodItem={editUserFoodDialogOpen.foodItem}
         setEditFoodDialogOpen={setEditUserFoodDialogOpen}
       />
-      <Grid item md={8} xs={12}>
+      <Grid item xs={12}>
         <Paper elevation={0} variant={'elevation'}>
           <Grid container>
             <Grid

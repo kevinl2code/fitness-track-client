@@ -4,6 +4,10 @@ import {
   Card,
   CardContent,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   Typography,
 } from '@mui/material'
@@ -75,56 +79,43 @@ export const ConfirmationDialog: React.FC<Props> = ({
 
   return (
     <Dialog open={open} fullScreen={true}>
-      <Grid container>
-        <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h4" align="center">
-              Confirm Delete
-            </Typography>
-          </CardContent>
-          <CardContent>
-            <Typography>{`Are you sure you want to permanently delete ${deleteItem.name}?`}</Typography>
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-              <Grid container justifyContent="center">
-                <Grid
-                  item
-                  xs={12}
-                  container
-                  direction={'column'}
-                  sx={{
-                    paddingLeft: '2rem',
-                    paddingRight: '2rem',
-                    paddingBottom: '1rem',
-                  }}
-                >
-                  <FormTextInput
-                    control={control}
-                    label="Type DELETE to confirm"
-                    name="delete"
-                    // placeholder={placeholder}
-                    // inputProps={inputProps}
-                  />
-                </Grid>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  sx={{ marginTop: '1rem', marginBottom: '1rem' }}
-                >
-                  Delete
-                </Button>
-                <Grid item xs={12} container justifyContent="center">
-                  <Button
-                    onClick={() => handleCancel()}
-                    sx={{ marginBottom: '1rem' }}
-                  >
-                    Cancel
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      </Grid>
+      <DialogTitle>Confirm Delete</DialogTitle>
+      <DialogContent sx={{ paddingBottom: 0 }}>
+        <Typography>{`Are you sure you want to permanently delete ${deleteItem.name}?`}</Typography>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+          <Grid container justifyContent="center">
+            <Grid
+              item
+              xs={12}
+              container
+              direction={'column'}
+              sx={{
+                paddingLeft: '2rem',
+                paddingRight: '2rem',
+                paddingBottom: '1rem',
+              }}
+            >
+              <FormTextInput
+                control={control}
+                label="Type DELETE to confirm"
+                name="delete"
+              />
+            </Grid>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+            >
+              Delete
+            </Button>
+          </Grid>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleCancel()} sx={{ marginBottom: '1rem' }}>
+          Cancel
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }

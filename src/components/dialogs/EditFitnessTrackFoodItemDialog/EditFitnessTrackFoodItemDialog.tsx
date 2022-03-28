@@ -1,11 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Button,
-  Card,
-  CardContent,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
-  Typography,
 } from '@mui/material'
 import React, { useContext, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -14,7 +14,6 @@ import * as yup from 'yup'
 import { UserContext } from '../../../app/App'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
-import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
 import { FormTextInput } from '../../form/FormTextInput'
@@ -96,8 +95,6 @@ const validationSchema = yup.object({
 export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
   open,
   foodItem,
-  // dataService,
-  // fetchFoodItems,
   setEditFoodDialogOpen,
 }) => {
   const {
@@ -267,92 +264,81 @@ export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
   }
   return (
     <Dialog open={open} fullScreen={true}>
-      <Grid container>
-        <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h4" align="center">
-              Edit Food Item
-            </Typography>
-          </CardContent>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-              <Grid container justifyContent="center">
-                {generateFormTextInput({
-                  name: 'foodItemName',
-                  control: control,
-                  label: 'Food Name',
-                  placeholder: 'Food Name',
-                })}
-                {generateSelectInput({
-                  name: 'foodItemUnit',
-                  values: foodItemUnitValues,
-                  label: 'Food Units',
-                  control: control,
-                  register: register,
-                })}
-                {generateFormTextInput({
-                  name: 'servingSize',
-                  control: control,
-                  type: 'number',
-                  label: 'Serving Size',
-                  placeholder: 'Serving Size',
-                })}
-                {generateFormTextInput({
-                  name: 'calories',
-                  control: control,
-                  type: 'number',
-                  label: 'Calories',
-                  placeholder: 'Calories',
-                })}
-                {generateFormTextInput({
-                  name: 'protein',
-                  control: control,
-                  type: 'number',
-                  label: 'Protein',
-                  placeholder: 'Protein',
-                })}
-                {generateFormTextInput({
-                  name: 'fat',
-                  control: control,
-                  type: 'number',
-                  label: 'Fat',
-                  placeholder: 'Fat',
-                })}
-                {generateFormTextInput({
-                  name: 'carbohydrates',
-                  control: control,
-                  type: 'number',
-                  label: 'Carbohydrates',
-                  placeholder: 'Carbohydrates',
-                })}
-                {generateFormTextInput({
-                  name: 'foodItemReference',
-                  control: control,
-                  type: 'text',
-                  label: 'Reference Link',
-                  placeholder: 'Reference Link',
-                })}
+      <DialogTitle>Edit Food Item</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+          <Grid container justifyContent="center">
+            {generateFormTextInput({
+              name: 'foodItemName',
+              control: control,
+              label: 'Food Name',
+              placeholder: 'Food Name',
+            })}
+            {generateSelectInput({
+              name: 'foodItemUnit',
+              values: foodItemUnitValues,
+              label: 'Food Units',
+              control: control,
+              register: register,
+            })}
+            {generateFormTextInput({
+              name: 'servingSize',
+              control: control,
+              type: 'number',
+              label: 'Serving Size',
+              placeholder: 'Serving Size',
+            })}
+            {generateFormTextInput({
+              name: 'calories',
+              control: control,
+              type: 'number',
+              label: 'Calories',
+              placeholder: 'Calories',
+            })}
+            {generateFormTextInput({
+              name: 'protein',
+              control: control,
+              type: 'number',
+              label: 'Protein',
+              placeholder: 'Protein',
+            })}
+            {generateFormTextInput({
+              name: 'fat',
+              control: control,
+              type: 'number',
+              label: 'Fat',
+              placeholder: 'Fat',
+            })}
+            {generateFormTextInput({
+              name: 'carbohydrates',
+              control: control,
+              type: 'number',
+              label: 'Carbohydrates',
+              placeholder: 'Carbohydrates',
+            })}
+            {generateFormTextInput({
+              name: 'foodItemReference',
+              control: control,
+              type: 'text',
+              label: 'Reference Link',
+              placeholder: 'Reference Link',
+            })}
 
-                <Button
-                  variant="contained"
-                  type="submit"
-                  sx={{ marginTop: '1rem', marginBottom: '1rem' }}
-                >
-                  Update
-                </Button>
-                <Grid item xs={12} container justifyContent="center">
-                  <Button
-                    onClick={() => handleCancel()}
-                    sx={{ marginBottom: '1rem' }}
-                  >
-                    Cancel
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      </Grid>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ marginTop: '1rem', marginBottom: '1rem' }}
+            >
+              Update
+            </Button>
+          </Grid>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleCancel()} sx={{ marginBottom: '1rem' }}>
+          Cancel
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }
