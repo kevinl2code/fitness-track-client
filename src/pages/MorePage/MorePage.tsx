@@ -1,4 +1,4 @@
-import { Grid, Divider, Button, Container } from '@mui/material'
+import { Grid, Divider, Button, Container, Toolbar } from '@mui/material'
 import React, { useContext } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
@@ -20,10 +20,10 @@ interface Props {
   handleLogout: () => void
 }
 
-// const vh = Math.max(
-//   document.documentElement.clientHeight || 0,
-//   window.innerHeight || 0
-// )
+const vh = Math.max(
+  document.documentElement.clientHeight || 0,
+  window.innerHeight || 0
+)
 
 export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
   const user = useContext(UserContext)
@@ -72,7 +72,7 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
   ]
 
   return (
-    <Container sx={{ height: '100%' }}>
+    <Container>
       <Grid
         container
         direction="column"
@@ -89,7 +89,7 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
           />
         </Grid>
         {/* <Divider sx={{ width: '100%', marginBottom: '1rem' }} /> */}
-        <Grid item container>
+        <Grid item container sx={{ paddingTop: '20px' }}>
           <Button
             variant="outlined"
             size="medium"
