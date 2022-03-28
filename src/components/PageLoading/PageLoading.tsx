@@ -1,20 +1,23 @@
-import { Box, Container, Grid, LinearProgress } from '@mui/material'
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  LinearProgress,
+} from '@mui/material'
 import React from 'react'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 
-const vh = Math.max(
-  document.documentElement.clientHeight || 0,
-  window.innerHeight || 0
-)
+export const PageLoading: React.FC = () => {
+  // return (
+  //   <Grid container sx={{ height: '100%' }}>
+  //     <CircularProgress />
+  //   </Grid>
+  // )
 
-interface Props {
-  color: string
-}
-
-export const AppLoadingPage: React.FC<Props> = ({ color }) => {
   const ftlogo = `${process.env.PUBLIC_URL}/ftlogo.png`
   const { matchesMD } = useMediaQueries()
-  const contentHeight = vh * 0.75
+  // const contentHeight = vh * 0.75
   return (
     <Container
       maxWidth={false}
@@ -24,8 +27,8 @@ export const AppLoadingPage: React.FC<Props> = ({ color }) => {
         {
           display: 'flex',
           alignItems: 'stretch',
-          minHeight: '100vh',
-          backgroundColor: color,
+          height: '100%',
+          backgroundColor: '#fff',
         },
         !matchesMD && {
           flexDirection: 'column',
@@ -37,14 +40,14 @@ export const AppLoadingPage: React.FC<Props> = ({ color }) => {
         direction="column"
         alignItems="center"
         justifyContent="center"
-        sx={{ height: contentHeight }}
+        sx={{ height: '100%' }}
       >
         <Grid item>
           <img
             src={ftlogo}
             style={{
-              width: vh * 0.4,
-              height: vh * 0.4,
+              width: '40%',
+              height: '40%',
               overflow: 'hidden',
               position: 'sticky',
               top: '25%',

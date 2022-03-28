@@ -11,9 +11,9 @@ import { useMutation, useQueryClient } from 'react-query'
 import { DailyEntry } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
-import { DailyEntryConsumablesTable } from '../../DailyEntryConsumablesTable/DailyEntryConsumablesTable'
 import { AddCustomConsumableForm } from './AddCustomConsumableForm'
 import { AddFoodCatalogConsumableForm } from './AddFoodCatalogConsumableForm'
+import { AddMyFoodsConsumableForm } from './AddMyFoodsConsumableForm'
 
 interface IFormInput {
   name: string
@@ -109,6 +109,12 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
         )}
         {entryMethod === 'CATALOG' && (
           <AddFoodCatalogConsumableForm
+            entry={entry}
+            updateDailyEntry={updateDailyEntry}
+          />
+        )}
+        {entryMethod === 'MYFOODS' && (
+          <AddMyFoodsConsumableForm
             entry={entry}
             updateDailyEntry={updateDailyEntry}
           />

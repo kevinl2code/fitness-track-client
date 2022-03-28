@@ -12,9 +12,11 @@ import React, { useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { ActivityLevel, Cycle, DailyEntry, UserState } from '../../model/Model'
+import { AppLoadingPage } from '../../pages/AppLoadingPage'
 import { DataService } from '../../services/DataService'
 import { Calculate } from '../../utilities/Calculate'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { PageLoading } from '../PageLoading'
 
 interface IFormInput {
   weight: string
@@ -114,6 +116,10 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
       formHeaderSubText[cycle?.cycleType!]
     }.  Set your activity level to get started!`,
     standard: 'Get the day started by setting your weight and activity level!',
+  }
+
+  if (isLoading) {
+    return <AppLoadingPage color={'#fff'} />
   }
 
   return (
