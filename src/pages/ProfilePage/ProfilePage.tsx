@@ -1,37 +1,29 @@
-import { AccountCircle, Email } from '@mui/icons-material'
+import { Email } from '@mui/icons-material'
+import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
+import CakeIcon from '@mui/icons-material/Cake'
+import PersonIcon from '@mui/icons-material/Person'
+import WcIcon from '@mui/icons-material/Wc'
 import {
+  Avatar,
+  Container,
   Grid,
-  Typography,
-  Divider,
   List,
   ListItem,
   ListItemAvatar,
-  Avatar,
   ListItemText,
-  Container,
-  Card,
-  CardContent,
-  SvgIconTypeMap,
   SvgIconProps,
+  Typography,
 } from '@mui/material'
 import React, { useContext } from 'react'
-import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
-import WcIcon from '@mui/icons-material/Wc'
-import PersonIcon from '@mui/icons-material/Person'
-import CakeIcon from '@mui/icons-material/Cake'
 import { UserContext } from '../../app/App'
-import { Convert } from '../../utilities/Convert'
-import { Calculate } from '../../utilities/Calculate'
 import { MorePagesBackNavigation } from '../../components/MorePagesBackNavigation/MorePagesBackNavigation'
-import { OverridableComponent } from '@mui/material/OverridableComponent'
+import { Calculate } from '../../utilities/Calculate'
+import { Convert } from '../../utilities/Convert'
 
 interface ProfileListItemProps {
   subject: string
   value: string | undefined
   icon: React.ReactElement<SvgIconProps>
-  /*   icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
-    muiName: string
-  } */
 }
 
 export const ProfilePage: React.FC = () => {
@@ -118,19 +110,3 @@ const ProfileListItem: React.FC<ProfileListItemProps> = ({
     </ListItem>
   )
 }
-// const UserDetail: React.FC<UserDetailProps> = ({ subject, value }) => {
-//   return (
-//     <Card>
-//       <CardContent>
-//         <Grid item container>
-//           <Grid item xs={6}>
-//             <Typography textAlign="left">{`${subject}:`}</Typography>
-//           </Grid>
-//           <Grid item xs={6}>
-//             <Typography textAlign="right">{`${value}`}</Typography>
-//           </Grid>
-//         </Grid>
-//       </CardContent>
-//     </Card>
-//   )
-// }

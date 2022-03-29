@@ -85,7 +85,7 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
             entry?.entryDate
           ).toFormat('MMM dd, yyyy')}`}
         </DialogContentText>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <Grid container justifyContent="center">
             <Grid
               item
@@ -130,7 +130,9 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCloseDialog}>Cancel</Button>
-        <Button type="submit">Confirm</Button>
+        <Button type="submit" onClick={handleSubmit(onSubmit)}>
+          Confirm
+        </Button>
       </DialogActions>
     </Dialog>
   )

@@ -106,7 +106,8 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
             'MMM dd, yyyy'
           )}`}
         </DialogContentText>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+        <form>
           <Grid container justifyContent="center">
             <Grid item container alignItems="center" sx={{ padding: '2rem' }}>
               <Grid item xs={8}>
@@ -147,7 +148,9 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCloseDialog}>Cancel</Button>
-        <Button type="submit">Confirm</Button>
+        <Button type="submit" onClick={handleSubmit(onSubmit)}>
+          Confirm
+        </Button>
       </DialogActions>
     </Dialog>
   )
