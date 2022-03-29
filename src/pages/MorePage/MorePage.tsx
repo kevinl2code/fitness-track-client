@@ -49,7 +49,7 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
     {
       itemName: 'Frequently Asked Questions',
       itemIcon: <LiveHelpIcon />,
-      itemAction: () => null,
+      itemAction: () => navigate(`../${ROUTES.faq}`),
     },
     {
       itemName: 'Glossary of Terms',
@@ -62,12 +62,12 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
     {
       itemName: 'Settings',
       itemIcon: <SettingsIcon />,
-      itemAction: () => null,
+      itemAction: () => navigate(`../${ROUTES.appSettings}`),
     },
     {
       itemName: 'Terms and Conditions',
       itemIcon: <ArticleIcon />,
-      itemAction: () => null,
+      itemAction: () => navigate(`../${ROUTES.termsAndConditions}`),
     },
   ]
 

@@ -1,0 +1,1 @@
+export { MorePagesBackNavigation } from './MorePagesBackNavigation'

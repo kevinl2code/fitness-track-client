@@ -134,10 +134,6 @@ export const PlanPage: React.FC<Props> = () => {
   ]
   const weightSection: ListSectionDetails[] = [
     {
-      itemName: 'Goal',
-      secondaryText: `${goalWeight} lbs`,
-    },
-    {
       itemName: 'Starting',
       secondaryText: `${startingWeight} lbs`,
     },
@@ -146,6 +142,10 @@ export const PlanPage: React.FC<Props> = () => {
       secondaryText: isActive
         ? `${displayCurrentWeight} lbs`
         : `${endingWeight} lbs`,
+    },
+    {
+      itemName: 'Goal',
+      secondaryText: `${goalWeight} lbs`,
     },
   ]
 

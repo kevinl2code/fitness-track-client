@@ -11,4 +11,7 @@ export const ROUTES = {
   more: 'more',
   plan: 'plan',
   profile: 'profile',
+  appSettings: 'appSettings',
+  termsAndConditions: 'termsAndConditions',
+  faq: 'faq',
 }

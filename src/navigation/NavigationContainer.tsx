@@ -15,6 +15,9 @@ import { AdminPage } from '../pages/AdminPage'
 import { MorePage } from '../pages/MorePage'
 import { PlanPage } from '../pages/PlanPage'
 import { ProfilePage } from '../pages/ProfilePage/ProfilePage'
+import { AppSettingsPage } from '../pages/AppSettingsPage'
+import { FrequentlyAskedQuestionsPage } from '../pages/FrequentlyAskedQuestionsPage'
+import { TermsAndConditionsPage } from '../pages/AppTermsAndConditionsPage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -65,6 +68,12 @@ export const NavigationContainer: React.FC<Props> = ({
         />
         <Route path={ROUTES.plan} element={<PlanPage />} />
         <Route path={ROUTES.profile} element={<ProfilePage />} />
+        <Route path={ROUTES.appSettings} element={<AppSettingsPage />} />
+        <Route path={ROUTES.faq} element={<FrequentlyAskedQuestionsPage />} />
+        <Route
+          path={ROUTES.termsAndConditions}
+          element={<TermsAndConditionsPage />}
+        />
       </Route>
     </Routes>
   )
