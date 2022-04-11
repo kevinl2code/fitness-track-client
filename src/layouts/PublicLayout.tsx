@@ -1,4 +1,4 @@
-import { Box, Container, Toolbar } from '@mui/material'
+import { Box, Container, Grid } from '@mui/material'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { useMediaQueries } from '../utilities/useMediaQueries'
@@ -8,8 +8,9 @@ const vh = Math.max(
   window.innerHeight || 0
 )
 
+const ftlogo = `${process.env.PUBLIC_URL}/logoBlueText.svg`
+
 export const PublicLayout: React.FC = () => {
-  const ftlogo = `${process.env.PUBLIC_URL}/ftlogo.png`
   const { matchesMD } = useMediaQueries()
   return (
     <Container
@@ -21,6 +22,7 @@ export const PublicLayout: React.FC = () => {
           display: 'flex',
           alignItems: 'stretch',
           minHeight: '100vh',
+          backgroundColor: '#f0f4f7',
         },
         !matchesMD && {
           flexDirection: 'column',
@@ -32,10 +34,10 @@ export const PublicLayout: React.FC = () => {
         sx={[
           {
             width: '50%',
-            backgroundColor: 'primary.main',
-            flexGrow: 1,
+            height: '50vh',
+            // flexGrow: 1,
             display: 'flex',
-            // justifyContent: 'center',
+            justifyContent: 'center',
             // alignItems: 'center',
           },
           !matchesMD && {
@@ -50,20 +52,15 @@ export const PublicLayout: React.FC = () => {
             height: vh * 0.4,
             overflow: 'hidden',
             position: 'sticky',
-            top: '25%',
-            left: '15%',
+            top: '5%',
+            // left: '15%',
           }}
           alt="Fitness Track logo"
         />
       </Box>
       <Box
         component="main"
-        sx={[
-          { width: '50%', p: 3, padding: '1rem' },
-          !matchesMD && {
-            width: '100%',
-          },
-        ]}
+        sx={[{ width: '100%', p: 3, padding: '1rem', minHeight: '50vh' }]}
       >
         <Outlet />
       </Box>

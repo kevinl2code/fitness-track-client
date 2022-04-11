@@ -18,6 +18,7 @@ import { ProfilePage } from '../pages/ProfilePage/ProfilePage'
 import { AppSettingsPage } from '../pages/AppSettingsPage'
 import { FrequentlyAskedQuestionsPage } from '../pages/FrequentlyAskedQuestionsPage'
 import { TermsAndConditionsPage } from '../pages/AppTermsAndConditionsPage'
+import { InitialPage } from '../pages/InitialPage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
@@ -42,7 +43,8 @@ export const NavigationContainer: React.FC<Props> = ({
   return (
     <Routes>
       <Route path={ROUTES.root} element={<PublicLayout />}>
-        <Route index element={<LoginPage setUser={setAppUser} />} />
+        <Route index element={<InitialPage />} />
+        <Route path={ROUTES.initial} element={<InitialPage />} />
         <Route
           path={ROUTES.login}
           element={<LoginPage setUser={setAppUser} />}

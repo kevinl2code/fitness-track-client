@@ -163,7 +163,7 @@ function App() {
   const isLoading = cyclesLoading || dailyEntriesLoading || userFoodItemsLoading
 
   return isLoading ? (
-    <AppLoadingPage color={'primary.main'} />
+    <AppLoadingPage color={'#f0f4f7'} />
   ) : (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />

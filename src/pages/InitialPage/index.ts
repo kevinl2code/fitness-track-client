@@ -1,0 +1,1 @@
+export { InitialPage } from './InitialPage'

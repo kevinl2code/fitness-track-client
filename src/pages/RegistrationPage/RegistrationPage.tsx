@@ -175,8 +175,6 @@ export const RegistrationPage: React.FC = () => {
         container
         direction={'column'}
         sx={{
-          paddingLeft: '2rem',
-          paddingRight: '2rem',
           paddingBottom: '1rem',
         }}
       >
@@ -207,8 +205,6 @@ export const RegistrationPage: React.FC = () => {
         container
         direction={'column'}
         sx={{
-          paddingLeft: '2rem',
-          paddingRight: '2rem',
           paddingBottom: '1rem',
         }}
       >
@@ -242,173 +238,166 @@ export const RegistrationPage: React.FC = () => {
         setDialogOpenState={setOpenConfirmRegistrationDialog}
         open={openConfirmRegistrationDialog}
       />
-      <Grid container justifyContent="center" alignItems="center">
-        <Grid item xs={12} sm={6} md={6} lg={7} xl={7}>
-          <Card variant="outlined" sx={{ width: '100%' }}>
-            <CardContent>
-              <Typography variant="h4" align="center">
-                Registration
-              </Typography>
-            </CardContent>
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid container justifyContent="center">
-                  {generateInput({
-                    name: 'givenName',
-                    control: control,
-                    label: 'First Name',
-                    placeholder: 'First Name',
-                    inputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccountCircle />
-                        </InputAdornment>
-                      ),
-                    },
-                  })}
-                  {generateInput({
-                    name: 'familyName',
-                    control: control,
-                    label: 'Last Name',
-                    placeholder: 'Last Name',
-                    inputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccountCircle />
-                        </InputAdornment>
-                      ),
-                    },
-                  })}
-                  {generateSelectInput({
-                    name: 'gender',
-                    control: control,
-                    startAdornment: <WcIcon />,
-                    register: register,
-                    label: 'Sex',
-                    placeholder: 'Sex',
-                    values: genderValues,
-                  })}
-                  <Grid
-                    item
-                    xs={12}
-                    container
-                    direction={'column'}
-                    sx={{
-                      paddingLeft: '2rem',
-                      paddingRight: '2rem',
-                      paddingBottom: '1rem',
-                    }}
-                  >
-                    <FormTextInput
-                      control={control}
-                      label="Height"
-                      name="height"
-                      placeholder="Height"
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AlignHorizontalLeftIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    container
-                    direction={'column'}
-                    sx={{
-                      paddingLeft: '2rem',
-                      paddingRight: '2rem',
-                      paddingBottom: '1rem',
-                    }}
-                  >
-                    <FormTextInput
-                      control={control}
-                      label="Birthday"
-                      name="birthdate"
-                      placeholder="yyyy-mm-dd"
-                      inputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <EventIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                  {generateInput({
-                    name: 'username',
-                    control: control,
-                    label: 'Username',
-                    placeholder: 'Username',
-                    inputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccountCircle />
-                        </InputAdornment>
-                      ),
-                    },
-                  })}
-                  {generateInput({
-                    name: 'password',
-                    control: control,
-                    label: 'Password',
-                    placeholder: 'Password',
-                    inputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon />
-                        </InputAdornment>
-                      ),
-                    },
-                  })}
-                  {generateInput({
-                    name: 'confirmPassword',
-                    control: control,
-                    label: 'Confirm Password',
-                    placeholder: 'Confirm Password',
-                    inputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon />
-                        </InputAdornment>
-                      ),
-                    },
-                  })}
-                  {generateInput({
-                    name: 'email',
-                    control: control,
-                    label: 'Email',
-                    placeholder: 'Email',
-                    inputProps: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Email />
-                        </InputAdornment>
-                      ),
-                    },
-                  })}
-
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    sx={{ marginTop: '1rem' }}
-                  >
-                    Register
-                  </Button>
-                </Grid>
-              </form>
-            </CardContent>
-            <CardContent>
-              <Grid container justifyContent="center">
-                <Link to={'/'} style={{ textDecoration: 'none' }}>
-                  Cancel
-                </Link>
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: '100%', padding: '2rem' }}
+      >
+        <Grid item>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container justifyContent="center">
+              {generateInput({
+                name: 'givenName',
+                control: control,
+                label: 'First Name',
+                placeholder: 'First Name',
+                inputProps: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                },
+              })}
+              {generateInput({
+                name: 'familyName',
+                control: control,
+                label: 'Last Name',
+                placeholder: 'Last Name',
+                inputProps: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                },
+              })}
+              {generateSelectInput({
+                name: 'gender',
+                control: control,
+                startAdornment: <WcIcon />,
+                register: register,
+                label: 'Sex',
+                placeholder: 'Sex',
+                values: genderValues,
+              })}
+              <Grid
+                item
+                xs={12}
+                container
+                direction={'column'}
+                sx={{
+                  paddingBottom: '1rem',
+                }}
+              >
+                <FormTextInput
+                  control={control}
+                  label="Height"
+                  name="height"
+                  placeholder="Height"
+                  inputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AlignHorizontalLeftIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </Grid>
-            </CardContent>
-          </Card>
+              <Grid
+                item
+                xs={12}
+                container
+                direction={'column'}
+                sx={{
+                  paddingBottom: '1rem',
+                }}
+              >
+                <FormTextInput
+                  control={control}
+                  label="Birthday"
+                  name="birthdate"
+                  placeholder="yyyy-mm-dd"
+                  inputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EventIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              {generateInput({
+                name: 'username',
+                control: control,
+                label: 'Username',
+                placeholder: 'Username',
+                inputProps: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                },
+              })}
+              {generateInput({
+                name: 'password',
+                control: control,
+                label: 'Password',
+                placeholder: 'Password',
+                inputProps: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                },
+              })}
+              {generateInput({
+                name: 'confirmPassword',
+                control: control,
+                label: 'Confirm Password',
+                placeholder: 'Confirm Password',
+                inputProps: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                },
+              })}
+              {generateInput({
+                name: 'email',
+                control: control,
+                label: 'Email',
+                placeholder: 'Email',
+                inputProps: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Email />
+                    </InputAdornment>
+                  ),
+                },
+              })}
+
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{ marginTop: '1rem' }}
+                fullWidth
+              >
+                Register
+              </Button>
+            </Grid>
+          </form>
+          <Grid container justifyContent="center" sx={{ marginTop: '1rem' }}>
+            <Grid item>
+              <Link to={`/`} style={{ textDecoration: 'none' }}>
+                Cancel
+              </Link>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </>

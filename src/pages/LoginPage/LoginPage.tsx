@@ -1,15 +1,14 @@
-import { Card, CardContent, Typography, Button, Grid } from '@mui/material'
-import React, { useContext } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LockIcon from '@mui/icons-material/Lock'
-import { Link, useNavigate } from 'react-router-dom'
-import { ROUTES } from '../../navigation'
-import { AuthService } from '../../services/AuthService'
-import { User } from '../../model/Model'
-
+import { Button, Grid, Typography } from '@mui/material'
+import React, { useContext } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 import { CycleContext, UserContext } from '../../app/App'
 import { FormTextInput } from '../../components/form/FormTextInput'
+import { User } from '../../model/Model'
+import { ROUTES } from '../../navigation'
+import { AuthService } from '../../services/AuthService'
 
 interface IFormInput {
   userName: string
@@ -50,76 +49,63 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
       container
       justifyContent="center"
       alignItems="center"
-      sx={{ height: '100%' }}
+      sx={{ height: '100%', padding: '2rem' }}
     >
-      <Grid item xs={12} sm={6} md={6} lg={7} xl={7}>
-        <Card variant="outlined" sx={{ width: '100%' }}>
-          <CardContent>
-            <Typography variant="h4" align="center">
-              Login
-            </Typography>
-          </CardContent>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container justifyContent="center">
-                <Grid
-                  item
-                  xs={12}
-                  container
-                  direction={'column'}
-                  sx={{ padding: '2rem' }}
-                >
-                  <FormTextInput
-                    control={control}
-                    label="Username"
-                    name="userName"
-                    placeholder="Type your username"
-                    inputProps={{ position: 'start', child: <AccountCircle /> }}
-                  />
-                </Grid>
-                <Grid
-                  item
-                  container
-                  direction={'column'}
-                  alignItems="flex-end"
-                  sx={{
-                    paddingLeft: '2rem',
-                    paddingRight: '2rem',
-                    paddingBottom: '2rem',
-                  }}
-                >
-                  <FormTextInput
-                    control={control}
-                    label="Password"
-                    name="password"
-                    placeholder="Type your password"
-                    inputProps={{ position: 'start', child: <LockIcon /> }}
-                  />
-                  <Link to={ROUTES.forgot} style={{ textDecoration: 'none' }}>
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Button variant="contained" type="submit">
-                  Submit
-                </Button>
-              </Grid>
-            </form>
-          </CardContent>
-          <CardContent>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <Typography align="center">
-                  New to FitnessTrack?&nbsp;
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Link to={ROUTES.register} style={{ textDecoration: 'none' }}>
-                  Join now
-                </Link>
-              </Grid>
+      <Grid item>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container justifyContent="center">
+            <Grid
+              item
+              xs={12}
+              container
+              direction={'column'}
+              sx={{ padding: '2rem 0 2rem 0' }}
+            >
+              <FormTextInput
+                control={control}
+                label="Username"
+                name="userName"
+                placeholder="Type your username"
+                inputProps={{ position: 'start', child: <AccountCircle /> }}
+              />
             </Grid>
-          </CardContent>
-        </Card>
+            <Grid
+              item
+              container
+              direction={'column'}
+              alignItems="flex-end"
+              sx={{
+                // paddingLeft: '2rem',
+                // paddingRight: '2rem',
+                paddingBottom: '2rem',
+              }}
+            >
+              <FormTextInput
+                control={control}
+                label="Password"
+                name="password"
+                placeholder="Type your password"
+                inputProps={{ position: 'start', child: <LockIcon /> }}
+              />
+              <Link to={ROUTES.forgot} style={{ textDecoration: 'none' }}>
+                Forgot password?
+              </Link>
+            </Grid>
+            <Button variant="contained" type="submit" fullWidth>
+              Login
+            </Button>
+          </Grid>
+        </form>
+      </Grid>
+      <Grid container justifyContent="center" sx={{ marginTop: '1rem' }}>
+        <Grid item>
+          <Typography align="center">Don't have an account?&nbsp;</Typography>
+        </Grid>
+        <Grid item>
+          <Link to={`../${ROUTES.register}`} style={{ textDecoration: 'none' }}>
+            Sign up
+          </Link>
+        </Grid>
       </Grid>
     </Grid>
   )

@@ -1,5 +1,6 @@
 export const ROUTES = {
   root: '/',
+  initial: 'init',
   login: 'login',
   appRoot: 'app/',
   dashboard: 'dashboard',

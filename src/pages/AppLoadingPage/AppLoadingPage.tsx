@@ -11,8 +11,9 @@ interface Props {
   color: string
 }
 
+const ftlogo = `${process.env.PUBLIC_URL}/logoBlueText.svg`
+
 export const AppLoadingPage: React.FC<Props> = ({ color }) => {
-  const ftlogo = `${process.env.PUBLIC_URL}/ftlogo.png`
   const contentHeight = vh * 0.75
   return (
     <Container

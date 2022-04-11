@@ -7,8 +7,7 @@ import { Email } from '@mui/icons-material'
 import { FormTextInput } from '../../components/form/FormTextInput'
 
 interface IFormInput {
-  userName: string
-  password: string
+  username: string
 }
 
 interface GenerateInputProps {
@@ -34,7 +33,8 @@ export const ForgotPasswordPage: React.FC = () => {
   // const user = useContext(UserContext)
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data)
+    const result = await authService.forgotPassword(data.username)
+    console.log(result)
   }
 
   const generateInput = ({
@@ -75,44 +75,36 @@ export const ForgotPasswordPage: React.FC = () => {
       sx={{ height: '100%' }}
     >
       <Grid item xs={12} sm={6} md={6} lg={7} xl={7}>
-        <Card variant="outlined" sx={{ width: '100%' }}>
-          <CardContent>
-            <Typography variant="h4" align="center">
-              Forgot Password
-            </Typography>
-          </CardContent>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container justifyContent="center">
-                {generateInput({
-                  name: 'email',
-                  control: control,
-                  label: 'Email',
-                  placeholder: 'Enter your email',
-                  inputProps: {
-                    position: 'start',
-                    child: <Email />,
-                  },
-                })}
+        <Typography variant="h4" align="center">
+          Forgot Password
+        </Typography>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container justifyContent="center">
+            {generateInput({
+              name: 'username',
+              control: control,
+              label: 'Username',
+              placeholder: 'Enter your username',
+              inputProps: {
+                position: 'start',
+                child: <Email />,
+              },
+            })}
 
-                <Button
-                  variant="contained"
-                  type="submit"
-                  sx={{ marginTop: '1rem' }}
-                >
-                  Submit
-                </Button>
-              </Grid>
-            </form>
-          </CardContent>
-          <CardContent>
-            <Grid container justifyContent="center">
-              <Link to={'/'} style={{ textDecoration: 'none' }}>
-                Cancel
-              </Link>
-            </Grid>
-          </CardContent>
-        </Card>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ marginTop: '1rem' }}
+            >
+              Submit
+            </Button>
+          </Grid>
+        </form>
+        <Grid container justifyContent="center">
+          <Link to={'/'} style={{ textDecoration: 'none' }}>
+            Cancel
+          </Link>
+        </Grid>
       </Grid>
     </Grid>
   )

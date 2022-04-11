@@ -77,11 +77,11 @@ export class AuthService {
   }
 
   public async login(
-    userName: string,
+    username: string,
     password: string
   ): Promise<User | undefined> {
     try {
-      const user = (await Auth.signIn(userName, password)) as CognitoUser
+      const user = (await Auth.signIn(username, password)) as CognitoUser
       return {
         cognitoUser: user,
         userName: user.getUsername(),
@@ -94,6 +94,15 @@ export class AuthService {
 
   public async logOut() {
     return await Auth.signOut()
+  }
+
+  public async forgotPassword(username: string) {
+    try {
+      const result = Auth.forgotPassword(username)
+    } catch (error) {
+      console.error(error)
+      return undefined
+    }
   }
 
   public async getAWSTemporaryCreds(user: CognitoUser) {
