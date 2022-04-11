@@ -1,28 +1,28 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Button,
-  InputAdornment,
-} from '@mui/material'
-import WcIcon from '@mui/icons-material/Wc'
-import EventIcon from '@mui/icons-material/Event'
-import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
-import React from 'react'
-import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import AccountCircle from '@mui/icons-material/AccountCircle'
-import LockIcon from '@mui/icons-material/Lock'
-import { Link } from 'react-router-dom'
-import { AuthService } from '../../services/AuthService'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Email } from '@mui/icons-material'
-import { CognitoGender } from '../../model/Model'
+import AccountCircle from '@mui/icons-material/AccountCircle'
+import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft'
+import EventIcon from '@mui/icons-material/Event'
+import LockIcon from '@mui/icons-material/Lock'
+import SquareFootIcon from '@mui/icons-material/SquareFoot'
+import WcIcon from '@mui/icons-material/Wc'
+import {
+  Button,
+  ButtonGroup,
+  Grid,
+  InputAdornment,
+  Typography,
+} from '@mui/material'
+import React, { useEffect } from 'react'
+import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
+import * as yup from 'yup'
 import { ConfirmRegistrationDialog } from '../../components/dialogs/ConfiirmRegistrationDialog/ConfirmRegistrationDialog'
-import { FormTextInput } from '../../components/form/FormTextInput'
 import { FormSelectInput } from '../../components/form/FormSelectInput'
 import { FormSelectInputProps } from '../../components/form/FormSelectInput/FormSelectInput'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { FormTextInput } from '../../components/form/FormTextInput'
+import { CognitoGender } from '../../model/Model'
+import { AuthService } from '../../services/AuthService'
 
 interface IFormInput {
   username: string
@@ -33,6 +33,7 @@ interface IFormInput {
   birthdate: string
   gender: CognitoGender
   height: number
+  units: string
   email: string
 }
 
@@ -64,9 +65,18 @@ const validationSchema = yup.object({
     .matches(/^male$|^female$/g, 'Selection required'),
   height: yup
     .number()
-    .typeError('Height in inches required')
-    .min(21, 'Must be over 21 inches')
-    .max(103, 'Must be under 103 inches')
+    .typeError('Height required')
+    .when(['units'], (units, schema) =>
+      units === 'Standard'
+        ? schema.min(21, 'Must be over 21 inches')
+        : schema.min(54, 'Must be over 54 centimeters')
+    )
+    .when(['units'], (units, schema) =>
+      units === 'Standard'
+        ? schema.max(103, 'Must be under 103 inches')
+        : schema.max(262, 'Must be under 262 centimeters')
+    )
+    // .max(103, 'Must be under 103 inches')
     .positive()
     .integer()
     .required(),
@@ -126,31 +136,48 @@ const validationSchema = yup.object({
 export const RegistrationPage: React.FC = () => {
   const [openConfirmRegistrationDialog, setOpenConfirmRegistrationDialog] =
     React.useState(false)
-
   const {
     register,
     handleSubmit,
     control,
     getValues,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
   const authService = new AuthService()
-
+  const selectedUnits = watch().units
+  useEffect(() => {}, [selectedUnits])
+  console.log(selectedUnits)
   const handleOpenConfirmRegistrationDialog = () => {
     setOpenConfirmRegistrationDialog(true)
   }
 
+  // const handleHeightUnitsChange = (
+  //   event: React.MouseEvent<HTMLElement>,
+  //   newHeightUnits: string | null
+  // ) => {
+  //   if (newHeightUnits !== null) {
+  //     setHeightUnits(newHeightUnits)
+  //   }
+  // }
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    let height = data.height
+    const units = data.units
+    if (units === 'Metric') {
+      height = Math.round(data.height / 2.54)
+    }
+
     const result = await authService.signUp(
       data.username,
       data.password,
       data.givenName,
       data.familyName,
       data.birthdate,
-      data.gender,
-      data.height.toString(),
+      data.gender.toLowerCase() as CognitoGender,
+      height.toString(),
       data.email
     )
     if (result) {
@@ -197,6 +224,8 @@ export const RegistrationPage: React.FC = () => {
     register,
     label,
     placeholder,
+    defaultValue,
+    allowNone,
   }: FormSelectInputProps) => {
     return (
       <Grid
@@ -212,11 +241,13 @@ export const RegistrationPage: React.FC = () => {
           control={control}
           register={register}
           placeholder={placeholder}
+          defaultValue={defaultValue}
           // required={true}
           label={label}
           name={name}
           values={values}
           startAdornment={startAdornment}
+          allowNone={allowNone}
         />
       </Grid>
     )
@@ -225,11 +256,21 @@ export const RegistrationPage: React.FC = () => {
   const genderValues = [
     {
       name: 'Male',
-      value: 'male',
+      value: 'Male',
     },
     {
       name: 'Female',
-      value: 'female',
+      value: 'Female',
+    },
+  ]
+  const unitsValues = [
+    {
+      name: 'Standard',
+      value: 'Standard',
+    },
+    {
+      name: 'Metric',
+      value: 'Metric',
     },
   ]
   return (
@@ -282,6 +323,17 @@ export const RegistrationPage: React.FC = () => {
                 placeholder: 'Sex',
                 values: genderValues,
               })}
+              {generateSelectInput({
+                name: 'units',
+                control: control,
+                startAdornment: <SquareFootIcon />,
+                register: register,
+                label: 'Measurement Units',
+                placeholder: unitsValues[0].value,
+                values: unitsValues,
+                defaultValue: unitsValues[0].value,
+                allowNone: false,
+              })}
               <Grid
                 item
                 xs={12}
@@ -301,6 +353,11 @@ export const RegistrationPage: React.FC = () => {
                       <InputAdornment position="start">
                         <AlignHorizontalLeftIcon />
                       </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <Typography style={{ opacity: 0.5 }}>
+                        {selectedUnits === 'Metric' ? 'CM' : 'INCHES'}
+                      </Typography>
                     ),
                   }}
                 />

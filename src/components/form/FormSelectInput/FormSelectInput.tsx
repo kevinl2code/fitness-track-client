@@ -28,6 +28,7 @@ export interface FormSelectInputProps {
   required?: boolean
   defaultValue?: string | number
   disabled?: boolean
+  allowNone?: boolean
 }
 
 export const FormSelectInput: React.FC<FormSelectInputProps> = ({
@@ -41,6 +42,7 @@ export const FormSelectInput: React.FC<FormSelectInputProps> = ({
   required = false,
   defaultValue,
   disabled = false,
+  allowNone = true,
 }) => {
   const menuItems = values.map((value, index) => {
     return (
@@ -91,9 +93,11 @@ export const FormSelectInput: React.FC<FormSelectInputProps> = ({
               )
             }
           >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
+            {allowNone && (
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+            )}
             {menuItems}
           </Select>
           {error && (
