@@ -124,6 +124,12 @@ export const NewUserDialog: React.FC<Props> = ({
     }
     const newCycleId = v4()
     const startingWeight = Math.round(parseFloat(data.startingWeight) * 10) / 10
+    const duration = parseInt(data.duration)
+    const endingDate = DateTime.now()
+      .plus({ days: duration })
+      .toISODate()
+      ?.split('-')
+      ?.join('')
     const newUserCycle: Cycle = {
       PK: user.sub,
       SK: `C_${newCycleId}`,
@@ -135,8 +141,8 @@ export const NewUserDialog: React.FC<Props> = ({
       endingWeight: null,
       goalWeight: parseFloat(data.goalWeight),
       startDate: today,
-      endingDate: null,
-      duration: parseInt(data.duration),
+      endingDate: endingDate,
+      duration: duration,
       isActive: true,
       cycleId: newCycleId,
     }

@@ -92,7 +92,7 @@ export interface Cycle {
   endingWeight: number | null
   goalWeight: number
   startDate: string
-  endingDate: string | null
+  endingDate: string
   duration: number
   isActive: boolean
   cycleId: string

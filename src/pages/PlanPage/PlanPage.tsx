@@ -39,9 +39,9 @@ export const PlanPage: React.FC<Props> = () => {
     : startingWeight
   const cycleStartDate = DateTime.fromISO(startDate)
   const today = DateTime.local()
-  const expectedEndDate = cycleStartDate.plus({ days: duration })
-  const actualEndDate = endingDate ? DateTime.fromISO(endingDate) : null
-  const cycleEndDate = actualEndDate ?? expectedEndDate
+  // const expectedEndDate = cycleStartDate.plus({ days: duration })
+  // const actualEndDate = endingDate ? DateTime.fromISO(endingDate) : null
+  const cycleEndDate = DateTime.fromISO(endingDate)
   const daysSinceStart = Math.floor(today.diff(cycleStartDate, 'days').days)
   const daysRemaining = duration - daysSinceStart
   const weightChanged = currentWeight && startingWeight - currentWeight
@@ -57,6 +57,8 @@ export const PlanPage: React.FC<Props> = () => {
     pastTense: '',
     currentTense: '',
   }
+
+  // console.log(expectedEndDate.toISODate()?.split('-')?.join(''))
 
   const milestones = {
     quarter: sortedEntries.find((entry) => {

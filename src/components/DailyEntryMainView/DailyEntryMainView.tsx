@@ -11,7 +11,7 @@ interface Props {
   user: UserState
   displayWeight: number | '-'
   isFirstDay: boolean
-  deficitPerDay: number
+  isLastDay: boolean
   isEditable: boolean
   dataService: DataService
   activityLevel: string
@@ -27,7 +27,7 @@ export const DailyEntryMainView: React.FC<Props> = ({
   user,
   displayWeight,
   isFirstDay,
-  deficitPerDay,
+  isLastDay,
   isEditable,
   dataService,
   activityLevel,

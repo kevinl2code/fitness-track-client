@@ -26,10 +26,13 @@ export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const entries = useContext(EntriesContext)
-  const cycleEndDate = cycle?.endingDate
-    ? DateTime.fromISO(cycle?.endingDate)
-    : null
-  const calendarMaxDate = cycleEndDate ?? today
+  const { startingWeight, endingWeight, endingDate } = { ...cycle }
+  const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
+
+  const calendarMaxDate =
+    cycleEndDate && today.startOf('day') > cycleEndDate?.startOf('day')
+      ? cycleEndDate
+      : today
   const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
@@ -65,6 +68,7 @@ export const DailyEntriesPage: React.FC = () => {
   const userAwaySeveralDays = daysSinceLastActive > 2
 
   const isFirstDay = cycle?.startDate === currentlySelectedDate
+  const isLastDay = cycle?.endingDate === currentlySelectedDate
   useEffect(() => {
     if (!isFirstDay && cycle?.isActive && userAwaySeveralDays) {
       setOpenReturningUserDialog(true)
@@ -95,8 +99,9 @@ export const DailyEntriesPage: React.FC = () => {
   const { birthday, sex, height } = user
   const age = calculate.age(birthday)
   const bmr = calculate.BMR(height, dailyEntryWeight!, age, sex)
-  const tdee = calculate.TDEE(bmr, dailyEntryActivityLevel!)
-  const targetCalories = Math.round(tdee - deficitPerDay)
+  // const startingBMR = calculate.BMR(height, startingWeight!, age, sex)
+  // const endingBMR = calculate.BMR(height, endingWeight!, age, sex)
+  // const averageBMR = (startingBMR + endingBMR) / 2
   // console.log(targetCalories)
   // const confirmedConsumables =
   //   dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
@@ -124,7 +129,7 @@ export const DailyEntriesPage: React.FC = () => {
       user={user}
       displayWeight={displayWeight}
       isFirstDay={isFirstDay}
-      deficitPerDay={deficitPerDay}
+      isLastDay={isLastDay}
       isEditable={isEditable}
       dataService={dataService}
       activityLevel={activityLevel}
@@ -133,15 +138,18 @@ export const DailyEntriesPage: React.FC = () => {
       setOpenUpdateActivityLevelDialog={setOpenUpdateActivityLevelDialog}
     />
   )
-  const newDayNoEntry = isEditable && !dailyEntry && cycle && (
-    <DailyEntryCreateNew
-      date={currentlySelectedDate!}
-      daysRemaining={daysRemaining}
-      cycle={cycle}
-      dataService={dataService}
-      user={user}
-    />
-  )
+  const newDayNoEntry = isEditable &&
+    !dailyEntry &&
+    cycle &&
+    !openNewUserDialog && (
+      <DailyEntryCreateNew
+        date={currentlySelectedDate!}
+        daysRemaining={daysRemaining}
+        cycle={cycle}
+        dataService={dataService}
+        user={user}
+      />
+    )
 
   const missedDay = !isEditable && !dailyEntry && <DailyEntryMissedDay />
 
@@ -213,7 +221,7 @@ export const DailyEntriesPage: React.FC = () => {
         <Grid item xs={12} id="dailyEntryMainContentContainer">
           {entries === null && <LinearProgress />}
           {entries !== null && mainContent}
-          {entries !== null && !openNewUserDialog && newDayNoEntry}
+          {entries !== null && newDayNoEntry}
           {entries !== null && missedDay}
         </Grid>
       </Grid>
