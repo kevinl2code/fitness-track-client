@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { Cell, Pie, PieChart } from 'recharts'
-import { DailyEntry, UserState } from '../../model/Model'
-import { Calculate } from '../../utilities/Calculate'
+import { UserState } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 
 let COLORS = ['#00C49F', '#C8C8C8']
 
 interface Props {
-  dailyEntry: DailyEntry
+  tdee: number
+  caloriesConsumed: number
+  targetCalories: number
   user: UserState | null
 }
 
-export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
+export const DailyEntryGaugeChart: React.FC<Props> = ({
+  tdee,
+  caloriesConsumed,
+  targetCalories,
+  user,
+}) => {
   const [graphData, setGraphData] = useState<
     { name: string; value: number }[] | []
   >([])
@@ -20,26 +26,6 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
     'dailyEntryMainContentContainer'
   )?.offsetWidth
 
-  const calculate = new Calculate()
-  const {
-    dailyEntryWeight,
-    dailyEntryActivityLevel,
-    dailyEntryConsumables,
-    targetCalories,
-  } = dailyEntry
-  const { birthday, sex, height } = user!
-  const age = calculate.age(birthday)
-
-  const bmr = calculate.BMR(height, dailyEntryWeight, age, sex)
-  const tdee = calculate.TDEE(bmr, dailyEntryActivityLevel)
-
-  const confirmedConsumables =
-    dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
-  const caloriesConsumed =
-    confirmedConsumables?.reduce(
-      (acc, consumable) => acc + consumable.calories,
-      0
-    ) || 0
   const remainingCals = tdee - caloriesConsumed
   const targetCaloriesRemaining = targetCalories - caloriesConsumed
 
@@ -58,10 +44,13 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
           name: 'Calories Consumed',
           value: caloriesConsumed,
         },
-        { name: 'Target', value: targetCaloriesRemaining },
+        {
+          name: 'Target',
+          value: targetCaloriesRemaining > 0 ? targetCaloriesRemaining : 1,
+        },
       ])
     } else if (overTargetUnderLimit) {
-      COLORS = ['#FFBB28', '#C8C8C8']
+      COLORS = ['#ff9800', '#C8C8C8']
       setGraphData([
         {
           name: 'Calories over Target',
@@ -82,7 +71,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
         { name: 'Target', value: targetCaloriesRemaining },
       ])
     } else {
-      COLORS = ['#d32f2f', '#C8C8C8']
+      COLORS = ['#ef5350', '#C8C8C8']
       setGraphData([
         {
           name: 'Calories Consumed',
@@ -129,9 +118,9 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
           textAnchor="middle"
           fill={
             overTargetAndLimit
-              ? '#d32f2f'
+              ? '#ef5350'
               : overTargetUnderLimit
-              ? '#FFBB28'
+              ? '#ff9800'
               : '#00C49F'
           }
         >
@@ -151,17 +140,17 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
           textAnchor="middle"
           fill={
             overTargetAndLimit
-              ? '#d32f2f'
+              ? '#ef5350'
               : overTargetUnderLimit
-              ? '#FFBB28'
+              ? '#ff9800'
               : '#00C49F'
           }
         >
           {overTargetAndLimit
             ? 'DAILY LIMIT EXCEEDED'
             : overTargetUnderLimit
-            ? 'OVER CALORIE TARGET'
-            : 'UNDER CALORIE TARGET'}
+            ? 'CALORIES UNDER TDEE'
+            : 'CALORIES UNDER TARGET'}
         </text>
       </g>
     )
@@ -178,6 +167,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({ dailyEntry, user }) => {
     >
       <Pie
         data={graphData}
+        isAnimationActive={false}
         blendStroke
         cx="50%"
         cy="60%"
