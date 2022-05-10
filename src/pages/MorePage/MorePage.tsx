@@ -40,6 +40,7 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
   const userSection: ListSectionDetails[] = [
     {
       itemName: 'Profile',
+      itemType: 'button',
       itemIcon: <PersonIcon />,
       itemAction: () => navigate(`../${ROUTES.profile}`),
     },
@@ -48,11 +49,13 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
   const infoSection: ListSectionDetails[] = [
     {
       itemName: 'Frequently Asked Questions',
+      itemType: 'button',
       itemIcon: <LiveHelpIcon />,
       itemAction: () => navigate(`../${ROUTES.faq}`),
     },
     {
       itemName: 'Glossary of Terms',
+      itemType: 'button',
       itemIcon: <MenuBookIcon />,
       itemAction: () => null,
     },
@@ -61,11 +64,13 @@ export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
   const applicationSection: ListSectionDetails[] = [
     {
       itemName: 'Settings',
+      itemType: 'button',
       itemIcon: <SettingsIcon />,
       itemAction: () => navigate(`../${ROUTES.appSettings}`),
     },
     {
       itemName: 'Terms and Conditions',
+      itemType: 'button',
       itemIcon: <ArticleIcon />,
       itemAction: () => navigate(`../${ROUTES.termsAndConditions}`),
     },

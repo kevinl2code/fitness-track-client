@@ -1,4 +1,5 @@
 import {
+  Button,
   Grid,
   List,
   ListItem,
@@ -13,6 +14,7 @@ import React, { ReactElement } from 'react'
 
 export type ListSectionDetails = {
   itemName: string
+  itemType: 'text' | 'textButton' | 'button'
   itemIcon?: ReactElement<any, any>
   secondaryText?: String
   itemAction?: () => void
@@ -31,30 +33,48 @@ export const ListSection: React.FC<Props> = ({
   justify,
   dense = false,
 }) => {
-  const hasItemAction = sectionItems[0].itemAction !== undefined ? true : false
+  const listItems = sectionItems.map((item, index) => {
+    const { itemName, secondaryText, itemType, itemIcon, itemAction } = item
 
-  const buttonListItems = sectionItems.map((item, index) => {
-    const { itemName, itemIcon, itemAction } = item
+    if (itemType === 'text') {
+      return (
+        <ListItem
+          key={`${index}-${itemName}`}
+          secondaryAction={<Typography>{secondaryText}</Typography>}
+        >
+          <ListItemText sx={{ marginLeft: '1rem' }} primary={itemName} />
+        </ListItem>
+      )
+    }
 
-    return (
-      <ListItemButton onClick={itemAction} key={`${index}-${itemName}`}>
-        <ListItemIcon>{itemIcon}</ListItemIcon>
-        <ListItemText primary={itemName} />
-      </ListItemButton>
-    )
-  })
+    if (itemType === 'button') {
+      return (
+        <ListItemButton onClick={itemAction} key={`${index}-${itemName}`}>
+          <ListItemIcon>{itemIcon}</ListItemIcon>
+          <ListItemText primary={itemName} />
+        </ListItemButton>
+      )
+    }
 
-  const dataListItems = sectionItems.map((item, index) => {
-    const { itemName, secondaryText } = item
-
-    return (
-      <ListItem
-        key={`${index}-${itemName}`}
-        secondaryAction={<Typography>{secondaryText}</Typography>}
-      >
-        <ListItemText sx={{ marginLeft: '1rem' }} primary={itemName} />
-      </ListItem>
-    )
+    if (itemType === 'textButton') {
+      return (
+        <ListItem
+          key={`${index}-${itemName}`}
+          secondaryAction={
+            <Button
+              size="small"
+              sx={{ fontSize: '1rem', textTransform: 'none', padding: 0 }}
+              onClick={itemAction}
+            >
+              {secondaryText}
+            </Button>
+          }
+        >
+          <ListItemText sx={{ marginLeft: '1rem' }} primary={itemName} />
+        </ListItem>
+      )
+    }
+    return null
   })
 
   return (
@@ -74,7 +94,7 @@ export const ListSection: React.FC<Props> = ({
           </ListSubheader>
         }
       >
-        {hasItemAction ? buttonListItems : dataListItems}
+        {listItems}
       </List>
     </Grid>
   )

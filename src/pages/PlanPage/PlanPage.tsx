@@ -1,14 +1,13 @@
-import { Grid, Typography, Divider, Button, Container } from '@mui/material'
-import React, { useContext } from 'react'
+import DatePicker from '@mui/lab/DatePicker'
+import { Box, Container, Grid } from '@mui/material'
+import { DateTime } from 'luxon'
+import React, { useContext, useState } from 'react'
+import { CycleContext, EntriesContext, UserContext } from '../../app/App'
+import { PlanPageMainView } from '../../components/PlanPageMainView'
+import { DailyEntry } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
-import { CycleContext, UserContext, EntriesContext } from '../../app/App'
-import { DateTime } from 'luxon'
-import { PlanDetail } from '../../components/PlanDetail'
 import { Sort } from '../../utilities/Sort'
-import { DailyEntry } from '../../model/Model'
-import { ListSection } from '../../components/ListSection'
-import { ListSectionDetails } from '../../components/ListSection/ListSection'
 
 interface Props {}
 
@@ -20,188 +19,74 @@ export const PlanPage: React.FC<Props> = () => {
   const convert = new Convert()
   const sort = new Sort()
   const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries)
-  if (!cycle) {
-    return null
-  }
 
-  const {
-    cycleType,
-    startingWeight,
-    endingWeight,
-    goalWeight,
-    startDate,
-    endingDate,
-    duration,
-    isActive,
-  } = cycle
-  const currentWeight = sortedEntries
-    ? sortedEntries[sortedEntries.length - 1]?.dailyEntryWeight
-    : startingWeight
-  const cycleStartDate = DateTime.fromISO(startDate)
-  const today = DateTime.local()
-  // const expectedEndDate = cycleStartDate.plus({ days: duration })
-  // const actualEndDate = endingDate ? DateTime.fromISO(endingDate) : null
-  const cycleEndDate = DateTime.fromISO(endingDate)
-  const daysSinceStart = Math.floor(today.diff(cycleStartDate, 'days').days)
-  const daysRemaining = duration - daysSinceStart
-  const weightChanged = currentWeight && startingWeight - currentWeight
-  const weightChangedRatePerDay = weightChanged / daysSinceStart
-  const projectedFinalWeightAtCurrentPace = (
-    Math.round(
-      (Math.abs(weightChangedRatePerDay * daysRemaining) +
-        Math.abs(weightChanged)) *
-        10
-    ) / 10
-  ).toFixed(1)
-  let status = {
-    pastTense: '',
-    currentTense: '',
-  }
+  const cycleEndDate = DateTime.fromISO(cycle?.endingDate!)
 
-  // console.log(expectedEndDate.toISODate()?.split('-')?.join(''))
-
-  const milestones = {
-    quarter: sortedEntries.find((entry) => {
-      if (cycleType === 'CUT') {
-        const milestone =
-          (startingWeight - goalWeight) * 0.75 + parseInt(goalWeight.toString())
-        return entry.dailyEntryWeight < milestone
-      }
-      return null
-    }),
-    half: sortedEntries.find((entry) => {
-      if (cycleType === 'CUT') {
-        const milestone =
-          (startingWeight - goalWeight) * 0.5 + parseInt(goalWeight.toString())
-        return entry.dailyEntryWeight < milestone
-      }
-      return null
-    }),
-    threeQuarters: sortedEntries.find((entry) => {
-      if (cycleType === 'CUT') {
-        const milestone =
-          (startingWeight - goalWeight) * 0.25 + parseInt(goalWeight.toString())
-        // console.log({ milestone, goalWeight })
-        return entry.dailyEntryWeight < milestone
-      }
-      return null
-    }),
-    goal: sortedEntries.find((entry) => {
-      if (cycleType === 'CUT') {
-        return entry.dailyEntryWeight < goalWeight
-      }
-      return null
-    }),
-  }
-
-  const milestoneDate = (milestoneEntry: DailyEntry | undefined) =>
-    milestoneEntry?.entryDate
-      ? DateTime.fromISO(milestoneEntry?.entryDate).toLocaleString(
-          DateTime.DATE_MED
-        )
-      : '-'
-
-  if (weightChanged > 0) {
-    status.pastTense = 'lost'
-    status.currentTense = 'lose'
-  } else if (weightChanged < 0) {
-    status.pastTense = 'gained'
-    status.currentTense = 'gain'
-  } else {
-    status.pastTense = 'maintained'
-    status.currentTense = 'maintain'
-  }
-  const displayCurrentWeight = currentWeight ? currentWeight : '-'
-  const goalText: {
-    [key: string]: string
-  } = {
-    CUT: `Lose ${(startingWeight - goalWeight).toFixed(
-      1
-    )} lbs in ${duration} days!`,
-    BULK: `Gain ${(goalWeight - startingWeight).toFixed(
-      1
-    )} lbs in ${duration} days!`,
-    MAINTAIN: `Maintain current weight for ${duration} days!`,
-  }
-
-  const dateSection: ListSectionDetails[] = [
-    {
-      itemName: 'Plan Start',
-      secondaryText: cycleStartDate.toLocaleString(DateTime.DATE_MED),
-    },
-    {
-      itemName: isActive ? 'Plan Expected End:' : 'Plan End:',
-      secondaryText: cycleEndDate.toLocaleString(DateTime.DATE_MED),
-    },
-  ]
-  const weightSection: ListSectionDetails[] = [
-    {
-      itemName: 'Starting',
-      secondaryText: `${startingWeight} lbs`,
-    },
-    {
-      itemName: isActive ? 'Currently:' : 'Final:',
-      secondaryText: isActive
-        ? `${displayCurrentWeight} lbs`
-        : `${endingWeight} lbs`,
-    },
-    {
-      itemName: 'Goal',
-      secondaryText: `${goalWeight} lbs`,
-    },
-  ]
-
-  const mileStoneSection: ListSectionDetails[] = [
-    {
-      itemName: 'Attained 25% of Goal',
-      secondaryText: milestoneDate(milestones.quarter),
-    },
-    {
-      itemName: 'Attained 50% of Goal',
-      secondaryText: milestoneDate(milestones.half),
-    },
-    {
-      itemName: 'Attained 75% of Goal',
-      secondaryText: milestoneDate(milestones.threeQuarters),
-    },
-    {
-      itemName: 'Attained 100% of Goal',
-      secondaryText: milestoneDate(milestones.goal),
-    },
-  ]
+  const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
+  const calendarMaxDate = cycleStartDate.plus({ days: 90 })
+  const [pickerDate, setPickerDate] = useState<DateTime>(cycleEndDate)
+  const [datePickerOpen, setDatePickerOpen] = useState(false)
+  // const cyckeType = cycle?.cycleType
 
   return (
-    <Container>
-      <Grid
-        container
-        direction="column"
-        alignItems="center"
-        sx={{ marginTop: '1rem', width: '100%' }}
-      >
-        <Grid item>
-          <Typography variant="h4">GOAL</Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="h6">{goalText[cycleType]}</Typography>
-        </Grid>
-        <Divider sx={{ width: '90%', marginTop: '1rem' }} />
-        <ListSection
-          sectionSubHeader="Dates"
-          sectionItems={dateSection}
-          justify="center"
-        />
-        <ListSection
-          sectionSubHeader="Key Weights"
-          sectionItems={weightSection}
-          justify="center"
-        />
-        <ListSection
-          sectionSubHeader="Milestones"
-          sectionItems={mileStoneSection}
-          justify="center"
+    <>
+      <Grid item xs={12} container justifyContent="center">
+        <DatePicker
+          value={pickerDate}
+          minDate={cycleStartDate}
+          maxDate={calendarMaxDate}
+          open={datePickerOpen}
+          onOpen={() => setDatePickerOpen(true)}
+          onClose={() => setDatePickerOpen(false)}
+          onChange={(newValue) => {
+            if (newValue) {
+              setPickerDate(newValue)
+            }
+          }}
+          renderInput={({ inputRef, inputProps, InputProps }) => (
+            <Box ref={inputRef}></Box>
+          )}
         />
       </Grid>
-    </Container>
+      <Container>
+        {cycle !== null && (
+          <PlanPageMainView
+            cycle={cycle}
+            sortedEntries={sortedEntries}
+            setDatePickerOpen={setDatePickerOpen}
+          />
+        )}
+        {/* <Grid
+          container
+          direction="column"
+          alignItems="center"
+          sx={{ marginTop: '1rem', width: '100%' }}
+        >
+          <Grid item>
+            <Typography variant="h4">GOAL</Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="h6">{goalText[cycleType]}</Typography>
+          </Grid>
+          <Divider sx={{ width: '90%', marginTop: '1rem' }} />
+          <ListSection
+            sectionSubHeader="Dates"
+            sectionItems={dateSection}
+            justify="center"
+          />
+          <ListSection
+            sectionSubHeader="Key Weights"
+            sectionItems={weightSection}
+            justify="center"
+          />
+          <ListSection
+            sectionSubHeader="Milestones"
+            sectionItems={mileStoneSection}
+            justify="center"
+          />
+        </Grid> */}
+      </Container>
+    </>
     //   {status.pastTense !== 'maintained' && (
     //     <PlanDetail
     //       text={`Pounds ${status.pastTense}:`}

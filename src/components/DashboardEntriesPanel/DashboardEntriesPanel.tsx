@@ -136,28 +136,34 @@ export const DashboardEntriesPanel: React.FC<Props> = ({ entries, user }) => {
       const detailsSection: ListSectionDetails[] = [
         {
           itemName: 'Calories Consumed',
+          itemType: 'text',
           secondaryText: Math.round(caloriesConsumed).toString(),
         },
         {
           itemName: 'Calories Burned',
+          itemType: 'text',
           secondaryText: tdee.toString(),
         },
         {
           itemName: 'Activity Level',
+          itemType: 'text',
           secondaryText: formattedActivityLevel[dailyEntryActivityLevel],
         },
       ]
       const macroNutrientsSection: ListSectionDetails[] = [
         {
           itemName: 'Protein',
+          itemType: 'text',
           secondaryText: Math.round(proteinConsumed).toString(),
         },
         {
           itemName: 'Fat',
+          itemType: 'text',
           secondaryText: Math.round(fatConsumed).toString(),
         },
         {
           itemName: 'Carbohydrates',
+          itemType: 'text',
           secondaryText: Math.round(carbohydratesConsumed).toString(),
         },
       ]
