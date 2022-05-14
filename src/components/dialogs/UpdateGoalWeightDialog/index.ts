@@ -1,0 +1,1 @@
+export { UpdateGoalWeightDialog } from './UpdateGoalWeightDialog'

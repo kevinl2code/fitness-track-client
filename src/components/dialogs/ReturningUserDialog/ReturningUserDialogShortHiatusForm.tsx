@@ -106,13 +106,11 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
         generatedTDEE - generatedDeficitPerDay
       )
       const avgerageChangePerDayInFatEnergy = averageWeightChangePerDay * 3500
-
       let caloriesRelativeToTDEE = 0
 
       if (generatedTDEE > avgerageChangePerDayInFatEnergy) {
         caloriesRelativeToTDEE = generatedTDEE - avgerageChangePerDayInFatEnergy
       }
-
       const generatedConsumable: EntryConsumable = {
         name: 'Generated Entry',
         calories: caloriesRelativeToTDEE,
@@ -163,7 +161,6 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
       targetCalories: targetCalories,
       cycleId: cycle?.cycleId!,
     })
-
     generatedEntries.forEach((entry) => {
       createNewDailyEntry(entry, {
         onSuccess: async () => {
@@ -172,7 +169,6 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
         },
       })
     })
-    // console.log(generatedEntries)
   }
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {

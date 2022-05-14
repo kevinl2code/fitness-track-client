@@ -3,8 +3,10 @@ import { Box, Container, Grid } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useState } from 'react'
 import { CycleContext, EntriesContext, UserContext } from '../../app/App'
+import { UpdateGoalWeightDialog } from '../../components/dialogs/UpdateGoalWeightDialog'
 import { PlanPageMainView } from '../../components/PlanPageMainView'
 import { DailyEntry } from '../../model/Model'
+import { DataService } from '../../services/DataService'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
@@ -15,21 +17,40 @@ export const PlanPage: React.FC<Props> = () => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const entries = useContext(EntriesContext)
-  const calculate = new Calculate()
-  const convert = new Convert()
+  const cycleEndDate = DateTime.fromISO(cycle?.endingDate!)
+  const [pickerDate, setPickerDate] = useState<DateTime>(cycleEndDate)
+  const [datePickerOpen, setDatePickerOpen] = useState(false)
+  const [openUpdateGoalWeightDialog, setOpenUpdateGoalWeightDialog] =
+    React.useState(false)
+  const dataService = new DataService()
+  dataService.setUser(user?.user!)
   const sort = new Sort()
   const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries)
 
-  const cycleEndDate = DateTime.fromISO(cycle?.endingDate!)
-
   const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
   const calendarMaxDate = cycleStartDate.plus({ days: 90 })
-  const [pickerDate, setPickerDate] = useState<DateTime>(cycleEndDate)
-  const [datePickerOpen, setDatePickerOpen] = useState(false)
-  // const cyckeType = cycle?.cycleType
+
+  const today = DateTime.now().startOf('day')
+  const todayEntry =
+    sortedEntries.reverse()[0].entryDate ===
+    today.toISODate()?.split('-')?.join('')
+      ? sortedEntries[0]
+      : null
+
+  if (!user || !cycle) {
+    return null
+  }
 
   return (
     <>
+      <UpdateGoalWeightDialog
+        entry={todayEntry}
+        cycle={cycle}
+        user={user}
+        open={openUpdateGoalWeightDialog}
+        setDialogOpenState={setOpenUpdateGoalWeightDialog}
+        dataService={dataService}
+      />
       <Grid item xs={12} container justifyContent="center">
         <DatePicker
           value={pickerDate}
@@ -54,37 +75,9 @@ export const PlanPage: React.FC<Props> = () => {
             cycle={cycle}
             sortedEntries={sortedEntries}
             setDatePickerOpen={setDatePickerOpen}
+            setOpenUpdateGoalWeightDialog={setOpenUpdateGoalWeightDialog}
           />
         )}
-        {/* <Grid
-          container
-          direction="column"
-          alignItems="center"
-          sx={{ marginTop: '1rem', width: '100%' }}
-        >
-          <Grid item>
-            <Typography variant="h4">GOAL</Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="h6">{goalText[cycleType]}</Typography>
-          </Grid>
-          <Divider sx={{ width: '90%', marginTop: '1rem' }} />
-          <ListSection
-            sectionSubHeader="Dates"
-            sectionItems={dateSection}
-            justify="center"
-          />
-          <ListSection
-            sectionSubHeader="Key Weights"
-            sectionItems={weightSection}
-            justify="center"
-          />
-          <ListSection
-            sectionSubHeader="Milestones"
-            sectionItems={mileStoneSection}
-            justify="center"
-          />
-        </Grid> */}
       </Container>
     </>
     //   {status.pastTense !== 'maintained' && (

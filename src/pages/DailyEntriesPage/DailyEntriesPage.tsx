@@ -62,6 +62,10 @@ export const DailyEntriesPage: React.FC = () => {
     'day'
   )
 
+  //TODO IMPLEMENT THIS FOR USER AWAY FLOW. IF THEY NEVER WEIGHED IN, JUST CLOSE THE CYCLE AND MAKE THEM START ANEW
+  const cycleHasEntries = entries.length > 0
+  const userNeverWeighedIn =
+    !cycleHasEntries && Math.floor(today.diff(cycleStartDate, 'days').days) > 2
   const daysSinceLastActive = Math.floor(today.diff(lastEntryDate, 'days').days)
 
   const userAwayOneDay = daysSinceLastActive === 1

@@ -10,12 +10,14 @@ interface Props {
   cycle: Cycle
   sortedEntries: DailyEntry[]
   setDatePickerOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenUpdateGoalWeightDialog: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const PlanPageMainView: React.FC<Props> = ({
   cycle,
   sortedEntries,
   setDatePickerOpen,
+  setOpenUpdateGoalWeightDialog,
 }) => {
   const {
     cycleType,
@@ -145,7 +147,7 @@ export const PlanPageMainView: React.FC<Props> = ({
     {
       itemName: 'Goal',
       itemType: 'textButton',
-      itemAction: () => null,
+      itemAction: () => setOpenUpdateGoalWeightDialog(true),
       secondaryText: `${goalWeight} lbs`,
     },
   ]
