@@ -2,6 +2,7 @@ import { Divider, Grid, Paper, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React from 'react'
 import { CycleType, DailyEntry } from '../../model/Model'
+import { Calculate } from '../../utilities/Calculate'
 import { DashboardSummaryCardRow } from './DashboardSummaryCardRow'
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
   goalWeight: number
   entries: DailyEntry[] | null
   startDate: string
-  duration: number
+  endDate: string
 }
 
 export const DashboardSummaryCard: React.FC<Props> = ({
@@ -19,15 +20,17 @@ export const DashboardSummaryCard: React.FC<Props> = ({
   goalWeight,
   entries,
   startDate,
-  duration,
+  endDate,
 }) => {
+  const calculate = new Calculate()
   const currentWeight = entries
     ? entries[entries.length - 1]?.dailyEntryWeight
     : startingWeight
   const start = DateTime.fromISO(startDate)
   const today = DateTime.local()
   const daysSinceStart = Math.floor(today.diff(start, 'days').days)
-  const daysRemaining = duration - daysSinceStart
+  const planDuration = calculate.planDuration(startDate, endDate)
+  const daysRemaining = planDuration - daysSinceStart
   const weightChanged = currentWeight && startingWeight - currentWeight
   const weightChangedRatePerDay = weightChanged / daysSinceStart
   const projectedFinalWeightAtCurrentPace = (

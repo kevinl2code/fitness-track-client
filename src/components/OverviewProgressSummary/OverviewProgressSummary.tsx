@@ -2,6 +2,7 @@ import { Grid, LinearProgress, Paper, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 import { Cycle, DailyEntry } from '../../model/Model'
+import { Calculate } from '../../utilities/Calculate'
 import { Sort } from '../../utilities/Sort'
 
 interface Props {
@@ -15,24 +16,26 @@ export const OverviewProgressSummary: React.FC<Props> = ({
 }) => {
   const [weightProgress, setWeightProgress] = useState(0)
   const [timeProgress, setTimeProgress] = useState(0)
-
+  const calculate = new Calculate()
   const startDate = cycle?.startDate!
   const cycleStartDate = DateTime.fromISO(startDate)
   const today = DateTime.local()
 
   const cycleType = cycle?.cycleType!
 
-  const duration = cycle?.duration!
-
+  const planDuration = calculate.planDuration(
+    cycle?.startDate!,
+    cycle?.endingDate!
+  )
   const latestEntry = entries[0]
   const startWeight = cycle?.startingWeight!
   const currentWeight = latestEntry.dailyEntryWeight
   const goalWeight = cycle?.goalWeight!
 
   const daysSinceStart = Math.floor(today.diff(cycleStartDate, 'days').days)
-  const daysRemaining = duration - daysSinceStart
+  const daysRemaining = planDuration - daysSinceStart
 
-  const percentOfTimeElapsed = (daysSinceStart / duration) * 100
+  const percentOfTimeElapsed = (daysSinceStart / planDuration) * 100
   console.log({ currentWeight: currentWeight })
   useEffect(() => {
     const plannedTotalWeightChange: {

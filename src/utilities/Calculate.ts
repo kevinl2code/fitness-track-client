@@ -70,4 +70,15 @@ export class Calculate {
     )
     return yearsSinceBirth
   }
+
+  public planDuration(planStart: string, planEnd: string) {
+    const planStartDateTime = DateTime.fromISO(planStart)
+    const planEndDateTime = DateTime.fromISO(planEnd)
+
+    const planDuration = Math.floor(
+      planEndDateTime.diff(planStartDateTime, 'days').days
+    )
+
+    return planDuration
+  }
 }

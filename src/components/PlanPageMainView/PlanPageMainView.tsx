@@ -3,6 +3,7 @@ import { stubTrue } from 'lodash'
 import { DateTime } from 'luxon'
 import React from 'react'
 import { Cycle, DailyEntry } from '../../model/Model'
+import { Calculate } from '../../utilities/Calculate'
 import { ListSection } from '../ListSection'
 import { ListSectionDetails } from '../ListSection/ListSection'
 
@@ -19,6 +20,7 @@ export const PlanPageMainView: React.FC<Props> = ({
   setDatePickerOpen,
   setOpenUpdateGoalWeightDialog,
 }) => {
+  const calculate = new Calculate()
   const {
     cycleType,
     startingWeight,
@@ -26,19 +28,18 @@ export const PlanPageMainView: React.FC<Props> = ({
     goalWeight,
     startDate,
     endingDate,
-    duration,
     isActive,
   } = cycle
   const currentWeight = sortedEntries
     ? sortedEntries[sortedEntries.length - 1]?.dailyEntryWeight
     : startingWeight
   const cycleStartDate = DateTime.fromISO(startDate)
-
+  const planDuration = calculate.planDuration(cycle.startDate, cycle.endingDate)
   const today = DateTime.local()
 
   const cycleEndDate = DateTime.fromISO(endingDate)
   const daysSinceStart = Math.floor(today.diff(cycleStartDate, 'days').days)
-  const daysRemaining = duration - daysSinceStart
+  const daysRemaining = planDuration - daysSinceStart
   const weightChanged = currentWeight && startingWeight - currentWeight
   const weightChangedRatePerDay = weightChanged / daysSinceStart
   const projectedFinalWeightAtCurrentPace = (
@@ -111,11 +112,11 @@ export const PlanPageMainView: React.FC<Props> = ({
   } = {
     CUT: `Lose ${(startingWeight - goalWeight).toFixed(
       1
-    )} lbs in ${duration} days!`,
+    )} lbs in ${planDuration} days!`,
     BULK: `Gain ${(goalWeight - startingWeight).toFixed(
       1
-    )} lbs in ${duration} days!`,
-    MAINTAIN: `Maintain current weight for ${duration} days!`,
+    )} lbs in ${planDuration} days!`,
+    MAINTAIN: `Maintain current weight for ${planDuration} days!`,
   }
 
   const dateSection: ListSectionDetails[] = [

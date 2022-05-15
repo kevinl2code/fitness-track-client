@@ -86,7 +86,10 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
       Math.round((weightChange / numberOfMissedEntries) * 10) / 10
     const { birthday, sex, height, sub } = user
     const age = calculate.age(birthday)
-
+    const planDuration = calculate.planDuration(
+      cycle.startDate,
+      cycle.endingDate
+    )
     let generatedWeight = startingWeight
 
     const generatedEntries: DailyEntry[] = missingDays.reverse().map((day) => {
@@ -95,7 +98,8 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
       const generatedDaysSinceStart = Math.floor(
         entryDateTime.diff(cycleStart, 'days').days
       )
-      const generatedDaysRemaining = cycle.duration - generatedDaysSinceStart
+
+      const generatedDaysRemaining = planDuration - generatedDaysSinceStart
       const generatedPoundsToGo = generatedWeight - cycle.goalWeight
       const generatedCaloriesToGo = generatedPoundsToGo * 3500
       const generatedDeficitPerDay =
@@ -139,7 +143,7 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
     })
     const todayISO = today.toISODate()?.split('-')?.join('')
     const daysSinceStart = Math.floor(today.diff(cycleStart, 'days').days)
-    const daysRemaining = cycle.duration - daysSinceStart
+    const daysRemaining = planDuration - daysSinceStart
     const poundsToGo = currentWeight - cycle.goalWeight
     const caloriesToGo = poundsToGo * 3500
     const deficitPerDay = caloriesToGo / daysRemaining

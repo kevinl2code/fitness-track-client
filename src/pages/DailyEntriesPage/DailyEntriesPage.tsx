@@ -96,7 +96,11 @@ export const DailyEntriesPage: React.FC = () => {
   const cycleStart = DateTime.fromISO(cycle?.startDate!)
   const currentDay = pickerDate
   const daysSinceStart = Math.floor(currentDay.diff(cycleStart, 'days').days)
-  const daysRemaining = cycle?.duration! - daysSinceStart
+  const planDuration = calculate.planDuration(
+    cycle?.startDate!,
+    cycle?.endingDate!
+  )
+  const daysRemaining = planDuration - daysSinceStart
   const poundsToGo = dailyEntry?.dailyEntryWeight! - cycle?.goalWeight!
   const caloriesToGo = poundsToGo * 3500
   const deficitPerDay = caloriesToGo / daysRemaining

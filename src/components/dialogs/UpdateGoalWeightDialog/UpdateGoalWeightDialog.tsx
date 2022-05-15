@@ -48,6 +48,7 @@ export const UpdateGoalWeightDialog: React.FC<Props> = ({
     currentGoal + 10 < cycle.startingWeight - 1
       ? currentGoal + 10
       : cycle.startingWeight - 1
+  const planDuration = calculate.planDuration(cycle.startDate, cycle.endingDate)
 
   const validationSchema = yup.object({
     weight: yup
@@ -94,7 +95,7 @@ export const UpdateGoalWeightDialog: React.FC<Props> = ({
       const cycleStart = DateTime.fromISO(cycle?.startDate!)
       const entryDate = DateTime.fromISO(entry.entryDate)
       const daysSinceStart = Math.floor(entryDate.diff(cycleStart, 'days').days)
-      const daysRemaining = cycle?.duration! - daysSinceStart
+      const daysRemaining = planDuration - daysSinceStart
       const poundsToGo = entry.dailyEntryWeight - parseInt(data.goalWeight)
       const caloriesToGo = poundsToGo * 3500
       const deficitPerDay = caloriesToGo / daysRemaining
