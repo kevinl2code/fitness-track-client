@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import React, { useContext, useEffect, useState } from 'react'
 import { CycleContext, EntriesContext, UserContext } from '../../app/App'
 import { DailyEntryCreateNew } from '../../components'
+import { DailyEntryLastDay } from '../../components/DailyEntryLastDay'
 import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
 import { DailyEntryMissedDay } from '../../components/DailyEntryMissedDay/DailyEntryMissedDay'
 import {
@@ -21,6 +22,7 @@ import { formattedActivityLevel } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
 
 const today = DateTime.now().startOf('day')
+// const today = DateTime.fromISO('20220517')
 
 export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
@@ -28,7 +30,7 @@ export const DailyEntriesPage: React.FC = () => {
   const entries = useContext(EntriesContext)
   const { startingWeight, endingWeight, endingDate } = { ...cycle }
   const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
-
+  console.log(endingDate)
   const calendarMaxDate =
     cycleEndDate && today.startOf('day') > cycleEndDate?.startOf('day')
       ? cycleEndDate
@@ -146,11 +148,34 @@ export const DailyEntriesPage: React.FC = () => {
       setOpenUpdateActivityLevelDialog={setOpenUpdateActivityLevelDialog}
     />
   )
+
+  const lastDayOfCycle =
+    today.startOf('day').valueOf() === cycleEndDate?.startOf('day').valueOf()
+  console.log({
+    lastDayOfCycle,
+    today: today.startOf('day'),
+    cycleEndDate: cycleEndDate?.startOf('day'),
+  })
   const newDayNoEntry = isEditable &&
     !dailyEntry &&
     cycle &&
-    !openNewUserDialog && (
+    !openNewUserDialog &&
+    !lastDayOfCycle && (
       <DailyEntryCreateNew
+        date={currentlySelectedDate!}
+        daysRemaining={daysRemaining}
+        cycle={cycle}
+        dataService={dataService}
+        user={user}
+      />
+    )
+
+  const finalWeighIn = isEditable &&
+    !dailyEntry &&
+    cycle &&
+    !openNewUserDialog &&
+    lastDayOfCycle && (
+      <DailyEntryLastDay
         date={currentlySelectedDate!}
         daysRemaining={daysRemaining}
         cycle={cycle}
@@ -216,7 +241,8 @@ export const DailyEntriesPage: React.FC = () => {
             open={datePickerOpen}
             onOpen={() => setDatePickerOpen(true)}
             onClose={() => setDatePickerOpen(false)}
-            onChange={(newValue) => {
+            onChange={() => null}
+            onAccept={(newValue) => {
               if (newValue) {
                 setPickerDate(newValue)
               }
@@ -230,6 +256,7 @@ export const DailyEntriesPage: React.FC = () => {
           {entries === null && <LinearProgress />}
           {entries !== null && mainContent}
           {entries !== null && newDayNoEntry}
+          {entries !== null && finalWeighIn}
           {entries !== null && missedDay}
         </Grid>
       </Grid>

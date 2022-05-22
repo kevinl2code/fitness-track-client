@@ -30,16 +30,28 @@ interface Props {
   user: UserState
   dataService: DataService
   open: boolean
+  mutableCycleParams: {
+    endingDate: string
+    goalWeight: number
+  }
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
+  setMutableCycleParams: React.Dispatch<
+    React.SetStateAction<{
+      endingDate: string
+      goalWeight: number
+    }>
+  >
 }
 
 export const UpdateGoalWeightDialog: React.FC<Props> = ({
   entry,
   cycle,
+  mutableCycleParams,
   user,
   dataService,
   open,
   setDialogOpenState,
+  setMutableCycleParams,
 }) => {
   const queryClient = useQueryClient()
   const calculate = new Calculate()
@@ -51,7 +63,7 @@ export const UpdateGoalWeightDialog: React.FC<Props> = ({
   const planDuration = calculate.planDuration(cycle.startDate, cycle.endingDate)
 
   const validationSchema = yup.object({
-    weight: yup
+    goalWeight: yup
       .number()
       .typeError('Value for weight is required')
       .min(currentGoal - 10, ({ min }) => `Must be ${min} lbs or more`)
@@ -67,7 +79,7 @@ export const UpdateGoalWeightDialog: React.FC<Props> = ({
   } = useForm({ mode: 'onTouched', resolver: yupResolver(validationSchema) })
 
   useEffect(() => {
-    setValue('weight', cycle.goalWeight)
+    setValue('goalWeight', mutableCycleParams.goalWeight)
   }, [cycle.goalWeight, setValue])
 
   const { mutate: updateDailyEntry, isLoading: updateDailyEntryIsLoading } =
@@ -91,31 +103,38 @@ export const UpdateGoalWeightDialog: React.FC<Props> = ({
   )
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    if (entry) {
-      const cycleStart = DateTime.fromISO(cycle?.startDate!)
-      const entryDate = DateTime.fromISO(entry.entryDate)
-      const daysSinceStart = Math.floor(entryDate.diff(cycleStart, 'days').days)
-      const daysRemaining = planDuration - daysSinceStart
-      const poundsToGo = entry.dailyEntryWeight - parseInt(data.goalWeight)
-      const caloriesToGo = poundsToGo * 3500
-      const deficitPerDay = caloriesToGo / daysRemaining
-      const { birthday, sex, height } = user
-      const age = calculate.age(birthday)
-      const bmr = calculate.BMR(height, entry.dailyEntryWeight, age, sex)
-      const tdee = calculate.TDEE(bmr, entry.dailyEntryActivityLevel)
-      const targetCalories = Math.round(tdee - deficitPerDay)
-      const updatedDailyEntry = {
-        ...entry,
-        targetCalories: targetCalories,
-      }
-      updateDailyEntry(updatedDailyEntry)
-    }
-    const updatedCycle = {
-      ...cycle,
-      goalWeight: parseInt(data.goalWeight),
-    }
+    // if (entry) {
+    //   const cycleStart = DateTime.fromISO(cycle?.startDate!)
+    //   const entryDate = DateTime.fromISO(entry.entryDate)
+    //   const daysSinceStart = Math.floor(entryDate.diff(cycleStart, 'days').days)
+    //   const daysRemaining = planDuration - daysSinceStart
+    //   const poundsToGo = entry.dailyEntryWeight - parseInt(data.goalWeight)
+    //   const caloriesToGo = poundsToGo * 3500
+    //   const deficitPerDay = caloriesToGo / daysRemaining
+    //   const { birthday, sex, height } = user
+    //   const age = calculate.age(birthday)
+    //   const bmr = calculate.BMR(height, entry.dailyEntryWeight, age, sex)
+    //   const tdee = calculate.TDEE(bmr, entry.dailyEntryActivityLevel)
+    //   const targetCalories = Math.round(tdee - deficitPerDay)
+    //   const updatedDailyEntry = {
+    //     ...entry,
+    //     targetCalories: targetCalories,
+    //   }
+    //   updateDailyEntry(updatedDailyEntry)
+    // }
+    // const updatedCycle = {
+    //   ...cycle,
+    //   goalWeight: parseInt(data.goalWeight),
+    // }
 
-    updateCycle(updatedCycle)
+    // updateCycle(updatedCycle)
+    console.log('clicked')
+    setMutableCycleParams({
+      ...mutableCycleParams,
+      goalWeight: parseInt(data.goalWeight),
+    })
+    setDialogOpenState(false)
+    reset()
   }
 
   const handleCloseDialog = () => {

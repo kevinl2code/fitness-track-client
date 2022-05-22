@@ -1,7 +1,7 @@
-import { Grid, Typography, Divider } from '@mui/material'
+import { Grid, Typography, Divider, Button } from '@mui/material'
 import { stubTrue } from 'lodash'
 import { DateTime } from 'luxon'
-import React from 'react'
+import React, { useState } from 'react'
 import { Cycle, DailyEntry } from '../../model/Model'
 import { Calculate } from '../../utilities/Calculate'
 import { ListSection } from '../ListSection'
@@ -9,14 +9,20 @@ import { ListSectionDetails } from '../ListSection/ListSection'
 
 interface Props {
   cycle: Cycle
+  editEnabled: boolean
   sortedEntries: DailyEntry[]
+  pickerDate: DateTime
+  mutableGoalWeight: number
   setDatePickerOpen: React.Dispatch<React.SetStateAction<boolean>>
   setOpenUpdateGoalWeightDialog: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const PlanPageMainView: React.FC<Props> = ({
   cycle,
+  editEnabled,
   sortedEntries,
+  pickerDate,
+  mutableGoalWeight,
   setDatePickerOpen,
   setOpenUpdateGoalWeightDialog,
 }) => {
@@ -127,9 +133,9 @@ export const PlanPageMainView: React.FC<Props> = ({
     },
     {
       itemName: isActive ? 'Plan Expected End:' : 'Plan End:',
-      itemType: 'textButton',
-      secondaryText: cycleEndDate.toLocaleString(DateTime.DATE_MED),
-      itemAction: () => setDatePickerOpen(true),
+      itemType: editEnabled ? 'textButton' : 'text',
+      secondaryText: pickerDate.toLocaleString(DateTime.DATE_MED),
+      itemAction: editEnabled ? () => setDatePickerOpen(true) : undefined,
     },
   ]
   const weightSection: ListSectionDetails[] = [
@@ -147,9 +153,9 @@ export const PlanPageMainView: React.FC<Props> = ({
     },
     {
       itemName: 'Goal',
-      itemType: 'textButton',
+      itemType: editEnabled ? 'textButton' : 'text',
       itemAction: () => setOpenUpdateGoalWeightDialog(true),
-      secondaryText: `${goalWeight} lbs`,
+      secondaryText: `${mutableGoalWeight} lbs`,
     },
   ]
 
@@ -180,6 +186,7 @@ export const PlanPageMainView: React.FC<Props> = ({
     <Grid
       container
       direction="column"
+      justifyContent="space-between"
       alignItems="center"
       sx={{ marginTop: '1rem', width: '100%' }}
     >

@@ -1,0 +1,1 @@
+export { DailyEntryLastDay } from './DailyEntryLastDay'
