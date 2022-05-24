@@ -28,10 +28,19 @@ export const DailyEntriesPage: React.FC = () => {
   const entries = useContext(EntriesContext)
   const { endingDate } = { ...cycle }
   const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
-  const calendarMaxDate =
-    cycleEndDate && today.startOf('day') > cycleEndDate?.startOf('day')
-      ? cycleEndDate
-      : today
+  const newCalendarMaxDate = cycle?.isActive ? today.startOf('day') : 1
+  const getCalendarMaxDate = () => {
+    if (cycle && cycle.isActive) {
+      return today.startOf('day') > cycleEndDate?.startOf('day')!
+        ? cycleEndDate!
+        : today
+    } else if (cycle && !cycle.isActive) {
+      return cycleEndDate?.startOf('day').minus({ days: 1 })!
+    } else {
+      return today
+    }
+  }
+  const calendarMaxDate = getCalendarMaxDate()
   const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const [dailyEntry, setDailyEntry] = useState<DailyEntry | null>(null)
@@ -56,8 +65,7 @@ export const DailyEntriesPage: React.FC = () => {
     currentlySelectedDate,
     isEditable,
     isFirstDay,
-    isLastDay,
-    userAwaySeveralDays,
+    isLastEntryDay,
     daysSinceLastActive,
     cycleStartDate,
     daysRemaining,
@@ -70,11 +78,11 @@ export const DailyEntriesPage: React.FC = () => {
   } = dailyEntryPageHooks({ pickerDate, cycle, entries, dailyEntry, user })
 
   useEffect(() => {
-    if (!isFirstDay && cycle?.isActive && userAwaySeveralDays) {
+    if (pageStates.todayNoEntryReturningFromAWOL) {
       setOpenReturningUserDialog(true)
     }
     return () => setOpenReturningUserDialog(false)
-  }, [cycle?.isActive, isFirstDay, userAwaySeveralDays])
+  }, [pageStates.todayNoEntryReturningFromAWOL])
 
   useEffect(() => {
     const selectedEntry =
@@ -87,47 +95,64 @@ export const DailyEntriesPage: React.FC = () => {
     return null
   }
 
-  const mainContent = dailyEntry && (
-    <DailyEntryMainView
-      dailyEntry={dailyEntry}
-      user={user}
-      displayWeight={displayWeight}
-      isFirstDay={isFirstDay}
-      isLastDay={isLastDay}
-      isEditable={isEditable}
-      dataService={dataService}
-      activityLevel={activityLevel}
-      setOpenConsumableDialog={setOpenConsumableDialog}
-      setOpenUpdateWeightDialog={setOpenUpdateWeightDialog}
-      setOpenUpdateActivityLevelDialog={setOpenUpdateActivityLevelDialog}
-    />
-  )
-
-  const newDayNoEntry = isEditable &&
-    !dailyEntry &&
-    cycle?.isActive &&
-    !openNewUserDialog &&
-    !isLastDay && (
-      <DailyEntryCreateNew
-        date={currentlySelectedDate!}
-        daysRemaining={daysRemaining}
-        cycle={cycle}
-        dataService={dataService}
-        user={user}
-      />
-    )
-
-  const finalWeighIn = pageStates.lastDayNotFinalized && (
-    <DailyEntryLastDay
-      date={currentlySelectedDate!}
-      daysRemaining={daysRemaining}
-      cycle={cycle!}
-      dataService={dataService}
-      user={user}
-    />
-  )
-
-  const missedDay = pageStates.awolDayNoEntry && <DailyEntryMissedDay />
+  const {
+    loading: pageLoading,
+    todayHasEntry,
+    firstDayNoEntry,
+    todayNoEntry,
+    todayNoEntryMissedYesterday,
+    todayNoEntryReturningFromAWOL,
+    previousDayNoEntry,
+    awolDayNoEntry,
+    lastDayNotFinalized,
+    lastDayNotFinalizedMissedYesterday,
+    lastDayNotFinalizedReturningFromAWOL,
+  } = pageStates
+  const renderPageView = () => {
+    if (pageLoading) {
+      return <LinearProgress />
+    } else if (firstDayNoEntry || todayNoEntry || todayNoEntryMissedYesterday) {
+      return (
+        <DailyEntryCreateNew
+          date={currentlySelectedDate!}
+          daysRemaining={daysRemaining}
+          cycle={cycle!}
+          dataService={dataService}
+          user={user}
+        />
+      )
+    } else if (todayHasEntry) {
+      return (
+        <DailyEntryMainView
+          dailyEntry={dailyEntry!}
+          user={user}
+          displayWeight={displayWeight}
+          isFirstDay={isFirstDay}
+          isLastDay={isLastEntryDay}
+          isEditable={isEditable}
+          dataService={dataService}
+          activityLevel={activityLevel}
+          setOpenConsumableDialog={setOpenConsumableDialog}
+          setOpenUpdateWeightDialog={setOpenUpdateWeightDialog}
+          setOpenUpdateActivityLevelDialog={setOpenUpdateActivityLevelDialog}
+        />
+      )
+    } else if (awolDayNoEntry) {
+      return <DailyEntryMissedDay />
+    } else if (lastDayNotFinalized) {
+      return (
+        <DailyEntryLastDay
+          date={currentlySelectedDate!}
+          daysRemaining={daysRemaining}
+          cycle={cycle!}
+          dataService={dataService}
+          user={user}
+          cycleEndDate={cycleEndDate}
+          setPickerDate={setPickerDate}
+        />
+      )
+    }
+  }
   console.log(entries)
   return (
     <>
@@ -196,11 +221,7 @@ export const DailyEntriesPage: React.FC = () => {
           />
         </Grid>
         <Grid item xs={12} id="dailyEntryMainContentContainer">
-          {entries === null && <LinearProgress />}
-          {entries !== null && mainContent}
-          {entries !== null && newDayNoEntry}
-          {entries !== null && finalWeighIn}
-          {entries !== null && missedDay}
+          {renderPageView()}
         </Grid>
       </Grid>
     </>

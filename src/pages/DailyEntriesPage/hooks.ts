@@ -26,6 +26,7 @@ export const dailyEntryPageHooks = ({
   const cycleEndDate = cycle?.endingDate
     ? DateTime.fromISO(cycle?.endingDate)
     : null
+
   const calendarMaxDate =
     cycleEndDate && today.startOf('day') > cycleEndDate?.startOf('day')
       ? cycleEndDate
@@ -38,6 +39,8 @@ export const dailyEntryPageHooks = ({
     'day'
   )
   const cycleHasEntries = entries.length > 0
+
+  //TODO ADD PAGESTATE FOR THIS
   const userNeverWeighedIn =
     !cycleHasEntries && Math.floor(today.diff(cycleStartDate, 'days').days) > 2
   const daysSinceLastActive = Math.floor(today.diff(lastEntryDate, 'days').days)
@@ -46,7 +49,7 @@ export const dailyEntryPageHooks = ({
   const userAwaySeveralDays = daysSinceLastActive > 2
   const isFirstDay = cycle?.startDate === currentlySelectedDate
   const todaySelected = pickerDate === today
-  const isLastDay =
+  const isLastEntryDay =
     cycle?.endingDate === currentlySelectedDate ||
     today > cycleEndDate?.startOf('day')!
 
@@ -76,11 +79,12 @@ export const dailyEntryPageHooks = ({
     pickerDate.startOf('day').valueOf() ===
       today.minus({ days: 1 }).startOf('day').valueOf()
 
-  // const lastDayOfCycle =
-  //   today.startOf('day').valueOf() === cycleEndDate?.startOf('day').valueOf()
-
+  const lastDayOfCycle =
+    today.startOf('day').valueOf() >= cycleEndDate?.startOf('day').valueOf()!
+  console.log({ lastDayOfCycle })
   const pageStates = {
     loading: entries === null,
+    todayHasEntry: cycle !== null && entries !== null && dailyEntry,
     firstDayNoEntry: cycle?.isActive && isEditable && isFirstDay && !dailyEntry,
     todayNoEntry:
       cycle?.isActive &&
@@ -116,19 +120,20 @@ export const dailyEntryPageHooks = ({
       !isEditable &&
       !isFirstDay &&
       !todaySelected &&
+      !lastEntryDate &&
       !dailyEntry,
-    lastDayNotFinalized: cycle?.isActive! && !isFirstDay && isLastDay,
+    lastDayNotFinalized: cycle?.isActive! && !isFirstDay && lastDayOfCycle,
     lastDayNotFinalizedMissedYesterday:
-      cycle?.isActive && !isFirstDay && isLastDay && userAwayOneDay,
+      cycle?.isActive && !isFirstDay && isLastEntryDay && userAwayOneDay,
     lastDayNotFinalizedReturningFromAWOL:
-      cycle?.isActive && !isFirstDay && isLastDay && userAwaySeveralDays,
+      cycle?.isActive && !isFirstDay && isLastEntryDay && userAwaySeveralDays,
   }
 
   return {
     currentlySelectedDate,
     isEditable,
     isFirstDay,
-    isLastDay,
+    isLastEntryDay,
     todaySelected,
     userAwayOneDay,
     userAwaySeveralDays,
