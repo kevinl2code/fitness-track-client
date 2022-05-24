@@ -17,9 +17,7 @@ import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialo
 import { MobileDateView } from '../../components/MobileDateView'
 import { DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
-import { Calculate } from '../../utilities/Calculate'
-import { formattedActivityLevel } from '../../utilities/Convert'
-import { Sort } from '../../utilities/Sort'
+import { dailyEntryPageHooks } from './hooks'
 
 const today = DateTime.now().startOf('day')
 // const today = DateTime.fromISO('20220517')
@@ -28,9 +26,8 @@ export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
   const cycle = useContext(CycleContext)
   const entries = useContext(EntriesContext)
-  const { startingWeight, endingWeight, endingDate } = { ...cycle }
+  const { endingDate } = { ...cycle }
   const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
-  console.log(endingDate)
   const calendarMaxDate =
     cycleEndDate && today.startOf('day') > cycleEndDate?.startOf('day')
       ? cycleEndDate
@@ -55,26 +52,23 @@ export const DailyEntriesPage: React.FC = () => {
     }
   }, [cycle])
 
-  const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
+  const {
+    currentlySelectedDate,
+    isEditable,
+    isFirstDay,
+    isLastDay,
+    userAwaySeveralDays,
+    daysSinceLastActive,
+    cycleStartDate,
+    daysRemaining,
+    deficitPerDay,
+    bmr,
+    displayWeight,
+    activityLevel,
+    sortedEntries,
+    pageStates,
+  } = dailyEntryPageHooks({ pickerDate, cycle, entries, dailyEntry, user })
 
-  const currentlySelectedDate = pickerDate?.toISODate()?.split('-')?.join('')
-  const sort = new Sort()
-  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries).reverse()
-  const lastEntryDate = DateTime.fromISO(sortedEntries[0]?.entryDate).startOf(
-    'day'
-  )
-
-  //TODO IMPLEMENT THIS FOR USER AWAY FLOW. IF THEY NEVER WEIGHED IN, JUST CLOSE THE CYCLE AND MAKE THEM START ANEW
-  const cycleHasEntries = entries.length > 0
-  const userNeverWeighedIn =
-    !cycleHasEntries && Math.floor(today.diff(cycleStartDate, 'days').days) > 2
-  const daysSinceLastActive = Math.floor(today.diff(lastEntryDate, 'days').days)
-
-  const userAwayOneDay = daysSinceLastActive === 1
-  const userAwaySeveralDays = daysSinceLastActive > 2
-
-  const isFirstDay = cycle?.startDate === currentlySelectedDate
-  const isLastDay = cycle?.endingDate === currentlySelectedDate
   useEffect(() => {
     if (!isFirstDay && cycle?.isActive && userAwaySeveralDays) {
       setOpenReturningUserDialog(true)
@@ -89,49 +83,9 @@ export const DailyEntriesPage: React.FC = () => {
     setDailyEntry(selectedEntry)
   }, [currentlySelectedDate, entries])
 
-  const calculate = new Calculate()
-
   if (!user) {
     return null
   }
-  const { dailyEntryWeight, dailyEntryActivityLevel } = { ...dailyEntry } || {}
-  const cycleStart = DateTime.fromISO(cycle?.startDate!)
-  const currentDay = pickerDate
-  const daysSinceStart = Math.floor(currentDay.diff(cycleStart, 'days').days)
-  const planDuration = calculate.planDuration(
-    cycle?.startDate!,
-    cycle?.endingDate!
-  )
-  const daysRemaining = planDuration - daysSinceStart
-  const poundsToGo = dailyEntry?.dailyEntryWeight! - cycle?.goalWeight!
-  const caloriesToGo = poundsToGo * 3500
-  const deficitPerDay = caloriesToGo / daysRemaining
-  const { birthday, sex, height } = user
-  const age = calculate.age(birthday)
-  const bmr = calculate.BMR(height, dailyEntryWeight!, age, sex)
-  // const startingBMR = calculate.BMR(height, startingWeight!, age, sex)
-  // const endingBMR = calculate.BMR(height, endingWeight!, age, sex)
-  // const averageBMR = (startingBMR + endingBMR) / 2
-  // console.log(targetCalories)
-  // const confirmedConsumables =
-  //   dailyEntryConsumables?.length > 0 ? dailyEntryConsumables : null
-  // const caloriesConsumed =
-  //   confirmedConsumables?.reduce(
-  //     (acc, consumable) => acc + consumable.calories,
-  //     0
-  //   ) || 0
-  // const remainingCals = tdee - caloriesConsumed
-
-  const displayWeight = dailyEntry?.dailyEntryWeight || '-'
-  const activityLevel = dailyEntry?.dailyEntryActivityLevel
-    ? formattedActivityLevel[dailyEntry?.dailyEntryActivityLevel]
-    : '-'
-
-  const isEditable =
-    pickerDate.minus({ days: 1 }).startOf('day').valueOf() ===
-      today.minus({ days: 1 }).startOf('day').valueOf() ||
-    pickerDate.startOf('day').valueOf() ===
-      today.minus({ days: 1 }).startOf('day').valueOf()
 
   const mainContent = dailyEntry && (
     <DailyEntryMainView
@@ -149,18 +103,11 @@ export const DailyEntriesPage: React.FC = () => {
     />
   )
 
-  const lastDayOfCycle =
-    today.startOf('day').valueOf() === cycleEndDate?.startOf('day').valueOf()
-  console.log({
-    lastDayOfCycle,
-    today: today.startOf('day'),
-    cycleEndDate: cycleEndDate?.startOf('day'),
-  })
   const newDayNoEntry = isEditable &&
     !dailyEntry &&
-    cycle &&
+    cycle?.isActive &&
     !openNewUserDialog &&
-    !lastDayOfCycle && (
+    !isLastDay && (
       <DailyEntryCreateNew
         date={currentlySelectedDate!}
         daysRemaining={daysRemaining}
@@ -170,22 +117,18 @@ export const DailyEntriesPage: React.FC = () => {
       />
     )
 
-  const finalWeighIn = isEditable &&
-    !dailyEntry &&
-    cycle &&
-    !openNewUserDialog &&
-    lastDayOfCycle && (
-      <DailyEntryLastDay
-        date={currentlySelectedDate!}
-        daysRemaining={daysRemaining}
-        cycle={cycle}
-        dataService={dataService}
-        user={user}
-      />
-    )
+  const finalWeighIn = pageStates.lastDayNotFinalized && (
+    <DailyEntryLastDay
+      date={currentlySelectedDate!}
+      daysRemaining={daysRemaining}
+      cycle={cycle!}
+      dataService={dataService}
+      user={user}
+    />
+  )
 
-  const missedDay = !isEditable && !dailyEntry && <DailyEntryMissedDay />
-
+  const missedDay = pageStates.awolDayNoEntry && <DailyEntryMissedDay />
+  console.log(entries)
   return (
     <>
       <UpdateDailyEntryWeightDialog

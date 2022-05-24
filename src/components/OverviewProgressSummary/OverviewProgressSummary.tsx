@@ -20,7 +20,7 @@ export const OverviewProgressSummary: React.FC<Props> = ({
   const startDate = cycle?.startDate!
   const cycleStartDate = DateTime.fromISO(startDate)
   const today = DateTime.local()
-
+  const cycleIsActive = cycle?.isActive!
   const cycleType = cycle?.cycleType!
 
   const planDuration = calculate.planDuration(
@@ -35,7 +35,9 @@ export const OverviewProgressSummary: React.FC<Props> = ({
   const daysSinceStart = Math.floor(today.diff(cycleStartDate, 'days').days)
   const daysRemaining = planDuration - daysSinceStart
 
-  const percentOfTimeElapsed = (daysSinceStart / planDuration) * 100
+  const percentOfTimeElapsed = cycleIsActive
+    ? (daysSinceStart / planDuration) * 100
+    : 100
   console.log({ currentWeight: currentWeight })
   useEffect(() => {
     const plannedTotalWeightChange: {
@@ -124,7 +126,7 @@ const ProgressDisplay: React.FC<ProgressDisplayProps> = ({
       </Grid>
       <Grid item xs={2}>
         <Typography textAlign="right">{`${progressPercent.toFixed(
-          2
+          1
         )}%`}</Typography>
       </Grid>
 
