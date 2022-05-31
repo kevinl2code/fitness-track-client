@@ -18,7 +18,7 @@ import { v4 } from 'uuid'
 import { Cycle, UserState, CycleType } from '../../../model/Model'
 import { ROUTES } from '../../../navigation'
 import { DataService } from '../../../services/DataService'
-import { NewUserDialogForm } from './NewUserDialogForm'
+import { NewCycleDialogForm } from './NewCycleDialogForm'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
@@ -27,6 +27,7 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'
 interface Props {
   open: boolean
   user: UserState
+  isNewUser: boolean
   dataService: DataService
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -66,19 +67,21 @@ const vh = Math.max(
   window.innerHeight || 0
 )
 
-export const NewUserDialog: React.FC<Props> = ({
+export const NewCycleDialog: React.FC<Props> = ({
   open,
   user,
+  isNewUser,
   dataService,
   setDialogOpenState,
 }) => {
   const theme = useTheme()
   const ftlogo = `${process.env.PUBLIC_URL}/ftlogo.png`
   const [activeStep, setActiveStep] = React.useState(0)
-  const { setValue, handleSubmit, control, formState, getValues } = useForm({
-    mode: 'onTouched',
-    resolver: yupResolver(validationSchema),
-  })
+  const { setValue, handleSubmit, control, formState, getValues, reset } =
+    useForm({
+      mode: 'onTouched',
+      resolver: yupResolver(validationSchema),
+    })
   const errors = formState.errors
   const hasErrors = Object.keys(errors).length !== 0
   const queryClient = useQueryClient()
@@ -110,6 +113,11 @@ export const NewUserDialog: React.FC<Props> = ({
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
+
+  const handleCancel = () => {
+    setDialogOpenState(false)
+    reset()
   }
   const values = getValues()
   const today = DateTime.now().toISODate()?.split('-')?.join('')
@@ -170,7 +178,7 @@ export const NewUserDialog: React.FC<Props> = ({
     return false
   }
 
-  const stepperButton =
+  const stepperForwardButton =
     activeStep === steps.length - 1 ? (
       <Button size="small" onClick={handleSubmit(onSubmit)}>
         Finish
@@ -190,49 +198,46 @@ export const NewUserDialog: React.FC<Props> = ({
       </Button>
     )
 
+  const stepperBackButton =
+    activeStep === 0 && !isNewUser ? (
+      <Button size="small" onClick={() => setDialogOpenState(false)}>
+        Cancel
+      </Button>
+    ) : (
+      <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
+        Back
+      </Button>
+    )
+
   return (
-    <Dialog open={open} fullWidth fullScreen={true}>
-      {/* <DialogTitle sx={{ textAlign: 'center', padding: 0 }}>
-        <Box
-          component="div"
-          sx={[
-            {
-              width: '100%',
-              backgroundColor: 'primary.main',
-              flexGrow: 1,
-              display: 'flex',
-            },
-          ]}
-        >
-          <img
-            src={ftlogo}
-            style={{
-              width: vh * 0.5,
-              height: vh * 0.5,
-              overflow: 'hidden',
-              position: 'sticky',
-              top: '25%',
-              left: '15%',
-            }}
-            alt="Fitness Track logo"
-          />
-        </Box>
-      </DialogTitle> */}
+    <Dialog
+      open={open}
+      fullWidth
+      fullScreen={true}
+      PaperProps={{ style: { backgroundColor: '#f0f4f7' } }}
+    >
+      <DialogTitle sx={{ textAlign: 'center', padding: 0 }}>
+        START YOUR NEW PLAN
+      </DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <Grid
           container
           direction="column"
           justifyContent="space-between"
           alignItems="center"
-          sx={{ width: '100%', height: '100%' }}
+          sx={{ width: '100%', height: '100%', backgroundColor: '#f0f4f7' }}
         >
-          <DialogContentText>{`Welcome ${user?.firstName}`}</DialogContentText>
           <Grid item container>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              style={{ marginTop: '2rem' }}
+              style={{ marginTop: '2rem', width: '100%' }}
             >
-              <NewUserDialogForm
+              <NewCycleDialogForm
                 activeStep={activeStep}
                 control={control}
                 values={values}
@@ -246,21 +251,22 @@ export const NewUserDialog: React.FC<Props> = ({
               steps={steps.length}
               position="static"
               activeStep={activeStep}
-              sx={{ maxWidth: 400, flexGrow: 1 }}
-              nextButton={stepperButton}
+              sx={{ maxWidth: 400, flexGrow: 1, backgroundColor: '#f0f4f7' }}
+              nextButton={stepperForwardButton}
               backButton={
-                <Button
-                  size="small"
-                  onClick={handleBack}
-                  disabled={activeStep === 0}
-                >
-                  {theme.direction === 'rtl' ? (
-                    <KeyboardArrowRight />
-                  ) : (
-                    <KeyboardArrowLeft />
-                  )}
-                  Back
-                </Button>
+                stepperBackButton
+                // <Button
+                //   size="small"
+                //   onClick={handleBack}
+                //   disabled={activeStep === 0}
+                // >
+                //   {theme.direction === 'rtl' ? (
+                //     <KeyboardArrowRight />
+                //   ) : (
+                //     <KeyboardArrowLeft />
+                //   )}
+                //   Back
+                // </Button>
               }
             />
           </Grid>

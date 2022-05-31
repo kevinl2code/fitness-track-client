@@ -1,4 +1,9 @@
-import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material'
+import {
+  Badge,
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper,
+} from '@mui/material'
 import React from 'react'
 import RestaurantIcon from '@mui/icons-material/Restaurant'
 import HomeIcon from '@mui/icons-material/Home'
@@ -61,7 +66,11 @@ export const MainBottomNavigation: React.FC = () => {
 
         <BottomNavigationAction
           label="More"
-          icon={<MoreVertIcon />}
+          icon={
+            <Badge color="secondary" variant="dot" invisible={false}>
+              <MoreVertIcon />
+            </Badge>
+          }
           onClick={() => navigate(ROUTES.more)}
         />
       </BottomNavigation>

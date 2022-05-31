@@ -8,7 +8,7 @@ import { ListSection } from '../ListSection'
 import { ListSectionDetails } from '../ListSection/ListSection'
 
 interface Props {
-  cycle: Cycle
+  selectedCycle: Cycle
   editEnabled: boolean
   sortedEntries: DailyEntry[]
   pickerDate: DateTime
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const PlanPageMainView: React.FC<Props> = ({
-  cycle,
+  selectedCycle,
   editEnabled,
   sortedEntries,
   pickerDate,
@@ -35,12 +35,15 @@ export const PlanPageMainView: React.FC<Props> = ({
     startDate,
     endingDate,
     isActive,
-  } = cycle
+  } = selectedCycle
   const currentWeight = sortedEntries
     ? sortedEntries[sortedEntries.length - 1]?.dailyEntryWeight
     : startingWeight
   const cycleStartDate = DateTime.fromISO(startDate)
-  const planDuration = calculate.planDuration(cycle.startDate, cycle.endingDate)
+  const planDuration = calculate.planDuration(
+    selectedCycle.startDate,
+    selectedCycle.endingDate
+  )
   const today = DateTime.local()
 
   const cycleEndDate = DateTime.fromISO(endingDate)

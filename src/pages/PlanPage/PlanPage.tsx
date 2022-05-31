@@ -2,7 +2,12 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Button, Container, Grid } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useState } from 'react'
-import { CycleContext, EntriesContext, UserContext } from '../../app/App'
+import {
+  SelectedCycleContext,
+  CycleListContext,
+  EntriesContext,
+  UserContext,
+} from '../../app/App'
 import { UpdateGoalWeightDialog } from '../../components/dialogs/UpdateGoalWeightDialog'
 import { PlanPageMainView } from '../../components/PlanPageMainView'
 import { Cycle, DailyEntry } from '../../model/Model'
@@ -12,15 +17,18 @@ import { useMutation, useQueryClient } from 'react-query'
 
 import { Convert } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
+import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
+import { NewCycleDialog } from '../../components/dialogs/NewCycleDialog'
 
 interface Props {}
 
 export const PlanPage: React.FC<Props> = () => {
   const user = useContext(UserContext)
-  const cycle = useContext(CycleContext)
+  const selectedCycle = useContext(SelectedCycleContext)
+  const cycles = useContext(CycleListContext)
   const entries = useContext(EntriesContext)
-  const cycleEndDate = DateTime.fromISO(cycle?.endingDate!)
-
+  const cycleEndDate = DateTime.fromISO(selectedCycle?.endingDate!)
+  const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
   const [openUpdateGoalWeightDialog, setOpenUpdateGoalWeightDialog] =
     React.useState(false)
   const [editEnabled, setEditEnabled] = useState(false)
@@ -28,13 +36,17 @@ export const PlanPage: React.FC<Props> = () => {
     endingDate: string
     goalWeight: number
   }>({
-    endingDate: cycle?.endingDate!,
-    goalWeight: cycle?.goalWeight!,
+    endingDate: selectedCycle?.endingDate!,
+    goalWeight: selectedCycle?.goalWeight!,
   })
   const [pickerDate, setPickerDate] = useState<DateTime>(
     DateTime.fromISO(mutableCycleParams.endingDate)
   )
   const [datePickerOpen, setDatePickerOpen] = useState(false)
+  const activeCycleExists =
+    cycles.filter((selectedCycle) => {
+      return selectedCycle.isActive === true
+    }).length > 0
   const dataService = new DataService()
   dataService.setUser(user?.user!)
   const queryClient = useQueryClient()
@@ -43,17 +55,17 @@ export const PlanPage: React.FC<Props> = () => {
 
   const calculate = new Calculate()
   const planDuration = calculate.planDuration(
-    cycle?.startDate!,
+    selectedCycle?.startDate!,
     mutableCycleParams.endingDate!
   )
   const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries)
 
-  const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
+  const cycleStartDate = DateTime.fromISO(selectedCycle?.startDate!)
   const calendarMaxDate = cycleStartDate.plus({ days: 90 })
 
   const today = DateTime.now().startOf('day')
   const todayEntry =
-    sortedEntries[sortedEntries.length - 1].entryDate ===
+    sortedEntries[sortedEntries.length - 1]?.entryDate ===
     today.toISODate()?.split('-')?.join('')
       ? sortedEntries[0]
       : null
@@ -68,17 +80,17 @@ export const PlanPage: React.FC<Props> = () => {
       }
     )
 
-  if (!user || !cycle) {
+  if (!user || !selectedCycle) {
     return null
   }
 
   const cycleStateChangeBegan =
-    mutableCycleParams.endingDate !== cycle.endingDate ||
-    mutableCycleParams.goalWeight !== cycle.goalWeight
+    mutableCycleParams.endingDate !== selectedCycle.endingDate ||
+    mutableCycleParams.goalWeight !== selectedCycle.goalWeight
 
   const submitCycleUpdates = () => {
     if (todayEntry) {
-      const cycleStart = DateTime.fromISO(cycle?.startDate!)
+      const cycleStart = DateTime.fromISO(selectedCycle?.startDate!)
       const entryDate = DateTime.fromISO(todayEntry.entryDate)
       const daysSinceStart = Math.floor(entryDate.diff(cycleStart, 'days').days)
       const daysRemaining = planDuration - daysSinceStart
@@ -98,7 +110,7 @@ export const PlanPage: React.FC<Props> = () => {
       updateDailyEntry(updatedDailyEntry)
     }
     const updatedCycle: Cycle = {
-      ...cycle,
+      ...selectedCycle,
       goalWeight: mutableCycleParams.goalWeight,
       endingDate: mutableCycleParams.endingDate,
     }
@@ -108,18 +120,72 @@ export const PlanPage: React.FC<Props> = () => {
 
   const handleCancel = () => {
     setMutableCycleParams({
-      endingDate: cycle?.endingDate!,
-      goalWeight: cycle?.goalWeight!,
+      endingDate: selectedCycle?.endingDate!,
+      goalWeight: selectedCycle?.goalWeight!,
     })
     setPickerDate(cycleEndDate)
     setEditEnabled(false)
   }
 
+  const renderActionsView = () => {
+    if (selectedCycle.isActive && !editEnabled) {
+      return (
+        <Grid item xs={12}>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => setEditEnabled(true)}
+          >
+            Edit
+          </Button>
+        </Grid>
+      )
+    } else if (selectedCycle.isActive && editEnabled) {
+      return (
+        <Grid item xs={12}>
+          {cycleStateChangeBegan && (
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={() => setEditEnabled(true)}
+            >
+              Submit Changes
+            </Button>
+          )}
+          <Button fullWidth variant="contained" onClick={handleCancel}>
+            Cancel
+          </Button>
+        </Grid>
+      )
+    } else if (!selectedCycle.isActive && !activeCycleExists) {
+      return (
+        <Grid item xs={12}>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => setOpenNewUserDialog(true)}
+          >
+            Start a new plan
+          </Button>
+        </Grid>
+      )
+    } else {
+      return null
+    }
+  }
+
   return (
     <>
+      <NewCycleDialog
+        open={openNewUserDialog}
+        user={user!}
+        isNewUser={false}
+        dataService={dataService}
+        setDialogOpenState={setOpenNewUserDialog}
+      />
       <UpdateGoalWeightDialog
         entry={todayEntry}
-        cycle={cycle}
+        cycle={selectedCycle}
         user={user}
         open={openUpdateGoalWeightDialog}
         mutableCycleParams={mutableCycleParams}
@@ -157,10 +223,10 @@ export const PlanPage: React.FC<Props> = () => {
         />
       </Grid>
       <Container>
-        {cycle !== null && (
+        {selectedCycle !== null && (
           <Grid container direction="column">
             <PlanPageMainView
-              cycle={cycle}
+              selectedCycle={selectedCycle}
               editEnabled={editEnabled}
               pickerDate={pickerDate}
               mutableGoalWeight={mutableCycleParams.goalWeight}
@@ -169,32 +235,7 @@ export const PlanPage: React.FC<Props> = () => {
               setOpenUpdateGoalWeightDialog={setOpenUpdateGoalWeightDialog}
             />
             <Grid item container>
-              {editEnabled ? (
-                <Grid item xs={12}>
-                  {cycleStateChangeBegan && (
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      onClick={() => setEditEnabled(true)}
-                    >
-                      Submit Changes
-                    </Button>
-                  )}
-                  <Button fullWidth variant="contained" onClick={handleCancel}>
-                    Cancel
-                  </Button>
-                </Grid>
-              ) : (
-                <Grid item xs={12}>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    onClick={() => setEditEnabled(true)}
-                  >
-                    Edit
-                  </Button>
-                </Grid>
-              )}
+              {renderActionsView()}
             </Grid>
           </Grid>
         )}

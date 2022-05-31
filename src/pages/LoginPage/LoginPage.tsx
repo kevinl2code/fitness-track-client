@@ -4,7 +4,7 @@ import { Button, Grid, Typography } from '@mui/material'
 import React, { useContext } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { CycleContext, UserContext } from '../../app/App'
+import { SelectedCycleContext, UserContext } from '../../app/App'
 import { FormTextInput } from '../../components/form/FormTextInput'
 import { User } from '../../model/Model'
 import { ROUTES } from '../../navigation'
@@ -30,7 +30,7 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
   const authService = new AuthService()
 
   const user = useContext(UserContext)
-  const cycle = useContext(CycleContext)
+  const cycle = useContext(SelectedCycleContext)
 
   // console.log(user)
   // console.log(cycle)

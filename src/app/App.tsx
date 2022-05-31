@@ -1,7 +1,7 @@
 import { LocalizationProvider } from '@mui/lab'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import DateAdapter from '@mui/lab/AdapterLuxon'
-import React, { useEffect } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { NavigationContainer } from '../navigation/NavigationContainer'
 import { defaultTheme } from '../themes/default-theme'
 import {
@@ -20,25 +20,26 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorPage } from '../pages/ErrorPage'
 import { Sort } from '../utilities/Sort'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
-export const UserContext = React.createContext<UserState | null>(null)
-export const CycleContext = React.createContext<Cycle | null>(null)
-export const EntriesContext = React.createContext<DailyEntry[] | []>([])
-export const UserFoodItemsContext = React.createContext<UserFoodItem[]>([])
+export const UserContext = createContext<UserState | null>(null)
+export const SelectedCycleContext = createContext<Cycle | null>(null)
+export const CycleListContext = createContext<Cycle[]>([])
+export const EntriesContext = createContext<DailyEntry[] | []>([])
+export const UserFoodItemsContext = createContext<UserFoodItem[]>([])
 
 const authService = new AuthService()
 const dataService = new DataService()
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 
 function App() {
-  const [user, setUser] = React.useState<User | null>(null)
-  const [userContext, setUserContext] = React.useState<UserState | null>(null)
-  const [cycleContext, setCycleContext] = React.useState<Cycle | null>(null)
-  const [userFoodItemsContext, setUserFoodItemsContext] = React.useState<
+  const [user, setUser] = useState<User | null>(null)
+  const [userContext, setUserContext] = useState<UserState | null>(null)
+  const [selectedCycleContext, setSelectedCycleContext] =
+    useState<Cycle | null>(null)
+  const [cycleListContext, setCycleListContext] = useState<Cycle[]>([])
+  const [userFoodItemsContext, setUserFoodItemsContext] = useState<
     UserFoodItem[]
   >([])
-  const [entriesContext, setEntriesContext] = React.useState<DailyEntry[] | []>(
-    []
-  )
+  const [entriesContext, setEntriesContext] = useState<DailyEntry[] | []>([])
   const sort = new Sort()
   const navigate = useNavigate()
   const queryCache = new QueryCache()
@@ -49,14 +50,18 @@ function App() {
     {
       enabled: !!userContext,
       onSuccess: (data) => {
+        if (data) {
+          setCycleListContext(data)
+        }
+
         const currentlyActiveCycle = data?.find((cycle) => {
           return cycle.isActive === true
         })
         if (currentlyActiveCycle) {
-          setCycleContext(currentlyActiveCycle)
+          setSelectedCycleContext(currentlyActiveCycle)
         } else if (data && !currentlyActiveCycle) {
           const sortedCycles: Cycle[] = sort.cyclesByDate(data).reverse()
-          sortedCycles.length > 0 && setCycleContext(sortedCycles[0])
+          sortedCycles.length > 0 && setSelectedCycleContext(sortedCycles[0])
         }
       },
       onError: (error) => {
@@ -69,13 +74,13 @@ function App() {
       staleTime: twentyFourHoursInMs,
     }
   )
-  // console.log(cycleContext)
+  // console.log(selectedCycleContext)
   const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
     useQuery(
       ['dailyEntries'],
-      () => dataService.getDailyEntriesForCycle(cycleContext?.cycleId!),
+      () => dataService.getDailyEntriesForCycle(selectedCycleContext?.cycleId!),
       {
-        enabled: !!cycleContext,
+        enabled: !!selectedCycleContext,
         onSuccess: (data) => {
           if (data && data.length > 0) {
             setEntriesContext(data)
@@ -138,7 +143,7 @@ function App() {
     }
     if (!user) {
       setUserContext(null)
-      setCycleContext(null)
+      setSelectedCycleContext(null)
     }
   }
 
@@ -153,7 +158,7 @@ function App() {
     authService.logOut()
     setUser(null)
     setUserContext(null)
-    setCycleContext(null)
+    setSelectedCycleContext(null)
     setEntriesContext([])
     setUserFoodItemsContext([])
     navigate('/')
@@ -169,19 +174,21 @@ function App() {
       <CssBaseline />
       <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
         <UserContext.Provider value={userContext}>
-          <CycleContext.Provider value={cycleContext}>
-            <UserFoodItemsContext.Provider value={userFoodItemsContext}>
-              <EntriesContext.Provider value={entriesContext}>
-                <ErrorBoundary FallbackComponent={ErrorPage}>
-                  <NavigationContainer
-                    setAppUser={setAppUser}
-                    handleLogout={handleLogout}
-                    user={user}
-                  />
-                </ErrorBoundary>
-              </EntriesContext.Provider>
-            </UserFoodItemsContext.Provider>
-          </CycleContext.Provider>
+          <SelectedCycleContext.Provider value={selectedCycleContext}>
+            <CycleListContext.Provider value={cycleListContext}>
+              <UserFoodItemsContext.Provider value={userFoodItemsContext}>
+                <EntriesContext.Provider value={entriesContext}>
+                  <ErrorBoundary FallbackComponent={ErrorPage}>
+                    <NavigationContainer
+                      setAppUser={setAppUser}
+                      handleLogout={handleLogout}
+                      user={user}
+                    />
+                  </ErrorBoundary>
+                </EntriesContext.Provider>
+              </UserFoodItemsContext.Provider>
+            </CycleListContext.Provider>
+          </SelectedCycleContext.Provider>
         </UserContext.Provider>
       </LocalizationProvider>
     </ThemeProvider>

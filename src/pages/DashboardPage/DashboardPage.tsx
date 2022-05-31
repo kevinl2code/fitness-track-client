@@ -1,6 +1,10 @@
 import { Grid } from '@mui/material'
 import React, { useContext } from 'react'
-import { CycleContext, EntriesContext, UserContext } from '../../app/App'
+import {
+  SelectedCycleContext,
+  EntriesContext,
+  UserContext,
+} from '../../app/App'
 import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
 import { DashboardInsufficientData } from '../../components/DashboardInsufficientData/DashboardInsufficientData'
@@ -11,7 +15,7 @@ import { OverviewProgressSummary } from '../../components/OverviewProgressSummar
 
 export const DashboardPage: React.FC = () => {
   const user = useContext(UserContext)
-  const cycle = useContext(CycleContext)
+  const cycle = useContext(SelectedCycleContext)
   const entries = useContext(EntriesContext)
   const minimumEntries = 4
   const currentEntries = entries.length

@@ -19,8 +19,6 @@ export const dailyEntryPageHooks = ({
   dailyEntry,
   user,
 }: Props) => {
-  // const today = DateTime.fromISO('20220517')
-
   const today = DateTime.now().startOf('day')
   const cycleStartDate = DateTime.fromISO(cycle?.startDate!)
   const cycleEndDate = cycle?.endingDate
@@ -79,9 +77,9 @@ export const dailyEntryPageHooks = ({
     pickerDate.startOf('day').valueOf() ===
       today.minus({ days: 1 }).startOf('day').valueOf()
 
-  const lastDayOfCycle =
+  const hasReachedCycleEndDate =
     today.startOf('day').valueOf() >= cycleEndDate?.startOf('day').valueOf()!
-  console.log({ lastDayOfCycle })
+  console.log({ hasReachedCycleEndDate })
   const pageStates = {
     loading: entries === null,
     todayHasEntry: cycle !== null && entries !== null && dailyEntry,
@@ -122,11 +120,20 @@ export const dailyEntryPageHooks = ({
       !todaySelected &&
       !lastEntryDate &&
       !dailyEntry,
-    lastDayNotFinalized: cycle?.isActive! && !isFirstDay && lastDayOfCycle,
+    lastDayNotFinalized:
+      cycle?.isActive! && !isFirstDay && hasReachedCycleEndDate,
     lastDayNotFinalizedMissedYesterday:
-      cycle?.isActive && !isFirstDay && isLastEntryDay && userAwayOneDay,
+      cycle?.isActive &&
+      !isFirstDay &&
+      isLastEntryDay &&
+      userAwayOneDay &&
+      hasReachedCycleEndDate,
     lastDayNotFinalizedReturningFromAWOL:
-      cycle?.isActive && !isFirstDay && isLastEntryDay && userAwaySeveralDays,
+      cycle?.isActive &&
+      !isFirstDay &&
+      isLastEntryDay &&
+      userAwaySeveralDays &&
+      hasReachedCycleEndDate,
   }
 
   return {

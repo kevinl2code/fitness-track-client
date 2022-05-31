@@ -2,7 +2,11 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Grid, LinearProgress } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useEffect, useState } from 'react'
-import { CycleContext, EntriesContext, UserContext } from '../../app/App'
+import {
+  SelectedCycleContext,
+  EntriesContext,
+  UserContext,
+} from '../../app/App'
 import { DailyEntryCreateNew } from '../../components'
 import { DailyEntryLastDay } from '../../components/DailyEntryLastDay'
 import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
@@ -12,6 +16,7 @@ import {
   UpdateDailyEntryActivityLevelDialog,
   UpdateDailyEntryWeightDialog,
 } from '../../components/dialogs'
+import { NewCycleDialog } from '../../components/dialogs/NewCycleDialog'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialog'
 import { MobileDateView } from '../../components/MobileDateView'
@@ -20,13 +25,13 @@ import { DataService } from '../../services/DataService'
 import { dailyEntryPageHooks } from './hooks'
 
 const today = DateTime.now().startOf('day')
-// const today = DateTime.fromISO('20220517')
 
 export const DailyEntriesPage: React.FC = () => {
   const user = useContext(UserContext)
-  const cycle = useContext(CycleContext)
+  const cycle = useContext(SelectedCycleContext)
   const entries = useContext(EntriesContext)
   const { endingDate } = { ...cycle }
+  const isNewUser = cycle === null
   const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
   const newCalendarMaxDate = cycle?.isActive ? today.startOf('day') : 1
   const getCalendarMaxDate = () => {
@@ -56,10 +61,10 @@ export const DailyEntriesPage: React.FC = () => {
 
   dataService.setUser(user?.user!)
   useEffect(() => {
-    if (cycle === null) {
+    if (isNewUser) {
       setOpenNewUserDialog(true)
     }
-  }, [cycle])
+  }, [isNewUser])
 
   const {
     currentlySelectedDate,
@@ -179,8 +184,9 @@ export const DailyEntriesPage: React.FC = () => {
         open={openConsumableDialog}
         setDialogOpenState={setOpenConsumableDialog}
       />
-      <NewUserDialog
+      <NewCycleDialog
         open={openNewUserDialog}
+        isNewUser={isNewUser}
         user={user!}
         dataService={dataService}
         setDialogOpenState={setOpenNewUserDialog}
