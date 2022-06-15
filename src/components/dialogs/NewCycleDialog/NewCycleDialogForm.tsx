@@ -155,7 +155,7 @@ const StepperFormField: React.FC<StepperFormFieldProps> = ({
         name={name}
         placeholder={placeholder}
         helperText={helperText}
-        inputProps={inputProps}
+        InputProps={inputProps}
       />
     </Grid>
   )

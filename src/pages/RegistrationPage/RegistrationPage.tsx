@@ -211,7 +211,7 @@ export const RegistrationPage: React.FC = () => {
           name={name}
           placeholder={placeholder}
           helperText={helperText}
-          inputProps={inputProps}
+          InputProps={inputProps}
         />
       </Grid>
     )
@@ -348,7 +348,7 @@ export const RegistrationPage: React.FC = () => {
                   label="Height"
                   name="height"
                   placeholder="Height"
-                  inputProps={{
+                  InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
                         <AlignHorizontalLeftIcon />
@@ -376,7 +376,7 @@ export const RegistrationPage: React.FC = () => {
                   label="Birthday"
                   name="birthdate"
                   placeholder="yyyy-mm-dd"
-                  inputProps={{
+                  InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
                         <EventIcon />

@@ -113,6 +113,7 @@ export const DailyEntriesPage: React.FC = () => {
     lastDayNotFinalizedMissedYesterday,
     lastDayNotFinalizedReturningFromAWOL,
   } = pageStates
+
   const renderPageView = () => {
     if (pageLoading) {
       return <LinearProgress />
@@ -158,7 +159,7 @@ export const DailyEntriesPage: React.FC = () => {
       )
     }
   }
-  console.log(entries)
+
   return (
     <>
       <UpdateDailyEntryWeightDialog
