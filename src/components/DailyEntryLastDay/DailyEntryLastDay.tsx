@@ -73,7 +73,6 @@ export const DailyEntryLastDay: React.FC<Props> = ({
   )
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log({ formdata: data })
     const weight = parseFloat(data.weight)
     const finalizedCycle: Cycle = {
       ...cycle,

@@ -38,7 +38,6 @@ export const OverviewProgressSummary: React.FC<Props> = ({
   const percentOfTimeElapsed = cycleIsActive
     ? (daysSinceStart / planDuration) * 100
     : 100
-  console.log({ currentWeight: currentWeight })
   useEffect(() => {
     const plannedTotalWeightChange: {
       [key: string]: number
@@ -47,7 +46,6 @@ export const OverviewProgressSummary: React.FC<Props> = ({
       BULK: goalWeight - startWeight,
       MAINTAIN: 0,
     }
-    console.log({ planned: plannedTotalWeightChange[cycleType] })
     const actualTotalWeightChange: {
       [key: string]: number
     } = {
@@ -55,7 +53,6 @@ export const OverviewProgressSummary: React.FC<Props> = ({
       BULK: currentWeight - startWeight,
       MAINTAIN: currentWeight - goalWeight,
     }
-    console.log({ actual: actualTotalWeightChange[cycleType] })
     const percentTowardWeightGoal = {
       CUT:
         (actualTotalWeightChange[cycleType] /
@@ -67,7 +64,6 @@ export const OverviewProgressSummary: React.FC<Props> = ({
         100,
       MAINTAIN: 0,
     }
-    console.log({ percent: percentTowardWeightGoal[cycleType] })
     setWeightProgress(percentTowardWeightGoal[cycleType])
     setTimeProgress(percentOfTimeElapsed)
   }, [currentWeight, cycleType, goalWeight, percentOfTimeElapsed, startWeight])

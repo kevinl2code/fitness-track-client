@@ -80,15 +80,6 @@ export const dailyEntryPageHooks = ({
 
   const hasReachedCycleEndDate =
     today.startOf('day').valueOf() >= cycleEndDate?.startOf('day').valueOf()!
-  console.log({
-    cycleIsActive: cycle?.isActive,
-    isEditable,
-    isFirstDay,
-    todaySelected,
-    dailyEntry,
-    userAwaySeveralDays,
-    userAwayOneDay,
-  })
 
   const pageStates = {
     loading: entries === null,

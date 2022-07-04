@@ -1,10 +1,7 @@
 import { Button, Grid, Typography } from '@mui/material'
 import React from 'react'
 
-type CardFieldType = 'weight' | 'activity'
-
 interface Props {
-  fieldType: CardFieldType
   fieldLabel: string
   fieldValue: string
   canEdit?: boolean
@@ -12,7 +9,6 @@ interface Props {
 }
 
 export const DailyEntryMetricView: React.FC<Props> = ({
-  fieldType,
   fieldLabel,
   fieldValue,
   canEdit = true,

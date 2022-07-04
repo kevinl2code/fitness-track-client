@@ -16,7 +16,7 @@ const nameMap: {
 export const MorePagesBackNavigation: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  console.log(location)
+
   const headingText = nameMap[location.pathname]
   return (
     <Grid

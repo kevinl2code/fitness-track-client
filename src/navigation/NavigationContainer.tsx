@@ -22,12 +22,14 @@ import { InitialPage } from '../pages/InitialPage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
+  setSelectedCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
   handleLogout: () => void
   user: User | null
 }
 
 export const NavigationContainer: React.FC<Props> = ({
   setAppUser,
+  setSelectedCycleContext,
   handleLogout,
   user,
 }) => {
@@ -70,7 +72,14 @@ export const NavigationContainer: React.FC<Props> = ({
         />
         <Route path={ROUTES.plan} element={<PlanPage />} />
         <Route path={ROUTES.profile} element={<ProfilePage />} />
-        <Route path={ROUTES.appSettings} element={<AppSettingsPage />} />
+        <Route
+          path={ROUTES.appSettings}
+          element={
+            <AppSettingsPage
+              setSelectedCycleContext={setSelectedCycleContext}
+            />
+          }
+        />
         <Route path={ROUTES.faq} element={<FrequentlyAskedQuestionsPage />} />
         <Route
           path={ROUTES.termsAndConditions}

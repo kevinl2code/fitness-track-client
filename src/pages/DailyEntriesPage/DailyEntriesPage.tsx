@@ -45,6 +45,7 @@ export const DailyEntriesPage: React.FC = () => {
       return today
     }
   }
+  console.log({ entries })
   const calendarMaxDate = getCalendarMaxDate()
   const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)

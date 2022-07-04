@@ -97,7 +97,6 @@ export const DailyEntryMainView: React.FC<Props> = ({
         sx={{ marginBottom: '1rem', top: '-100px' }}
       >
         <DailyEntryMetricView
-          fieldType="weight"
           fieldLabel="Weight"
           fieldValue={`${displayWeight} lbs`}
           canEdit={isFirstDay || !isEditable ? false : true}
@@ -106,7 +105,6 @@ export const DailyEntryMainView: React.FC<Props> = ({
           }}
         />
         <DailyEntryMetricView
-          fieldType="activity"
           fieldLabel="Activity Level"
           fieldValue={activityLevel}
           canEdit={isEditable}

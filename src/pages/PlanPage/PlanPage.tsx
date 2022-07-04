@@ -204,7 +204,6 @@ export const PlanPage: React.FC<Props> = () => {
           onChange={() => null}
           onAccept={(newValue) => {
             if (newValue) {
-              console.log(newValue)
               setPickerDate(newValue)
               setMutableCycleParams({
                 ...mutableCycleParams,

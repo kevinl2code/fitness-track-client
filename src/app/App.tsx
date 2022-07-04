@@ -74,15 +74,21 @@ function App() {
       staleTime: twentyFourHoursInMs,
     }
   )
-  // console.log(selectedCycleContext)
+  console.log({ appCycleCOntext: selectedCycleContext?.cycleId })
+
   const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
     useQuery(
-      ['dailyEntries'],
+      ['dailyEntries', selectedCycleContext?.cycleId],
       () => dataService.getDailyEntriesForCycle(selectedCycleContext?.cycleId!),
       {
         enabled: !!selectedCycleContext,
         onSuccess: (data) => {
           if (data && data.length > 0) {
+            console.log({
+              entriesOnsuccess: 'ran',
+              selectedCycleContext: selectedCycleContext,
+              susccessData: data,
+            })
             setEntriesContext(data)
           }
         },
@@ -181,6 +187,7 @@ function App() {
                   <ErrorBoundary FallbackComponent={ErrorPage}>
                     <NavigationContainer
                       setAppUser={setAppUser}
+                      setSelectedCycleContext={setSelectedCycleContext}
                       handleLogout={handleLogout}
                       user={user}
                     />

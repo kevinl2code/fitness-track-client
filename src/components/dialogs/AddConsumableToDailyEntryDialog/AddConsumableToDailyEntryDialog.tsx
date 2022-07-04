@@ -51,19 +51,9 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
     {
       onSuccess: (data: DailyEntry) => {
         queryClient.invalidateQueries('dailyEntries')
-        // queryClient.setQueryData(
-        //   'dailyEntries',
-        //   (oldDailyEntries: DailyEntry[] | undefined) => {
-        //     const filteredOldDailyEntries = oldDailyEntries?.filter(
-        //       (oldDailyEntry) => oldDailyEntry.SK !== data.SK
-        //     )
-        //     return [...filteredOldDailyEntries!, data]
-        //   }
-        // )
         const queriesData = queryClient.getQueriesData('dailyEntries')
         handleCloseDialog()
-        // console.log({ mutationData: data })
-        console.log({ cacheData: queriesData })
+        // console.log({ cacheData: queriesData })
       },
     }
   )

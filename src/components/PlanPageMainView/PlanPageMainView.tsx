@@ -84,7 +84,6 @@ export const PlanPageMainView: React.FC<Props> = ({
       if (cycleType === 'CUT') {
         const milestone =
           (startingWeight - goalWeight) * 0.25 + parseInt(goalWeight.toString())
-        // console.log({ milestone, goalWeight })
         return entry.dailyEntryWeight < milestone
       }
       return null

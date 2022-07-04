@@ -1,10 +1,47 @@
-import { Card, CardContent, Container, Grid, Typography } from '@mui/material'
-import React from 'react'
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Typography,
+} from '@mui/material'
+import { DateTime } from 'luxon'
+import React, { useContext } from 'react'
+import { CycleListContext, SelectedCycleContext } from '../../app/App'
+import { AppSettingsDisplayPlanDialog } from '../../components/dialogs/AppSettingsDisplayPlanDialog'
 import { MorePagesBackNavigation } from '../../components/MorePagesBackNavigation'
+import { Cycle } from '../../model/Model'
 
-export const AppSettingsPage: React.FC = () => {
+interface Props {
+  setSelectedCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
+}
+
+export const AppSettingsPage: React.FC<Props> = ({
+  setSelectedCycleContext,
+}) => {
+  const [
+    openAppSettingsDisplayPlanDialog,
+    setOpenAppSettingsDisplayPlanDialog,
+  ] = React.useState(false)
+  const selectedCycle = useContext(SelectedCycleContext)
+  const cycles = useContext(CycleListContext)
+
+  const displayPlanFormattedValue = selectedCycle?.isActive
+    ? 'Current'
+    : `${DateTime.fromISO(selectedCycle?.startDate!).toFormat(
+        'MMM dd'
+      )} - ${DateTime.fromISO(selectedCycle?.endingDate!).toFormat('MMM dd')}`
+
   return (
     <>
+      <AppSettingsDisplayPlanDialog
+        open={openAppSettingsDisplayPlanDialog}
+        selectedCycle={selectedCycle}
+        cycles={cycles}
+        setDialogOpenState={setOpenAppSettingsDisplayPlanDialog}
+        setSelectedCycleContext={setSelectedCycleContext}
+      />
       <Grid container justifyContent="center">
         <MorePagesBackNavigation />
       </Grid>
@@ -14,7 +51,11 @@ export const AppSettingsPage: React.FC = () => {
             <DisplayCard subject="Measurement Units" value="Metric" />
           </Grid>
           <Grid item sx={{ width: '100%' }}>
-            <DisplayCard subject="Display Plan" value="Current" />
+            <DisplayCard
+              subject="Display Plan"
+              value={displayPlanFormattedValue}
+              action={setOpenAppSettingsDisplayPlanDialog}
+            />
           </Grid>
           <Grid item sx={{ width: '100%' }}>
             <DisplayCard subject="Account Type" value="Free with Ads" />
@@ -28,18 +69,33 @@ export const AppSettingsPage: React.FC = () => {
 interface DisplayCardProps {
   subject: string
   value: string | undefined
+  action?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const DisplayCard: React.FC<DisplayCardProps> = ({ subject, value }) => {
+const DisplayCard: React.FC<DisplayCardProps> = ({
+  subject,
+  value,
+  action,
+}) => {
   return (
     <Card sx={{ width: '100%' }}>
       <CardContent>
-        <Grid item container>
+        <Grid item container alignItems="center">
           <Grid item xs={6}>
             <Typography textAlign="left">{`${subject}:`}</Typography>
           </Grid>
-          <Grid item xs={6}>
-            <Typography textAlign="right">{`${value}`}</Typography>
+          <Grid item container xs={6} justifyContent="flex-end">
+            {/* <Typography textAlign="right">{`${value}`}</Typography> */}
+            <Button
+              size="small"
+              sx={{
+                fontSize: '1.1rem',
+                textTransform: 'none',
+              }}
+              onClick={action ? () => action(true) : () => null}
+            >
+              {`${value}`}
+            </Button>
           </Grid>
         </Grid>
       </CardContent>

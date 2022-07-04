@@ -175,7 +175,7 @@ export const DailyEntryGaugeChart: React.FC<Props> = ({
         endAngle={-40}
         innerRadius={innerRadius}
         outerRadius={outerRadius}
-        onAnimationEnd={() => console.log('ran')}
+        // onAnimationEnd={() => console.log('ran')}
         fill="#8884d8"
         paddingAngle={0}
         dataKey="value"

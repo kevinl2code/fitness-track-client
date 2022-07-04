@@ -126,7 +126,6 @@ export const EditFoodBuilderUserFoodItemForm: React.FC<Props> = ({
   ])
 
   useEffect(() => {
-    console.log({ length: ingredients.length })
     if (ingredients.length > 0) {
       const builderFoodItemValues: {
         quantity: number
