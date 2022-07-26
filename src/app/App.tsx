@@ -19,9 +19,9 @@ import { QueryCache, useQuery, useQueryClient } from 'react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorPage } from '../pages/ErrorPage'
 import { Sort } from '../utilities/Sort'
+import { useStore } from '../store/useStore'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
 export const UserContext = createContext<UserState | null>(null)
-export const SelectedCycleContext = createContext<Cycle | null>(null)
 export const CycleListContext = createContext<Cycle[]>([])
 export const EntriesContext = createContext<DailyEntry[] | []>([])
 export const UserFoodItemsContext = createContext<UserFoodItem[]>([])
@@ -33,17 +33,20 @@ const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 function App() {
   const [user, setUser] = useState<User | null>(null)
   const [userContext, setUserContext] = useState<UserState | null>(null)
-  const [selectedCycleContext, setSelectedCycleContext] =
-    useState<Cycle | null>(null)
   const [cycleListContext, setCycleListContext] = useState<Cycle[]>([])
   const [userFoodItemsContext, setUserFoodItemsContext] = useState<
     UserFoodItem[]
   >([])
   const [entriesContext, setEntriesContext] = useState<DailyEntry[] | []>([])
+  const { selectedCycle, setSelectedCycle } = useStore(
+    (state) => state.selectedCycleSlice
+  )
+  const { testBool, setTestBool } = useStore((state) => state.testSlice)
   const sort = new Sort()
   const navigate = useNavigate()
   const queryCache = new QueryCache()
   const queryClient = useQueryClient()
+
   const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
     'cycles',
     () => dataService.getUserCycles(userContext?.sub!),
@@ -58,10 +61,13 @@ function App() {
           return cycle.isActive === true
         })
         if (currentlyActiveCycle) {
-          setSelectedCycleContext(currentlyActiveCycle)
+          console.log({ currentlyActiveCycle })
+          console.log('fired')
+          setTestBool()
+          setSelectedCycle(currentlyActiveCycle)
         } else if (data && !currentlyActiveCycle) {
           const sortedCycles: Cycle[] = sort.cyclesByDate(data).reverse()
-          sortedCycles.length > 0 && setSelectedCycleContext(sortedCycles[0])
+          sortedCycles.length > 0 && setSelectedCycle(sortedCycles[0])
         }
       },
       onError: (error) => {
@@ -74,19 +80,19 @@ function App() {
       staleTime: twentyFourHoursInMs,
     }
   )
-  console.log({ appCycleCOntext: selectedCycleContext?.cycleId })
+  console.log({ appCycleCOntext: selectedCycle?.cycleId })
 
   const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
     useQuery(
-      ['dailyEntries', selectedCycleContext?.cycleId],
-      () => dataService.getDailyEntriesForCycle(selectedCycleContext?.cycleId!),
+      ['dailyEntries', selectedCycle?.cycleId],
+      () => dataService.getDailyEntriesForCycle(selectedCycle?.cycleId!),
       {
-        enabled: !!selectedCycleContext,
+        enabled: !!selectedCycle,
         onSuccess: (data) => {
           if (data && data.length > 0) {
             console.log({
               entriesOnsuccess: 'ran',
-              selectedCycleContext: selectedCycleContext,
+              selectedCycleContext: selectedCycle,
               susccessData: data,
             })
             setEntriesContext(data)
@@ -149,7 +155,7 @@ function App() {
     }
     if (!user) {
       setUserContext(null)
-      setSelectedCycleContext(null)
+      setSelectedCycle(null)
     }
   }
 
@@ -164,7 +170,7 @@ function App() {
     authService.logOut()
     setUser(null)
     setUserContext(null)
-    setSelectedCycleContext(null)
+    setSelectedCycle(null)
     setEntriesContext([])
     setUserFoodItemsContext([])
     navigate('/')
@@ -180,22 +186,19 @@ function App() {
       <CssBaseline />
       <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
         <UserContext.Provider value={userContext}>
-          <SelectedCycleContext.Provider value={selectedCycleContext}>
-            <CycleListContext.Provider value={cycleListContext}>
-              <UserFoodItemsContext.Provider value={userFoodItemsContext}>
-                <EntriesContext.Provider value={entriesContext}>
-                  <ErrorBoundary FallbackComponent={ErrorPage}>
-                    <NavigationContainer
-                      setAppUser={setAppUser}
-                      setSelectedCycleContext={setSelectedCycleContext}
-                      handleLogout={handleLogout}
-                      user={user}
-                    />
-                  </ErrorBoundary>
-                </EntriesContext.Provider>
-              </UserFoodItemsContext.Provider>
-            </CycleListContext.Provider>
-          </SelectedCycleContext.Provider>
+          <CycleListContext.Provider value={cycleListContext}>
+            <UserFoodItemsContext.Provider value={userFoodItemsContext}>
+              <EntriesContext.Provider value={entriesContext}>
+                <ErrorBoundary FallbackComponent={ErrorPage}>
+                  <NavigationContainer
+                    setAppUser={setAppUser}
+                    handleLogout={handleLogout}
+                    user={user}
+                  />
+                </ErrorBoundary>
+              </EntriesContext.Provider>
+            </UserFoodItemsContext.Provider>
+          </CycleListContext.Provider>
         </UserContext.Provider>
       </LocalizationProvider>
     </ThemeProvider>

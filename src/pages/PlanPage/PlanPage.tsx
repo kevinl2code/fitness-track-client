@@ -2,19 +2,14 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Button, Container, Grid } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useState } from 'react'
-import {
-  SelectedCycleContext,
-  CycleListContext,
-  EntriesContext,
-  UserContext,
-} from '../../app/App'
+import { CycleListContext, EntriesContext, UserContext } from '../../app/App'
 import { UpdateGoalWeightDialog } from '../../components/dialogs/UpdateGoalWeightDialog'
 import { PlanPageMainView } from '../../components/PlanPageMainView'
 import { Cycle, DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 import { Calculate } from '../../utilities/Calculate'
 import { useMutation, useQueryClient } from 'react-query'
-
+import { useStore } from '../../store/useStore'
 import { Convert } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
@@ -24,7 +19,7 @@ interface Props {}
 
 export const PlanPage: React.FC<Props> = () => {
   const user = useContext(UserContext)
-  const selectedCycle = useContext(SelectedCycleContext)
+  const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const cycles = useContext(CycleListContext)
   const entries = useContext(EntriesContext)
   const cycleEndDate = DateTime.fromISO(selectedCycle?.endingDate!)

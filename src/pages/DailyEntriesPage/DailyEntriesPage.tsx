@@ -2,11 +2,7 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Grid, LinearProgress } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useEffect, useState } from 'react'
-import {
-  SelectedCycleContext,
-  EntriesContext,
-  UserContext,
-} from '../../app/App'
+import { EntriesContext, UserContext } from '../../app/App'
 import { DailyEntryCreateNew } from '../../components'
 import { DailyEntryLastDay } from '../../components/DailyEntryLastDay'
 import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
@@ -22,17 +18,20 @@ import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialo
 import { MobileDateView } from '../../components/MobileDateView'
 import { DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
+import { useStore } from '../../store/useStore'
 import { dailyEntryPageHooks } from './hooks'
 
 const today = DateTime.now().startOf('day')
 
 export const DailyEntriesPage: React.FC = () => {
+  const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
+  const cycle = selectedCycle
   const user = useContext(UserContext)
-  const cycle = useContext(SelectedCycleContext)
   const entries = useContext(EntriesContext)
   const { endingDate } = { ...cycle }
   const isNewUser = cycle === null
   const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
+
   const newCalendarMaxDate = cycle?.isActive ? today.startOf('day') : 1
   const getCalendarMaxDate = () => {
     if (cycle && cycle.isActive) {

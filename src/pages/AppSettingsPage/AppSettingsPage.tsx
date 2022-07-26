@@ -8,23 +8,17 @@ import {
 } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext } from 'react'
-import { CycleListContext, SelectedCycleContext } from '../../app/App'
+import { CycleListContext } from '../../app/App'
 import { AppSettingsDisplayPlanDialog } from '../../components/dialogs/AppSettingsDisplayPlanDialog'
 import { MorePagesBackNavigation } from '../../components/MorePagesBackNavigation'
-import { Cycle } from '../../model/Model'
+import { useStore } from '../../store/useStore'
 
-interface Props {
-  setSelectedCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
-}
-
-export const AppSettingsPage: React.FC<Props> = ({
-  setSelectedCycleContext,
-}) => {
+export const AppSettingsPage: React.FC = () => {
+  const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const [
     openAppSettingsDisplayPlanDialog,
     setOpenAppSettingsDisplayPlanDialog,
   ] = React.useState(false)
-  const selectedCycle = useContext(SelectedCycleContext)
   const cycles = useContext(CycleListContext)
 
   const displayPlanFormattedValue = selectedCycle?.isActive
@@ -40,7 +34,6 @@ export const AppSettingsPage: React.FC<Props> = ({
         selectedCycle={selectedCycle}
         cycles={cycles}
         setDialogOpenState={setOpenAppSettingsDisplayPlanDialog}
-        setSelectedCycleContext={setSelectedCycleContext}
       />
       <Grid container justifyContent="center">
         <MorePagesBackNavigation />

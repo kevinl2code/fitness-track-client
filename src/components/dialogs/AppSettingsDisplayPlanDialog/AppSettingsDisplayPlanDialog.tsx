@@ -12,7 +12,7 @@ import {
 import { DateTime } from 'luxon'
 import React, { useContext } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { CycleListContext } from '../../../app/App'
+import { useStore } from '../../../store/useStore'
 import { Cycle } from '../../../model/Model'
 import { useQueryClient } from 'react-query'
 
@@ -25,7 +25,6 @@ interface Props {
   selectedCycle: Cycle | null
   cycles: Cycle[]
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
-  setSelectedCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
 }
 
 export const AppSettingsDisplayPlanDialog: React.FC<Props> = ({
@@ -33,8 +32,8 @@ export const AppSettingsDisplayPlanDialog: React.FC<Props> = ({
   selectedCycle,
   cycles,
   setDialogOpenState,
-  setSelectedCycleContext,
 }) => {
+  const { setSelectedCycle } = useStore((state) => state.selectedCycleSlice)
   const {
     register,
     reset,
@@ -78,7 +77,7 @@ export const AppSettingsDisplayPlanDialog: React.FC<Props> = ({
       return cycle.cycleId === data.cycleId
     })
     // setDialogOpenState(false)
-    setSelectedCycleContext(selectedCycle!)
+    setSelectedCycle(selectedCycle!)
     queryClient.refetchQueries(['dailyEntries']).then(() => {
       setDialogOpenState(false)
     })

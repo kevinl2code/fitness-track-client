@@ -35,7 +35,8 @@
     "util": "^0.12.4",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.2",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "zustand": "^4.0.0-rc.4"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -22,14 +22,14 @@ import { InitialPage } from '../pages/InitialPage'
 
 interface Props {
   setAppUser: (user: User | null) => Promise<void>
-  setSelectedCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
+  // setSelectedCycleContext: React.Dispatch<React.SetStateAction<Cycle | null>>
   handleLogout: () => void
   user: User | null
 }
 
 export const NavigationContainer: React.FC<Props> = ({
   setAppUser,
-  setSelectedCycleContext,
+  // setSelectedCycleContext,
   handleLogout,
   user,
 }) => {
@@ -76,7 +76,7 @@ export const NavigationContainer: React.FC<Props> = ({
           path={ROUTES.appSettings}
           element={
             <AppSettingsPage
-              setSelectedCycleContext={setSelectedCycleContext}
+            // setSelectedCycleContext={setSelectedCycleContext}
             />
           }
         />
