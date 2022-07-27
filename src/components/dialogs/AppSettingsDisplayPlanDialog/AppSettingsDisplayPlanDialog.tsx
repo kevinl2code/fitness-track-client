@@ -23,17 +23,16 @@ interface IFormInput {
 interface Props {
   open: boolean
   selectedCycle: Cycle | null
-  cycles: Cycle[]
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const AppSettingsDisplayPlanDialog: React.FC<Props> = ({
   open,
   selectedCycle,
-  cycles,
   setDialogOpenState,
 }) => {
   const { setSelectedCycle } = useStore((state) => state.selectedCycleSlice)
+  const { cycleList } = useStore((state) => state.cycleListSlice)
   const {
     register,
     reset,
@@ -47,7 +46,7 @@ export const AppSettingsDisplayPlanDialog: React.FC<Props> = ({
     reset()
   }
 
-  const formattedCycles = cycles.map((cycle) => {
+  const formattedCycles = cycleList.map((cycle) => {
     if (cycle.isActive) {
       return {
         displayName: 'Current',
@@ -73,7 +72,7 @@ export const AppSettingsDisplayPlanDialog: React.FC<Props> = ({
     })
   }
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const selectedCycle = cycles.find((cycle) => {
+    const selectedCycle = cycleList.find((cycle) => {
       return cycle.cycleId === data.cycleId
     })
     // setDialogOpenState(false)

@@ -7,8 +7,7 @@ import {
   Typography,
 } from '@mui/material'
 import { DateTime } from 'luxon'
-import React, { useContext } from 'react'
-import { CycleListContext } from '../../app/App'
+import React from 'react'
 import { AppSettingsDisplayPlanDialog } from '../../components/dialogs/AppSettingsDisplayPlanDialog'
 import { MorePagesBackNavigation } from '../../components/MorePagesBackNavigation'
 import { useStore } from '../../store/useStore'
@@ -19,7 +18,6 @@ export const AppSettingsPage: React.FC = () => {
     openAppSettingsDisplayPlanDialog,
     setOpenAppSettingsDisplayPlanDialog,
   ] = React.useState(false)
-  const cycles = useContext(CycleListContext)
 
   const displayPlanFormattedValue = selectedCycle?.isActive
     ? 'Current'
@@ -32,7 +30,6 @@ export const AppSettingsPage: React.FC = () => {
       <AppSettingsDisplayPlanDialog
         open={openAppSettingsDisplayPlanDialog}
         selectedCycle={selectedCycle}
-        cycles={cycles}
         setDialogOpenState={setOpenAppSettingsDisplayPlanDialog}
       />
       <Grid container justifyContent="center">

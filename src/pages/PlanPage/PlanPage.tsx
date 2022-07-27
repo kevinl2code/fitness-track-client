@@ -2,7 +2,7 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Button, Container, Grid } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useState } from 'react'
-import { CycleListContext, EntriesContext, UserContext } from '../../app/App'
+import { EntriesContext, UserContext } from '../../app/App'
 import { UpdateGoalWeightDialog } from '../../components/dialogs/UpdateGoalWeightDialog'
 import { PlanPageMainView } from '../../components/PlanPageMainView'
 import { Cycle, DailyEntry } from '../../model/Model'
@@ -20,7 +20,7 @@ interface Props {}
 export const PlanPage: React.FC<Props> = () => {
   const user = useContext(UserContext)
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
-  const cycles = useContext(CycleListContext)
+  const { cycleList } = useStore((state) => state.cycleListSlice)
   const entries = useContext(EntriesContext)
   const cycleEndDate = DateTime.fromISO(selectedCycle?.endingDate!)
   const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
@@ -39,7 +39,7 @@ export const PlanPage: React.FC<Props> = () => {
   )
   const [datePickerOpen, setDatePickerOpen] = useState(false)
   const activeCycleExists =
-    cycles.filter((selectedCycle) => {
+    cycleList.filter((selectedCycle) => {
       return selectedCycle.isActive === true
     }).length > 0
   const dataService = new DataService()
