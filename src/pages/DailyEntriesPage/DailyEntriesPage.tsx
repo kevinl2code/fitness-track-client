@@ -19,14 +19,16 @@ import { MobileDateView } from '../../components/MobileDateView'
 import { DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 import { useStore } from '../../store/useStore'
+import { useUserStore } from '../../store/useUserStore'
 import { dailyEntryPageHooks } from './hooks'
 
 const today = DateTime.now().startOf('day')
 
 export const DailyEntriesPage: React.FC = () => {
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
+  const { userData } = useUserStore()
   const cycle = selectedCycle
-  const user = useContext(UserContext)
+  // const user = useContext(UserContext)
   const entries = useContext(EntriesContext)
   const { endingDate } = { ...cycle }
   const isNewUser = cycle === null
@@ -59,7 +61,7 @@ export const DailyEntriesPage: React.FC = () => {
     React.useState(false)
   const dataService = new DataService()
 
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
   useEffect(() => {
     if (isNewUser) {
       setOpenNewUserDialog(true)
@@ -80,7 +82,13 @@ export const DailyEntriesPage: React.FC = () => {
     activityLevel,
     sortedEntries,
     pageStates,
-  } = dailyEntryPageHooks({ pickerDate, cycle, entries, dailyEntry, user })
+  } = dailyEntryPageHooks({
+    pickerDate,
+    cycle,
+    entries,
+    dailyEntry,
+    user: userData,
+  })
 
   useEffect(() => {
     if (pageStates.todayNoEntryReturningFromAWOL) {
@@ -96,7 +104,7 @@ export const DailyEntriesPage: React.FC = () => {
     setDailyEntry(selectedEntry)
   }, [currentlySelectedDate, entries])
 
-  if (!user) {
+  if (!userData) {
     return null
   }
 
@@ -124,14 +132,14 @@ export const DailyEntriesPage: React.FC = () => {
           daysRemaining={daysRemaining}
           cycle={cycle!}
           dataService={dataService}
-          user={user}
+          user={userData}
         />
       )
     } else if (todayHasEntry) {
       return (
         <DailyEntryMainView
           dailyEntry={dailyEntry!}
-          user={user}
+          user={userData}
           displayWeight={displayWeight}
           isFirstDay={isFirstDay}
           isLastDay={isLastEntryDay}
@@ -152,7 +160,7 @@ export const DailyEntriesPage: React.FC = () => {
           daysRemaining={daysRemaining}
           cycle={cycle!}
           dataService={dataService}
-          user={user}
+          user={userData}
           cycleEndDate={cycleEndDate}
           setPickerDate={setPickerDate}
         />
@@ -166,7 +174,7 @@ export const DailyEntriesPage: React.FC = () => {
         entry={dailyEntry!}
         goalWeight={cycle?.goalWeight!}
         daysRemaining={daysRemaining}
-        user={user}
+        user={userData}
         dataService={dataService}
         open={openUpdateWeightDialog}
         setDialogOpenState={setOpenUpdateWeightDialog}
@@ -188,7 +196,7 @@ export const DailyEntriesPage: React.FC = () => {
       <NewCycleDialog
         open={openNewUserDialog}
         isNewUser={isNewUser}
-        user={user!}
+        user={userData}
         dataService={dataService}
         setDialogOpenState={setOpenNewUserDialog}
       />

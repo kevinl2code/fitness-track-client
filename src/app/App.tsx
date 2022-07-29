@@ -20,6 +20,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorPage } from '../pages/ErrorPage'
 import { Sort } from '../utilities/Sort'
 import { useStore } from '../store/useStore'
+import { useUserStore } from '../store/useUserStore'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
 export const UserContext = createContext<UserState | null>(null)
 export const EntriesContext = createContext<DailyEntry[] | []>([])
@@ -31,11 +32,12 @@ const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
-  const [userContext, setUserContext] = useState<UserState | null>(null)
+  // const [userContext, setUserContext] = useState<UserState | null>(null)
   const [userFoodItemsContext, setUserFoodItemsContext] = useState<
     UserFoodItem[]
   >([])
   const [entriesContext, setEntriesContext] = useState<DailyEntry[] | []>([])
+  const { userData, bootstrapUser, removeUser } = useUserStore()
   const { setCycleList } = useStore((state) => state.cycleListSlice)
   const { selectedCycle, setSelectedCycle } = useStore(
     (state) => state.selectedCycleSlice
@@ -47,9 +49,9 @@ function App() {
 
   const { isLoading: cyclesLoading, data: fetchedCycles } = useQuery(
     'cycles',
-    () => dataService.getUserCycles(userContext?.sub!),
+    () => dataService.getUserCycles(userData?.sub!),
     {
-      enabled: !!userContext,
+      enabled: !!userData,
       onSuccess: (data) => {
         if (data) {
           setCycleList(data)
@@ -107,9 +109,9 @@ function App() {
   const { isLoading: userFoodItemsLoading, data: fetchedUserFoodItems } =
     useQuery(
       ['userFoodItems'],
-      () => dataService.getUserFoodItems(userContext?.sub!),
+      () => dataService.getUserFoodItems(userData?.sub!),
       {
-        enabled: !!userContext,
+        enabled: !!userData,
         onSuccess: (data) => {
           if (data) {
             setUserFoodItemsContext(data)
@@ -131,8 +133,7 @@ function App() {
       dataService.setUser(user)
       await authService.getAWSTemporaryCreds(user.cognitoUser)
       const userInfo = await authService.currentUserInfo()
-
-      setUserContext({
+      const userState: UserState = {
         user: {
           userName: userInfo.username,
           cognitoUser: user.cognitoUser,
@@ -145,11 +146,14 @@ function App() {
         birthday: userInfo.attributes.birthdate,
         email: userInfo.attributes.email,
         sub: userInfo.attributes.sub,
-      })
+      }
+      bootstrapUser(userState)
       navigate(`app/${ROUTES.dailyEntries}`)
     }
+    console.log({ user })
+    console.log({ userData })
     if (!user) {
-      setUserContext(null)
+      removeUser()
       setSelectedCycle(null)
     }
   }
@@ -164,7 +168,7 @@ function App() {
     queryClient.removeQueries('dailyEntries')
     authService.logOut()
     setUser(null)
-    setUserContext(null)
+    removeUser()
     setSelectedCycle(null)
     setEntriesContext([])
     setUserFoodItemsContext([])
@@ -180,19 +184,19 @@ function App() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
-        <UserContext.Provider value={userContext}>
-          <UserFoodItemsContext.Provider value={userFoodItemsContext}>
-            <EntriesContext.Provider value={entriesContext}>
-              <ErrorBoundary FallbackComponent={ErrorPage}>
-                <NavigationContainer
-                  setAppUser={setAppUser}
-                  handleLogout={handleLogout}
-                  user={user}
-                />
-              </ErrorBoundary>
-            </EntriesContext.Provider>
-          </UserFoodItemsContext.Provider>
-        </UserContext.Provider>
+        {/* <UserContext.Provider value={userContext}> */}
+        <UserFoodItemsContext.Provider value={userFoodItemsContext}>
+          <EntriesContext.Provider value={entriesContext}>
+            <ErrorBoundary FallbackComponent={ErrorPage}>
+              <NavigationContainer
+                setAppUser={setAppUser}
+                handleLogout={handleLogout}
+                user={user}
+              />
+            </ErrorBoundary>
+          </EntriesContext.Provider>
+        </UserFoodItemsContext.Provider>
+        {/* </UserContext.Provider> */}
       </LocalizationProvider>
     </ThemeProvider>
   )

@@ -9,9 +9,11 @@ import { Sort } from '../../utilities/Sort'
 import { DailyEntry } from '../../model/Model'
 import { OverviewProgressSummary } from '../../components/OverviewProgressSummary'
 import { useStore } from '../../store/useStore'
+import { useUserStore } from '../../store/useUserStore'
 
 export const DashboardPage: React.FC = () => {
-  const user = useContext(UserContext)
+  // const user = useContext(UserContext)
+  const { userData } = useUserStore()
   const entries = useContext(EntriesContext)
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const minimumEntries = 4
@@ -32,13 +34,16 @@ export const DashboardPage: React.FC = () => {
             />
           </Grid>
           <Grid item xs={12} container justifyContent="flex-end">
-            <DashboardWeightTrackerChart entries={sortedEntries} user={user!} />
+            <DashboardWeightTrackerChart
+              entries={sortedEntries}
+              user={userData!}
+            />
           </Grid>
           <Grid item xs={12} container justifyContent="flex-end">
             <OverviewCalorieChart entries={entries} />
           </Grid>
           <Grid item xs={12}>
-            <DashboardEntriesPanel entries={entries} user={user!} />
+            <DashboardEntriesPanel entries={entries} user={userData!} />
           </Grid>
         </Grid>
       ) : (
