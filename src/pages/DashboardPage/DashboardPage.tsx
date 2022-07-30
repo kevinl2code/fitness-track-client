@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
 import React, { useContext } from 'react'
-import { EntriesContext, UserContext } from '../../app/App'
+import { EntriesContext } from '../../app/App'
 import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
 import { DashboardInsufficientData } from '../../components/DashboardInsufficientData/DashboardInsufficientData'
@@ -12,7 +12,6 @@ import { useStore } from '../../store/useStore'
 import { useUserStore } from '../../store/useUserStore'
 
 export const DashboardPage: React.FC = () => {
-  // const user = useContext(UserContext)
   const { userData } = useUserStore()
   const entries = useContext(EntriesContext)
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)

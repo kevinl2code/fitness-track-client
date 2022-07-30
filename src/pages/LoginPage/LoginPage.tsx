@@ -4,7 +4,6 @@ import { Button, Grid, Typography } from '@mui/material'
 import React, { useContext } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { UserContext } from '../../app/App'
 import { FormTextInput } from '../../components/form/FormTextInput'
 import { User } from '../../model/Model'
 import { ROUTES } from '../../navigation'
@@ -29,14 +28,10 @@ export const LoginPage: React.FC<Props> = ({ setUser }) => {
 
   const authService = new AuthService()
 
-  const user = useContext(UserContext)
-
-  // console.log(user)
-  // console.log(cycle)
-
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)
     if (result) {
+      console.log({ result })
       setUser(result)
     } else {
       console.log('Login failed. Please check your credentials')

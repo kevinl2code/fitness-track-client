@@ -1,7 +1,7 @@
 import { SelectChangeEvent, Box, Grid } from '@mui/material'
 import React, { useContext, useState } from 'react'
 import { useQuery, useMutation } from 'react-query'
-import { UserContext } from '../../app/App'
+import { useUserStore } from '../../store/useUserStore'
 import {
   FoodCategory,
   FoodSubCategory,
@@ -38,7 +38,7 @@ export const FoodsCatalogView: React.FC = () => {
     useState(false)
   const [addFoodSubCategoryDialogOpen, setAddFoodSubCategoryDialogOpen] =
     useState(false)
-  const user = useContext(UserContext)
+  const { userData: user } = useUserStore()
   const isAdmin = user?.user.isAdmin!
 
   const dataService = new DataService()

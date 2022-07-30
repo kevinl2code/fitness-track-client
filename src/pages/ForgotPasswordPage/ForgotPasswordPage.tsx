@@ -30,7 +30,7 @@ export const ForgotPasswordPage: React.FC = () => {
   } = useForm()
   const navigate = useNavigate()
   const authService = new AuthService()
-  // const user = useContext(UserContext)
+  // const { userData: user } = useUserStore()
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.forgotPassword(data.username)

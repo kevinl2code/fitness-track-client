@@ -10,7 +10,7 @@ import {
 import { DateTime } from 'luxon'
 import React, { useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { UserContext } from '../../../app/App'
+import { useUserStore } from '../../../store/useUserStore'
 import { ActivityLevel, Cycle, DailyEntry } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
@@ -47,7 +47,7 @@ export const ReturningUserDialog: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
-  const user = useContext(UserContext)
+  const { userData: user } = useUserStore()
 
   if (!user || !cycle) {
     return null

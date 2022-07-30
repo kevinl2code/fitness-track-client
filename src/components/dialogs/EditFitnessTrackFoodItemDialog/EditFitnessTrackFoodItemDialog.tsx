@@ -11,7 +11,7 @@ import React, { useContext, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import * as yup from 'yup'
-import { UserContext } from '../../../app/App'
+import { useUserStore } from '../../../store/useUserStore'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { FormSelectInput } from '../../form/FormSelectInput'
@@ -107,7 +107,7 @@ export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  const user = useContext(UserContext)
+  const { userData: user } = useUserStore()
   const dataService = new DataService()
   const queryClient = useQueryClient()
 

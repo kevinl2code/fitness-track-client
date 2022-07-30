@@ -2,7 +2,7 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Grid, LinearProgress } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useEffect, useState } from 'react'
-import { EntriesContext, UserContext } from '../../app/App'
+import { EntriesContext } from '../../app/App'
 import { DailyEntryCreateNew } from '../../components'
 import { DailyEntryLastDay } from '../../components/DailyEntryLastDay'
 import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
@@ -28,7 +28,7 @@ export const DailyEntriesPage: React.FC = () => {
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const { userData } = useUserStore()
   const cycle = selectedCycle
-  // const user = useContext(UserContext)
+  console.log({ cycle })
   const entries = useContext(EntriesContext)
   const { endingDate } = { ...cycle }
   const isNewUser = cycle === null

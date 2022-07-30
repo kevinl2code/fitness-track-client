@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import React, { useContext, useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { UserContext } from '../../../app/App'
+import { useUserStore } from '../../../store/useUserStore'
 import {
   FoodBuilderIngredient,
   FoodItemUnits,
@@ -49,7 +49,7 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
   const [foodSelectorOpen, setFoodSelectorOpen] = useState(false)
   const [ingredients, setIngredients] = useState<FoodBuilderIngredient[]>([])
 
-  const user = useContext(UserContext)
+  const { userData: user } = useUserStore()
   const dataService = new DataService()
 
   dataService.setUser(user?.user!)

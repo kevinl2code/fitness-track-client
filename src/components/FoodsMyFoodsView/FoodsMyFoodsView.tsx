@@ -5,7 +5,8 @@ import { DataService } from '../../services/DataService'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { AddUserFoodItemDialog } from '../dialogs/AddUserFoodItemDialog'
 import { FoodsTable } from '../FoodsTable'
-import { UserContext, UserFoodItemsContext } from '../../app/App'
+import { UserFoodItemsContext } from '../../app/App'
+import { useUserStore } from '../../store/useUserStore'
 import { useMutation, useQueryClient } from 'react-query'
 import { ConfirmationDialog } from '../dialogs/ConfirmationDialog'
 import { FoodsMyFoodsViewEmpty } from './FoodsMyFoodsViewEmpty'
@@ -14,6 +15,7 @@ const isAdmin = true
 
 export const FoodsMyFoodsView: React.FC = () => {
   const foodItems = useContext(UserFoodItemsContext)
+  const { userData: user } = useUserStore()
   // const [foodItems, setFoodItems] = useState<UserFoodItem[]>([])
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
   // const [editFoodDialogOpen, setEditFoodDialogOpen] = useState<{
@@ -33,7 +35,6 @@ export const FoodsMyFoodsView: React.FC = () => {
     open: false,
     deleteItem: null,
   })
-  const user = useContext(UserContext)
   const dataService = new DataService()
   const queryClient = useQueryClient()
 

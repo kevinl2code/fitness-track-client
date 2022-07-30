@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material'
 import React, { useContext } from 'react'
-import { UserContext } from '../../app/App'
+import { useUserStore } from '../../store/useUserStore'
 import { MorePagesBackNavigation } from '../../components/MorePagesBackNavigation/MorePagesBackNavigation'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
@@ -27,7 +27,7 @@ interface ProfileListItemProps {
 }
 
 export const ProfilePage: React.FC = () => {
-  const user = useContext(UserContext)
+  const { userData: user } = useUserStore()
   const calculate = new Calculate()
   const convert = new Convert()
   let usersAge

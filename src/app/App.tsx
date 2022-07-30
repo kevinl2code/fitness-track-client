@@ -22,7 +22,6 @@ import { Sort } from '../utilities/Sort'
 import { useStore } from '../store/useStore'
 import { useUserStore } from '../store/useUserStore'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
-export const UserContext = createContext<UserState | null>(null)
 export const EntriesContext = createContext<DailyEntry[] | []>([])
 export const UserFoodItemsContext = createContext<UserFoodItem[]>([])
 
@@ -32,7 +31,6 @@ const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 
 function App() {
   const [user, setUser] = useState<User | null>(null)
-  // const [userContext, setUserContext] = useState<UserState | null>(null)
   const [userFoodItemsContext, setUserFoodItemsContext] = useState<
     UserFoodItem[]
   >([])
@@ -77,7 +75,6 @@ function App() {
       staleTime: twentyFourHoursInMs,
     }
   )
-  console.log({ appCycleCOntext: selectedCycle?.cycleId })
 
   const { isLoading: dailyEntriesLoading, data: fetchedDailyEntries } =
     useQuery(
@@ -148,10 +145,9 @@ function App() {
         sub: userInfo.attributes.sub,
       }
       bootstrapUser(userState)
+      queryClient.fetchQuery('cycles')
       navigate(`app/${ROUTES.dailyEntries}`)
     }
-    console.log({ user })
-    console.log({ userData })
     if (!user) {
       removeUser()
       setSelectedCycle(null)
@@ -184,7 +180,6 @@ function App() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
-        {/* <UserContext.Provider value={userContext}> */}
         <UserFoodItemsContext.Provider value={userFoodItemsContext}>
           <EntriesContext.Provider value={entriesContext}>
             <ErrorBoundary FallbackComponent={ErrorPage}>
@@ -196,7 +191,6 @@ function App() {
             </ErrorBoundary>
           </EntriesContext.Provider>
         </UserFoodItemsContext.Provider>
-        {/* </UserContext.Provider> */}
       </LocalizationProvider>
     </ThemeProvider>
   )

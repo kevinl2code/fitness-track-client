@@ -2,7 +2,7 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Button, Container, Grid } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useState } from 'react'
-import { EntriesContext, UserContext } from '../../app/App'
+import { EntriesContext } from '../../app/App'
 import { UpdateGoalWeightDialog } from '../../components/dialogs/UpdateGoalWeightDialog'
 import { PlanPageMainView } from '../../components/PlanPageMainView'
 import { Cycle, DailyEntry } from '../../model/Model'
@@ -13,12 +13,14 @@ import { useStore } from '../../store/useStore'
 import { Convert } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
 import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
+import { useUserStore } from '../../store/useUserStore'
+
 import { NewCycleDialog } from '../../components/dialogs/NewCycleDialog'
 
 interface Props {}
 
 export const PlanPage: React.FC<Props> = () => {
-  const user = useContext(UserContext)
+  const { userData } = useUserStore()
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const { cycleList } = useStore((state) => state.cycleListSlice)
   const entries = useContext(EntriesContext)
@@ -43,7 +45,7 @@ export const PlanPage: React.FC<Props> = () => {
       return selectedCycle.isActive === true
     }).length > 0
   const dataService = new DataService()
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
   const queryClient = useQueryClient()
 
   const sort = new Sort()
@@ -75,7 +77,7 @@ export const PlanPage: React.FC<Props> = () => {
       }
     )
 
-  if (!user || !selectedCycle) {
+  if (!userData || !selectedCycle) {
     return null
   }
 
@@ -93,7 +95,7 @@ export const PlanPage: React.FC<Props> = () => {
         todayEntry.dailyEntryWeight - mutableCycleParams.goalWeight
       const caloriesToGo = poundsToGo * 3500
       const deficitPerDay = caloriesToGo / daysRemaining
-      const { birthday, sex, height } = user
+      const { birthday, sex, height } = userData
       const age = calculate.age(birthday)
       const bmr = calculate.BMR(height, todayEntry.dailyEntryWeight, age, sex)
       const tdee = calculate.TDEE(bmr, todayEntry.dailyEntryActivityLevel)
@@ -173,7 +175,7 @@ export const PlanPage: React.FC<Props> = () => {
     <>
       <NewCycleDialog
         open={openNewUserDialog}
-        user={user!}
+        user={userData!}
         isNewUser={false}
         dataService={dataService}
         setDialogOpenState={setOpenNewUserDialog}
@@ -181,7 +183,7 @@ export const PlanPage: React.FC<Props> = () => {
       <UpdateGoalWeightDialog
         entry={todayEntry}
         cycle={selectedCycle}
-        user={user}
+        user={userData}
         open={openUpdateGoalWeightDialog}
         mutableCycleParams={mutableCycleParams}
         setMutableCycleParams={setMutableCycleParams}

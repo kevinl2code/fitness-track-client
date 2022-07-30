@@ -7,7 +7,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import ArticleIcon from '@mui/icons-material/Article'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
-import { UserContext } from '../../app/App'
+import { useUserStore } from '../../store/useUserStore'
 import { QueryCache } from 'react-query'
 import { User } from '../../model/Model'
 import { ListSection } from '../../components/ListSection'
@@ -26,7 +26,7 @@ const vh = Math.max(
 )
 
 export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
-  const user = useContext(UserContext)
+  const { userData: user } = useUserStore()
   const navigate = useNavigate()
   const calculate = new Calculate()
   const convert = new Convert()

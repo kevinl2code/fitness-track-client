@@ -5,7 +5,6 @@ import { UserState } from '../model/Model'
 
 interface UserSlice {
   userData: UserState | null
-  // isLoggedIn: () => boolean
   bootstrapUser: (account: UserState) => void
   removeUser: () => void
 }
@@ -17,8 +16,6 @@ const userSlice: StateCreator<
   UserSlice
 > = (set, get) => ({
   userData: null,
-  // account: null,
-  // isLoggedIn: () => !!get()?.account?.access_token,
   bootstrapUser: (userData: UserState) => {
     set((prev) => ({ ...prev, userData }))
   },

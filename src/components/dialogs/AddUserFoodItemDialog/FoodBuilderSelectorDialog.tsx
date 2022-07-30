@@ -7,12 +7,12 @@ import {
   Grid,
   SelectChangeEvent,
 } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
 import { v4 } from 'uuid'
 import * as yup from 'yup'
-import { UserContext } from '../../../app/App'
+import { useUserStore } from '../../../store/useUserStore'
 import {
   FitnessTrackFoodItem,
   FoodBuilderIngredient,
@@ -102,7 +102,7 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(ingredientValidationSchema),
   })
-  const user = useContext(UserContext)
+  const { userData: user } = useUserStore()
 
   const dataService = new DataService()
 
