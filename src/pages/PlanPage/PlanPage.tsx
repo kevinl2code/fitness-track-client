@@ -1,8 +1,7 @@
 import DatePicker from '@mui/lab/DatePicker'
 import { Box, Button, Container, Grid } from '@mui/material'
 import { DateTime } from 'luxon'
-import React, { useContext, useState } from 'react'
-import { EntriesContext } from '../../app/App'
+import React, { useState } from 'react'
 import { UpdateGoalWeightDialog } from '../../components/dialogs/UpdateGoalWeightDialog'
 import { PlanPageMainView } from '../../components/PlanPageMainView'
 import { Cycle, DailyEntry } from '../../model/Model'
@@ -12,7 +11,6 @@ import { useMutation, useQueryClient } from 'react-query'
 import { useStore } from '../../store/useStore'
 import { Convert } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
-import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { useUserStore } from '../../store/useUserStore'
 
 import { NewCycleDialog } from '../../components/dialogs/NewCycleDialog'
@@ -23,7 +21,8 @@ export const PlanPage: React.FC<Props> = () => {
   const { userData } = useUserStore()
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const { cycleList } = useStore((state) => state.cycleListSlice)
-  const entries = useContext(EntriesContext)
+  const { entries } = useStore((state) => state.entriesSlice)
+  // const entries = useContext(EntriesContext)
   const cycleEndDate = DateTime.fromISO(selectedCycle?.endingDate!)
   const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
   const [openUpdateGoalWeightDialog, setOpenUpdateGoalWeightDialog] =

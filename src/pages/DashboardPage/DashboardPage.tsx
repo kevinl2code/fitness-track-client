@@ -1,6 +1,5 @@
 import { Grid } from '@mui/material'
 import React, { useContext } from 'react'
-import { EntriesContext } from '../../app/App'
 import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
 import { DashboardInsufficientData } from '../../components/DashboardInsufficientData/DashboardInsufficientData'
@@ -13,14 +12,14 @@ import { useUserStore } from '../../store/useUserStore'
 
 export const DashboardPage: React.FC = () => {
   const { userData } = useUserStore()
-  const entries = useContext(EntriesContext)
+  const { entries } = useStore((state) => state.entriesSlice)
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const minimumEntries = 4
   const currentEntries = entries.length
   const daysRemaining = minimumEntries - currentEntries
   const cycleHasMinimumEntries = currentEntries >= minimumEntries
   const sort = new Sort()
-  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries!)
+  const sortedEntries: DailyEntry[] = sort.dailyEntriesByDate(entries)
 
   return (
     <>

@@ -22,7 +22,7 @@ import { Sort } from '../utilities/Sort'
 import { useStore } from '../store/useStore'
 import { useUserStore } from '../store/useUserStore'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
-export const EntriesContext = createContext<DailyEntry[] | []>([])
+// export const EntriesContext = createContext<DailyEntry[] | []>([])
 export const UserFoodItemsContext = createContext<UserFoodItem[]>([])
 
 const authService = new AuthService()
@@ -34,8 +34,9 @@ function App() {
   const [userFoodItemsContext, setUserFoodItemsContext] = useState<
     UserFoodItem[]
   >([])
-  const [entriesContext, setEntriesContext] = useState<DailyEntry[] | []>([])
+  // const [setEntriesContext] = useState<DailyEntry[] | []>([])
   const { userData, bootstrapUser, removeUser } = useUserStore()
+  const { setEntries } = useStore((state) => state.entriesSlice)
   const { setCycleList } = useStore((state) => state.cycleListSlice)
   const { selectedCycle, setSelectedCycle } = useStore(
     (state) => state.selectedCycleSlice
@@ -89,7 +90,7 @@ function App() {
               selectedCycleContext: selectedCycle,
               susccessData: data,
             })
-            setEntriesContext(data)
+            setEntries(data)
           }
         },
         onError: (error) => {
@@ -145,7 +146,7 @@ function App() {
         sub: userInfo.attributes.sub,
       }
       bootstrapUser(userState)
-      queryClient.fetchQuery('cycles')
+      await queryClient.fetchQuery('cycles')
       navigate(`app/${ROUTES.dailyEntries}`)
     }
     if (!user) {
@@ -166,7 +167,7 @@ function App() {
     setUser(null)
     removeUser()
     setSelectedCycle(null)
-    setEntriesContext([])
+    setEntries([])
     setUserFoodItemsContext([])
     navigate('/')
     window.location.reload()
@@ -181,15 +182,15 @@ function App() {
       <CssBaseline />
       <LocalizationProvider dateAdapter={DateAdapter} locale={'enLocale'}>
         <UserFoodItemsContext.Provider value={userFoodItemsContext}>
-          <EntriesContext.Provider value={entriesContext}>
-            <ErrorBoundary FallbackComponent={ErrorPage}>
-              <NavigationContainer
-                setAppUser={setAppUser}
-                handleLogout={handleLogout}
-                user={user}
-              />
-            </ErrorBoundary>
-          </EntriesContext.Provider>
+          {/* <EntriesContext.Provider value={entriesContext}> */}
+          <ErrorBoundary FallbackComponent={ErrorPage}>
+            <NavigationContainer
+              setAppUser={setAppUser}
+              handleLogout={handleLogout}
+              user={user}
+            />
+          </ErrorBoundary>
+          {/* </EntriesContext.Provider> */}
         </UserFoodItemsContext.Provider>
       </LocalizationProvider>
     </ThemeProvider>

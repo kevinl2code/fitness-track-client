@@ -2,7 +2,6 @@ import DatePicker from '@mui/lab/DatePicker'
 import { Box, Grid, LinearProgress } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useContext, useEffect, useState } from 'react'
-import { EntriesContext } from '../../app/App'
 import { DailyEntryCreateNew } from '../../components'
 import { DailyEntryLastDay } from '../../components/DailyEntryLastDay'
 import { DailyEntryMainView } from '../../components/DailyEntryMainView/DailyEntryMainView'
@@ -13,7 +12,6 @@ import {
   UpdateDailyEntryWeightDialog,
 } from '../../components/dialogs'
 import { NewCycleDialog } from '../../components/dialogs/NewCycleDialog'
-import { NewUserDialog } from '../../components/dialogs/NewUserDialog'
 import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialog'
 import { MobileDateView } from '../../components/MobileDateView'
 import { DailyEntry } from '../../model/Model'
@@ -26,10 +24,10 @@ const today = DateTime.now().startOf('day')
 
 export const DailyEntriesPage: React.FC = () => {
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
+  const { entries } = useStore((state) => state.entriesSlice)
   const { userData } = useUserStore()
   const cycle = selectedCycle
   console.log({ cycle })
-  const entries = useContext(EntriesContext)
   const { endingDate } = { ...cycle }
   const isNewUser = cycle === null
   const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
