@@ -17,7 +17,6 @@ import { MobileDateView } from '../../components/MobileDateView'
 import { DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 import { useStore } from '../../store/useStore'
-import { useUserStore } from '../../store/useUserStore'
 import { dailyEntryPageHooks } from './hooks'
 
 const today = DateTime.now().startOf('day')
@@ -25,7 +24,7 @@ const today = DateTime.now().startOf('day')
 export const DailyEntriesPage: React.FC = () => {
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const { entries } = useStore((state) => state.entriesSlice)
-  const { userData } = useUserStore()
+  const { userData } = useStore((state) => state.userSlice)
   const cycle = selectedCycle
   console.log({ cycle })
   const { endingDate } = { ...cycle }

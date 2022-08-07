@@ -2,7 +2,6 @@ import { Button, Grid, SelectChangeEvent } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { UseMutateFunction, useQuery } from 'react-query'
-import { useUserStore } from '../../../store/useUserStore'
 import {
   DailyEntry,
   EntryConsumable,
@@ -19,6 +18,7 @@ import { FoodsSubCategorySelect } from '../../FoodsSubCategorySelect'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormattedTextField } from '../../FormattedTextField/FormattedTextField'
+import { useStore } from '../../../store/useStore'
 
 interface Props {
   entry: DailyEntry
@@ -90,10 +90,10 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
     resolver: yupResolver(validationSchema),
   })
 
-  const { userData: user } = useUserStore()
+  const { userData } = useStore((state) => state.userSlice)
   const dataService = new DataService()
 
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
 
   const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
     'categoryList',

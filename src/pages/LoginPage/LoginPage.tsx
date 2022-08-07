@@ -1,38 +1,34 @@
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import LockIcon from '@mui/icons-material/Lock'
 import { Button, Grid, Typography } from '@mui/material'
-import React, { useContext } from 'react'
+import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FormTextInput } from '../../components/form/FormTextInput'
-import { User } from '../../model/Model'
 import { ROUTES } from '../../navigation'
 import { AuthService } from '../../services/AuthService'
+import { useStore } from '../../store/useStore'
 
 interface IFormInput {
   userName: string
   password: string
 }
 
-interface Props {
-  setUser: (user: User | null) => Promise<void>
-}
-
-export const LoginPage: React.FC<Props> = ({ setUser }) => {
+export const LoginPage: React.FC = () => {
+  const { setCredentials } = useStore((state) => state.credentialsSlice)
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors },
   } = useForm()
-
+  const navigate = useNavigate()
   const authService = new AuthService()
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.login(data.userName, data.password)
     if (result) {
-      console.log({ result })
-      setUser(result)
+      setCredentials(result)
+      navigate(`../${ROUTES.appRoot}`)
     } else {
       console.log('Login failed. Please check your credentials')
     }

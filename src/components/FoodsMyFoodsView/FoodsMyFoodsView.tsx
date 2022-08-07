@@ -1,21 +1,19 @@
 import { Box, Grid } from '@mui/material'
-import React, { useContext, useState } from 'react'
-import { FitnessTrackFoodItem, UserFoodItem } from '../../model/Model'
+import React, { useState } from 'react'
 import { DataService } from '../../services/DataService'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { AddUserFoodItemDialog } from '../dialogs/AddUserFoodItemDialog'
 import { FoodsTable } from '../FoodsTable'
-import { UserFoodItemsContext } from '../../app/App'
-import { useUserStore } from '../../store/useUserStore'
 import { useMutation, useQueryClient } from 'react-query'
 import { ConfirmationDialog } from '../dialogs/ConfirmationDialog'
 import { FoodsMyFoodsViewEmpty } from './FoodsMyFoodsViewEmpty'
+import { useStore } from '../../store/useStore'
 
 const isAdmin = true
 
 export const FoodsMyFoodsView: React.FC = () => {
-  const foodItems = useContext(UserFoodItemsContext)
-  const { userData: user } = useUserStore()
+  const { userFoodItems } = useStore((store) => store.userFoodItemsSlice)
+  const { userData } = useStore((state) => state.userSlice)
   // const [foodItems, setFoodItems] = useState<UserFoodItem[]>([])
   const [addFoodDialogOpen, setAddFoodDialogOpen] = useState(false)
   // const [editFoodDialogOpen, setEditFoodDialogOpen] = useState<{
@@ -38,7 +36,7 @@ export const FoodsMyFoodsView: React.FC = () => {
   const dataService = new DataService()
   const queryClient = useQueryClient()
 
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
 
   const { mutate: deleteUserFoodItem, isLoading } = useMutation(
     ({ userId, foodItemId }: { userId: string; foodItemId: string }) =>
@@ -56,12 +54,12 @@ export const FoodsMyFoodsView: React.FC = () => {
 
   const handleDelete = async () => {
     deleteUserFoodItem({
-      userId: user?.sub!,
+      userId: userData?.sub!,
       foodItemId: confirmationDialogOpen.deleteItem?.id!,
     })
   }
 
-  const noUserFoodsFound = foodItems.length === 0
+  const noUserFoodsFound = userFoodItems.length === 0
 
   return (
     <>
@@ -73,7 +71,7 @@ export const FoodsMyFoodsView: React.FC = () => {
       />
       <AddUserFoodItemDialog
         open={addFoodDialogOpen}
-        user={user!}
+        user={userData!}
         dataService={dataService}
         setAddFoodDialogOpen={setAddFoodDialogOpen}
       />
@@ -85,7 +83,7 @@ export const FoodsMyFoodsView: React.FC = () => {
             />
           ) : (
             <FoodsTable
-              foodItems={foodItems}
+              foodItems={userFoodItems}
               isAdmin={isAdmin}
               setAddFoodDialogOpen={setAddFoodDialogOpen}
               // setEditFoodDialogOpen={setEditFoodDialogOpen}

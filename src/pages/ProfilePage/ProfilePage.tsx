@@ -14,9 +14,9 @@ import {
   SvgIconProps,
   Typography,
 } from '@mui/material'
-import React, { useContext } from 'react'
-import { useUserStore } from '../../store/useUserStore'
+import React from 'react'
 import { MorePagesBackNavigation } from '../../components/MorePagesBackNavigation/MorePagesBackNavigation'
+import { useStore } from '../../store/useStore'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
 
@@ -27,14 +27,15 @@ interface ProfileListItemProps {
 }
 
 export const ProfilePage: React.FC = () => {
-  const { userData: user } = useUserStore()
+  const { userData } = useStore((state) => state.userSlice)
   const calculate = new Calculate()
   const convert = new Convert()
   let usersAge
 
-  if (user) {
-    usersAge = calculate.age(user?.birthday!)
-  }
+  // if (userData) {
+  //   usersAge = calculate.age(userData?.birthday!)
+  // }
+
   return (
     <>
       <Grid container justifyContent="center">
@@ -43,7 +44,7 @@ export const ProfilePage: React.FC = () => {
       <Container>
         <Grid container direction="column" alignItems="center">
           <Grid item>
-            <Typography variant="h6">{`${user?.firstName} ${user?.lastName}`}</Typography>
+            <Typography variant="h6">{`${userData?.firstName} ${userData?.lastName}`}</Typography>
           </Grid>
           {/* <Divider sx={{ width: '100%', marginTop: '1rem' }} /> */}
 
@@ -58,25 +59,25 @@ export const ProfilePage: React.FC = () => {
             >
               <ProfileListItem
                 subject="Username"
-                value={user?.user.userName}
+                value={userData?.user.userName}
                 icon={<PersonIcon />}
               />
               <ProfileListItem
                 subject="Birthday"
-                value={`${user?.birthday!}`}
+                value={`${userData?.birthday!}`}
                 icon={<CakeIcon />}
               />
               <ProfileListItem
                 subject="Sex"
-                value={user?.sex}
+                value={userData?.sex}
                 icon={<WcIcon />}
               />
               <ProfileListItem
                 subject="Height"
                 value={
-                  user?.height
+                  userData?.height
                     ? `${convert.inchesToFeetAndInches(
-                        user.height,
+                        userData.height,
                         'ABBREVIATED'
                       )}`
                     : '-'
@@ -85,7 +86,7 @@ export const ProfilePage: React.FC = () => {
               />
               <ProfileListItem
                 subject="Email"
-                value={user?.email}
+                value={userData?.email}
                 icon={<Email />}
               />
             </List>

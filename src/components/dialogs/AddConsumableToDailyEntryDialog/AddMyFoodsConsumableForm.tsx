@@ -10,7 +10,7 @@ import {
   ListItemButton,
   ListItemText,
 } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FieldValues,
   SubmitHandler,
@@ -19,9 +19,8 @@ import {
 } from 'react-hook-form'
 import { UseMutateFunction } from 'react-query'
 import * as yup from 'yup'
-import { UserFoodItemsContext } from '../../../app/App'
 import { DailyEntry, EntryConsumable, UserFoodItem } from '../../../model/Model'
-import { useMediaQueries } from '../../../utilities/useMediaQueries'
+import { useStore } from '../../../store/useStore'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormattedTextField } from '../../FormattedTextField/FormattedTextField'
@@ -88,7 +87,7 @@ export const AddMyFoodsConsumableForm: React.FC<Props> = ({
   entry,
   updateDailyEntry,
 }) => {
-  const foodItems = useContext(UserFoodItemsContext)
+  const { userFoodItems } = useStore((store) => store.userFoodItemsSlice)
   const [selectedFoodItem, setSelectedFoodItem] = useState<UserFoodItem | null>(
     null
   )
@@ -216,7 +215,7 @@ export const AddMyFoodsConsumableForm: React.FC<Props> = ({
     <form key="addMyFoodsConsumableForm" onSubmit={handleSubmit(onSubmit)}>
       <Grid container justifyContent="center">
         <MyFoodsConsumablesList
-          foodItems={foodItems}
+          foodItems={userFoodItems}
           selectedFoodItem={selectedFoodItem}
           filterText={filterText}
           helperText={nameError}

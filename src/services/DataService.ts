@@ -6,7 +6,7 @@ import {
   FitnessTrackFoodItem,
   FoodCategory,
   FoodSubCategory,
-  User,
+  UserCredentials,
   UserFoodItem,
 } from '../model/Model'
 
@@ -15,7 +15,7 @@ config.update({
 })
 
 export class DataService {
-  private user: User | undefined
+  private user: UserCredentials | undefined
   private userIdToken: string | undefined
 
   private getUserIdToken() {
@@ -28,7 +28,7 @@ export class DataService {
       return ''
     }
   }
-  public setUser(user: User) {
+  public setUser(user: UserCredentials) {
     this.user = user
     this.userIdToken = this.getUserIdToken()
   }

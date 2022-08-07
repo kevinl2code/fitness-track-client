@@ -1,21 +1,17 @@
 import {
   Dialog,
-  Card,
-  CardContent,
-  Typography,
   DialogTitle,
   DialogContent,
   DialogContentText,
 } from '@mui/material'
 import { DateTime } from 'luxon'
-import React, { useContext } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useUserStore } from '../../../store/useUserStore'
 import { ActivityLevel, Cycle, DailyEntry } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
-import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { ReturningUserDialogLongHiatusView } from './ReturningUserDialogLongHiatusView'
 import { ReturningUserDialogShortHiatusForm } from './ReturningUserDialogShortHiatusForm'
+import { useStore } from '../../../store/useStore'
 interface IFormInput {
   weight: number
   activityLevel: ActivityLevel
@@ -47,9 +43,8 @@ export const ReturningUserDialog: React.FC<Props> = ({
     control,
     formState: { errors },
   } = useForm()
-  const { userData: user } = useUserStore()
-
-  if (!user || !cycle) {
+  const { userData } = useStore((state) => state.userSlice)
+  if (!userData || !cycle) {
     return null
   }
 
@@ -68,7 +63,7 @@ export const ReturningUserDialog: React.FC<Props> = ({
           <ReturningUserDialogShortHiatusForm
             entries={entries}
             cycle={cycle}
-            user={user}
+            user={userData}
             dataService={dataService}
             control={control}
             register={register}

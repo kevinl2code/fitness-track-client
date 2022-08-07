@@ -11,14 +11,13 @@ import { useMutation, useQueryClient } from 'react-query'
 import { useStore } from '../../store/useStore'
 import { Convert } from '../../utilities/Convert'
 import { Sort } from '../../utilities/Sort'
-import { useUserStore } from '../../store/useUserStore'
 
 import { NewCycleDialog } from '../../components/dialogs/NewCycleDialog'
 
 interface Props {}
 
 export const PlanPage: React.FC<Props> = () => {
-  const { userData } = useUserStore()
+  const { userData } = useStore((state) => state.userSlice)
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const { cycleList } = useStore((state) => state.cycleListSlice)
   const { entries } = useStore((state) => state.entriesSlice)

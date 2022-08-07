@@ -12,7 +12,6 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
 import { v4 } from 'uuid'
 import * as yup from 'yup'
-import { useUserStore } from '../../../store/useUserStore'
 import {
   FitnessTrackFoodItem,
   FoodBuilderIngredient,
@@ -20,6 +19,7 @@ import {
   FoodSubCategory,
 } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
+import { useStore } from '../../../store/useStore'
 import { ConsumablesList } from '../../ConsumablesList'
 import { FoodsCategorySelect } from '../../FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../../FoodsSubCategorySelect'
@@ -102,11 +102,11 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(ingredientValidationSchema),
   })
-  const { userData: user } = useUserStore()
+  const { userData } = useStore((state) => state.userSlice)
 
   const dataService = new DataService()
 
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
 
   const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
     'categoryList',

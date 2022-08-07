@@ -6,15 +6,14 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material'
-import React, { useContext, useState } from 'react'
-import { useQueryClient } from 'react-query'
-import { useUserStore } from '../../../store/useUserStore'
+import React, { useState } from 'react'
 import {
   FoodBuilderIngredient,
   FoodItemUnits,
   UserFoodItem,
 } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
+import { useStore } from '../../../store/useStore'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FoodBuilderSelectorDialog } from '../AddUserFoodItemDialog/FoodBuilderSelectorDialog'
 import { EditCustomUserFoodItemForm } from './EditCustomUserFoodItemForm'
@@ -48,11 +47,11 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
 }) => {
   const [foodSelectorOpen, setFoodSelectorOpen] = useState(false)
   const [ingredients, setIngredients] = useState<FoodBuilderIngredient[]>([])
+  const { userData } = useStore((state) => state.userSlice)
 
-  const { userData: user } = useUserStore()
   const dataService = new DataService()
 
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
 
   const handleCancel = () => {
     setEditFoodDialogOpen({

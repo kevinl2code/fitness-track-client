@@ -10,7 +10,7 @@ import {
   DialogActions,
 } from '@mui/material'
 import { DateTime } from 'luxon'
-import React, { useContext } from 'react'
+import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useStore } from '../../../store/useStore'
 import { Cycle } from '../../../model/Model'
@@ -44,6 +44,7 @@ export const AppSettingsDisplayPlanDialog: React.FC<Props> = ({
   const queryClient = useQueryClient()
   const handleCloseDialog = () => {
     reset()
+    setDialogOpenState(false)
   }
 
   const formattedCycles = cycleList.map((cycle) => {

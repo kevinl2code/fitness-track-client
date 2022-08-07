@@ -11,13 +11,13 @@ import React, { useContext, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import * as yup from 'yup'
-import { useUserStore } from '../../../store/useUserStore'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
 import { DataService } from '../../../services/DataService'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
+import { useStore } from '../../../store/useStore'
 
 interface IFormInput {
   PK: string
@@ -107,11 +107,11 @@ export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
   } = useForm({
     resolver: yupResolver(validationSchema),
   })
-  const { userData: user } = useUserStore()
+  const { userData } = useStore((state) => state.userSlice)
   const dataService = new DataService()
   const queryClient = useQueryClient()
 
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
   useEffect(() => {
     setValue('foodItemName', foodItem?.foodItemName)
     setValue('foodItemUnit', foodItem?.foodItemUnit)

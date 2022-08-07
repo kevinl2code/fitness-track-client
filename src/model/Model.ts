@@ -1,6 +1,6 @@
 import { CognitoUser } from '@aws-amplify/auth'
 
-export interface User {
+export interface UserCredentials {
   userName: string
   cognitoUser: CognitoUser
   isAdmin: boolean
@@ -60,7 +60,7 @@ export type Sex = 'male' | 'female'
 export type CognitoGender = 'male' | 'female'
 
 export interface UserState {
-  user: User
+  user: UserCredentials
   firstName: string
   lastName: string
   sex: CognitoGender

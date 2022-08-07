@@ -1,5 +1,5 @@
-import { Grid, Divider, Button, Container, Toolbar } from '@mui/material'
-import React, { useContext } from 'react'
+import { Grid, Button, Container } from '@mui/material'
+import React from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import LiveHelpIcon from '@mui/icons-material/LiveHelp'
@@ -7,16 +7,15 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import ArticleIcon from '@mui/icons-material/Article'
 import { Calculate } from '../../utilities/Calculate'
 import { Convert } from '../../utilities/Convert'
-import { useUserStore } from '../../store/useUserStore'
 import { QueryCache } from 'react-query'
-import { User } from '../../model/Model'
 import { ListSection } from '../../components/ListSection'
 import { ListSectionDetails } from '../../components/ListSection/ListSection'
 import { ROUTES } from '../../navigation'
 import { useNavigate } from 'react-router-dom'
+import { useStore } from '../../store/useStore'
 
 interface Props {
-  setUser: (user: User | null) => Promise<void>
+  // setUser: (user: User | null) => Promise<void>
   handleLogout: () => void
 }
 
@@ -25,16 +24,16 @@ const vh = Math.max(
   window.innerHeight || 0
 )
 
-export const MorePage: React.FC<Props> = ({ setUser, handleLogout }) => {
-  const { userData: user } = useUserStore()
+export const MorePage: React.FC<Props> = ({ handleLogout }) => {
+  const { userData } = useStore((state) => state.userSlice)
   const navigate = useNavigate()
   const calculate = new Calculate()
   const convert = new Convert()
   const queryCache = new QueryCache()
   let usersAge
 
-  if (user) {
-    usersAge = calculate.age(user?.birthday!)
+  if (userData) {
+    usersAge = calculate.age(userData?.birthday!)
   }
 
   const userSection: ListSectionDetails[] = [

@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Grid, Button } from '@mui/material'
+import { Typography, Grid, Button } from '@mui/material'
 import React from 'react'
 import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
@@ -30,7 +30,6 @@ export const ForgotPasswordPage: React.FC = () => {
   } = useForm()
   const navigate = useNavigate()
   const authService = new AuthService()
-  // const { userData: user } = useUserStore()
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const result = await authService.forgotPassword(data.username)

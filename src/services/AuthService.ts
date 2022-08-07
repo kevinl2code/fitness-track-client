@@ -1,4 +1,4 @@
-import { CognitoGender, User, UserAttribute } from '../model/Model'
+import { CognitoGender, UserCredentials, UserAttribute } from '../model/Model'
 import { Auth } from 'aws-amplify'
 import Amplify from 'aws-amplify'
 import { config } from './config'
@@ -79,7 +79,7 @@ export class AuthService {
   public async login(
     username: string,
     password: string
-  ): Promise<User | undefined> {
+  ): Promise<UserCredentials | undefined> {
     try {
       const user = (await Auth.signIn(username, password)) as CognitoUser
       return {
@@ -149,14 +149,14 @@ export class AuthService {
     return result
   }
 
-  public async updateProfilePicture(user: User, pictureUrl: string) {
+  public async updateProfilePicture(user: UserCredentials, pictureUrl: string) {
     await this.updateUserAttribute(user, {
       picture: pictureUrl,
     })
   }
 
   private async updateUserAttribute(
-    user: User,
+    user: UserCredentials,
     attribute: {
       [key: string]: string
     }
@@ -164,7 +164,7 @@ export class AuthService {
     await Auth.updateUserAttributes(user.cognitoUser, attribute)
   }
 
-  public isUserAdmin(user: User): boolean {
+  public isUserAdmin(user: UserCredentials): boolean {
     const session = user.cognitoUser.getSignInUserSession()
     if (session) {
       const idTokenPayload = session.getIdToken().decodePayload()

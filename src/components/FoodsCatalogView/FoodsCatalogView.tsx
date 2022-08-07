@@ -1,13 +1,13 @@
 import { SelectChangeEvent, Box, Grid } from '@mui/material'
 import React, { useContext, useState } from 'react'
 import { useQuery, useMutation } from 'react-query'
-import { useUserStore } from '../../store/useUserStore'
 import {
   FoodCategory,
   FoodSubCategory,
   FitnessTrackFoodItem,
 } from '../../model/Model'
 import { DataService } from '../../services/DataService'
+import { useStore } from '../../store/useStore'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { AddFoodCategoryDialog } from '../dialogs/AddFoodCategoryDialog'
 import { AddFoodItemDialog } from '../dialogs/AddFoodItemDialog'
@@ -38,12 +38,12 @@ export const FoodsCatalogView: React.FC = () => {
     useState(false)
   const [addFoodSubCategoryDialogOpen, setAddFoodSubCategoryDialogOpen] =
     useState(false)
-  const { userData: user } = useUserStore()
-  const isAdmin = user?.user.isAdmin!
+  const { userData } = useStore((state) => state.userSlice)
+  const isAdmin = userData?.user.isAdmin!
 
   const dataService = new DataService()
 
-  dataService.setUser(user?.user!)
+  dataService.setUser(userData?.user!)
 
   const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
     'categoryList',
