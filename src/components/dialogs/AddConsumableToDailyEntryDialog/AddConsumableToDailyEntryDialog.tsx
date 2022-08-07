@@ -53,7 +53,6 @@ export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
         queryClient.invalidateQueries('dailyEntries')
         const queriesData = queryClient.getQueriesData('dailyEntries')
         handleCloseDialog()
-        // console.log({ cacheData: queriesData })
       },
     }
   )

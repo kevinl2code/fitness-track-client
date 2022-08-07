@@ -146,7 +146,6 @@ export const NewUserDialog: React.FC<Props> = ({
       isActive: true,
       cycleId: newCycleId,
     }
-    console.log(newUserCycle)
     createNewCycle(newUserCycle)
   }
   const disableNextButton = (activeStep: number) => {

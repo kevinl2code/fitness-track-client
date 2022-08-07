@@ -20,7 +20,6 @@ export const NewUserDialogForm: React.FC<Props> = ({
 }) => {
   const currentWeight = parseFloat(values.startingWeight)
   const goalWeight = parseFloat(values.goalWeight)
-  // console.log({ currentWeight, goalWeight })
   const reviewText = () => {
     if (goalWeight < currentWeight) {
       return `Based on what you've entered, you want to lose ${(

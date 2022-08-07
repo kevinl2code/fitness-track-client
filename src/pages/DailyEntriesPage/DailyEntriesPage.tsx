@@ -26,7 +26,6 @@ export const DailyEntriesPage: React.FC = () => {
   const { entries } = useStore((state) => state.entriesSlice)
   const { userData } = useStore((state) => state.userSlice)
   const cycle = selectedCycle
-  console.log({ cycle })
   const { endingDate } = { ...cycle }
   const isNewUser = cycle === null
   const cycleEndDate = endingDate ? DateTime.fromISO(endingDate) : null
@@ -43,7 +42,6 @@ export const DailyEntriesPage: React.FC = () => {
       return today
     }
   }
-  console.log({ entries })
   const calendarMaxDate = getCalendarMaxDate()
   const [pickerDate, setPickerDate] = useState<DateTime>(calendarMaxDate)
   const [datePickerOpen, setDatePickerOpen] = useState(false)

@@ -38,7 +38,6 @@ export const NavigationContainer: React.FC<Props> = ({
   const isAuthRoute = routeParams.pathname.split('/').includes('app')
   useEffect(() => {
     if (!credentials && isAuthRoute) {
-      console.log('tripped')
       navigate('/')
     }
   }, [isAuthRoute, navigate, credentials])

@@ -149,7 +149,6 @@ export const RegistrationPage: React.FC = () => {
   const authService = new AuthService()
   const selectedUnits = watch().units
   useEffect(() => {}, [selectedUnits])
-  console.log(selectedUnits)
   const handleOpenConfirmRegistrationDialog = () => {
     setOpenConfirmRegistrationDialog(true)
   }

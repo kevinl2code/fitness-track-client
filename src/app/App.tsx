@@ -12,7 +12,6 @@ import { useStore } from '../store/useStore'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
 
 const authService = new AuthService()
-const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 
 function App() {
   const { removeUser } = useStore((state) => state.userSlice)
@@ -35,7 +34,6 @@ function App() {
     window.location.reload()
   }
 
-  // const isLoading = cyclesLoading || dailyEntriesLoading || userFoodItemsLoading
   const isLoading = false
   return isLoading ? (
     <AppLoadingPage color={'#f0f4f7'} />

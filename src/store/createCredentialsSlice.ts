@@ -26,7 +26,6 @@ export const createCredentialsSlice: StateCreator<
   },
   removeCredentials: () => {
     set((prev) => {
-      console.log('hookRemoveran')
       return {
         ...prev,
         credentialsSlice: {

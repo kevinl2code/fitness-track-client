@@ -120,11 +120,6 @@ export const AuthLayout: React.FC = ({ children }) => {
         enabled: !!selectedCycle,
         onSuccess: (data) => {
           if (data && data.length > 0) {
-            console.log({
-              entriesOnsuccess: 'ran',
-              selectedCycleContext: selectedCycle,
-              susccessData: data,
-            })
             setEntries(data)
           }
         },

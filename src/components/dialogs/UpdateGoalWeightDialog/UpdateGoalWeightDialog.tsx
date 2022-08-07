@@ -128,7 +128,6 @@ export const UpdateGoalWeightDialog: React.FC<Props> = ({
     // }
 
     // updateCycle(updatedCycle)
-    console.log('clicked')
     setMutableCycleParams({
       ...mutableCycleParams,
       goalWeight: parseInt(data.goalWeight),
