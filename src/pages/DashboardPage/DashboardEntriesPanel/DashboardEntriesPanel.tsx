@@ -19,12 +19,15 @@ import {
 } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
-import { DailyEntry, UserState } from '../../model/Model'
-import { Calculate } from '../../utilities/Calculate'
-import { formattedActivityLevel } from '../../utilities/Convert'
-import { Sort } from '../../utilities/Sort'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
-import { ListSection, ListSectionDetails } from '../ListSection/ListSection'
+import { DailyEntry, UserState } from '../../../model/Model'
+import { Calculate } from '../../../utilities/Calculate'
+import { formattedActivityLevel } from '../../../utilities/Convert'
+import { Sort } from '../../../utilities/Sort'
+import { useMediaQueries } from '../../../utilities/useMediaQueries'
+import {
+  ListSection,
+  ListSectionDetails,
+} from '../../../components/ListSection/ListSection'
 
 interface Props {
   entries: DailyEntry[]

@@ -14,8 +14,8 @@ import {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import { DailyEntry, UserState } from '../../model/Model'
-import { Calculate } from '../../utilities/Calculate'
+import { DailyEntry, UserState } from '../../../model/Model'
+import { Calculate } from '../../../utilities/Calculate'
 import { first, last } from 'lodash'
 
 interface Props {

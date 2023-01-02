@@ -1,8 +1,8 @@
 import { Divider, Grid, Paper, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React from 'react'
-import { CycleType, DailyEntry } from '../../model/Model'
-import { Calculate } from '../../utilities/Calculate'
+import { CycleType, DailyEntry } from '../../../model/Model'
+import { Calculate } from '../../../utilities/Calculate'
 import { DashboardSummaryCardRow } from './DashboardSummaryCardRow'
 
 interface Props {

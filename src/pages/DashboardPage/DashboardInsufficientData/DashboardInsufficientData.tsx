@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material'
 import React from 'react'
-import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { useMediaQueries } from '../../../utilities/useMediaQueries'
 
 interface Props {
   daysRemaining: number
