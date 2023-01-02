@@ -14,6 +14,7 @@ import {
 import { NewCycleDialog } from '../../components/dialogs/NewCycleDialog'
 import { ReturningUserDialog } from '../../components/dialogs/ReturningUserDialog'
 import { MobileDateView } from '../../components/MobileDateView'
+import { PageLayout } from '../../layouts/PageLayout'
 import { DailyEntry } from '../../model/Model'
 import { DataService } from '../../services/DataService'
 import { useStore } from '../../store/useStore'
@@ -215,8 +216,8 @@ export const DailyEntriesPage: React.FC = () => {
         setPickerDate={setPickerDate}
         setDatePickerOpen={setDatePickerOpen}
       />
-      <Grid container>
-        <Grid item xs={12} container justifyContent="center">
+      <PageLayout>
+        <PageLayout.Header>
           <DatePicker
             value={pickerDate}
             minDate={cycleStartDate}
@@ -234,11 +235,9 @@ export const DailyEntriesPage: React.FC = () => {
               <Box ref={inputRef}></Box>
             )}
           />
-        </Grid>
-        <Grid item xs={12} id="dailyEntryMainContentContainer">
-          {renderPageView()}
-        </Grid>
-      </Grid>
+        </PageLayout.Header>
+        <PageLayout.Content>{renderPageView() ?? <></>}</PageLayout.Content>
+      </PageLayout>
     </>
   )
 }
