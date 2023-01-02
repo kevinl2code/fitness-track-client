@@ -21,12 +21,13 @@ export const PlanPage: React.FC<Props> = () => {
   const { selectedCycle } = useStore((state) => state.selectedCycleSlice)
   const { cycleList } = useStore((state) => state.cycleListSlice)
   const { entries } = useStore((state) => state.entriesSlice)
-  // const entries = useContext(EntriesContext)
+
   const cycleEndDate = DateTime.fromISO(selectedCycle?.endingDate!)
   const [openNewUserDialog, setOpenNewUserDialog] = React.useState(false)
   const [openUpdateGoalWeightDialog, setOpenUpdateGoalWeightDialog] =
     React.useState(false)
   const [editEnabled, setEditEnabled] = useState(false)
+
   const [mutableCycleParams, setMutableCycleParams] = useState<{
     endingDate: string
     goalWeight: number

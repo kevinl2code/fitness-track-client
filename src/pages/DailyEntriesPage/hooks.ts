@@ -72,11 +72,13 @@ export const dailyEntryPageHooks = ({
     ? formattedActivityLevel[dailyEntry?.dailyEntryActivityLevel]
     : '-'
 
-  const isEditable =
-    pickerDate.minus({ days: 1 }).startOf('day').valueOf() ===
-      today.minus({ days: 1 }).startOf('day').valueOf() ||
-    pickerDate.startOf('day').valueOf() ===
-      today.minus({ days: 1 }).startOf('day').valueOf()
+  // const isEditable =
+  //   pickerDate.minus({ days: 1 }).startOf('day').valueOf() ===
+  //     today.minus({ days: 1 }).startOf('day').valueOf() ||
+  //   pickerDate.startOf('day').valueOf() ===
+  //     today.minus({ days: 1 }).startOf('day').valueOf()
+
+  const isEditable = true
 
   const hasReachedCycleEndDate =
     today.startOf('day').valueOf() >= cycleEndDate?.startOf('day').valueOf()!

@@ -127,6 +127,13 @@ export const PlanPageMainView: React.FC<Props> = ({
     MAINTAIN: `Maintain current weight for ${planDuration} days!`,
   }
 
+  const goalSection: ListSectionDetails[] = [
+    {
+      itemName: goalText[cycleType],
+      itemType: 'text',
+    },
+  ]
+
   const dateSection: ListSectionDetails[] = [
     {
       itemName: 'Plan Start',
@@ -193,12 +200,14 @@ export const PlanPageMainView: React.FC<Props> = ({
       sx={{ marginTop: '1rem', width: '100%' }}
     >
       <Grid item>
-        <Typography variant="h4">GOAL</Typography>
-      </Grid>
-      <Grid item>
-        <Typography variant="h6">{goalText[cycleType]}</Typography>
+        <Typography variant="h4">Plan Details</Typography>
       </Grid>
       <Divider sx={{ width: '90%', marginTop: '1rem' }} />
+      <ListSection
+        sectionSubHeader="Goal"
+        sectionItems={goalSection}
+        justify="center"
+      />
       <ListSection
         sectionSubHeader="Dates"
         sectionItems={dateSection}

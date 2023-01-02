@@ -120,7 +120,12 @@ export const DailyEntriesPage: React.FC = () => {
   const renderPageView = () => {
     if (pageLoading) {
       return <LinearProgress />
-    } else if (firstDayNoEntry || todayNoEntry || todayNoEntryMissedYesterday) {
+    } else if (
+      firstDayNoEntry ||
+      todayNoEntry ||
+      todayNoEntryMissedYesterday ||
+      previousDayNoEntry
+    ) {
       return (
         <DailyEntryCreateNew
           date={currentlySelectedDate!}
