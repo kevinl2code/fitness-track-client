@@ -1,4 +1,3 @@
-import { Grid } from '@mui/material'
 import React from 'react'
 import { DashboardWeightTrackerChart } from '../../components/DashboardWeightTrackerChart'
 import { DashboardEntriesPanel } from '../../components/DashboardEntriesPanel'
@@ -8,6 +7,7 @@ import { Sort } from '../../utilities/Sort'
 import { DailyEntry } from '../../model/Model'
 import { OverviewProgressSummary } from '../../components/OverviewProgressSummary'
 import { useStore } from '../../store/useStore'
+import { PageLayout } from '../../layouts/PageLayout'
 
 export const DashboardPage: React.FC = () => {
   const { userData } = useStore((state) => state.userSlice)
@@ -23,26 +23,20 @@ export const DashboardPage: React.FC = () => {
   return (
     <>
       {cycleHasMinimumEntries ? (
-        <Grid container sx={{ width: '100%' }}>
-          <Grid item xs={12} container justifyContent="flex-end">
+        <PageLayout>
+          <PageLayout.Content>
             <OverviewProgressSummary
               entries={sortedEntries}
               cycle={selectedCycle}
             />
-          </Grid>
-          <Grid item xs={12} container justifyContent="flex-end">
             <DashboardWeightTrackerChart
               entries={sortedEntries}
               user={userData!}
             />
-          </Grid>
-          <Grid item xs={12} container justifyContent="flex-end">
             <OverviewCalorieChart entries={entries} />
-          </Grid>
-          <Grid item xs={12}>
             <DashboardEntriesPanel entries={entries} user={userData!} />
-          </Grid>
-        </Grid>
+          </PageLayout.Content>
+        </PageLayout>
       ) : (
         <DashboardInsufficientData daysRemaining={daysRemaining} />
       )}
