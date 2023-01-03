@@ -18,7 +18,7 @@ import {
   FoodCategory,
   FoodSubCategory,
 } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { useStore } from '../../../store/useStore'
 import { ConsumablesList } from '../../ConsumablesList'
 import { FoodsCategorySelect } from '../../FoodsCategorySelect'
@@ -104,9 +104,7 @@ export const FoodBuilderSelectorDialog: React.FC<Props> = ({
   })
   const { userData } = useStore((state) => state.userSlice)
 
-  const dataService = new DataService()
-
-  dataService.setUser(userData?.user!)
+  // dataService.setUser(userData?.user!)
 
   const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
     'categoryList',

@@ -26,7 +26,7 @@ import {
   QueryObserverResult,
   useMutation,
 } from 'react-query'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 
 interface IFormInput {
   foodItemName: string
@@ -43,7 +43,6 @@ interface Props {
   open: boolean
   categoryId: string
   subCategoryId: string
-  dataService: DataService
   fetchFoodItems: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<any, unknown>>
@@ -108,7 +107,6 @@ export const AddFoodItemDialog: React.FC<Props> = ({
   open,
   categoryId,
   subCategoryId,
-  dataService,
   fetchFoodItems,
   setAddFoodDialogOpen,
 }) => {

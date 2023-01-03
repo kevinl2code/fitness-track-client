@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material'
 import React, { useState } from 'react'
-import { DataService } from '../../services/DataService'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
+import { dataService } from '../../app/App'
 import { AddUserFoodItemDialog } from '../dialogs/AddUserFoodItemDialog'
 import { FoodsTable } from '../FoodsTable'
 import { useMutation, useQueryClient } from 'react-query'
@@ -33,10 +33,10 @@ export const FoodsMyFoodsView: React.FC = () => {
     open: false,
     deleteItem: null,
   })
-  const dataService = new DataService()
+
   const queryClient = useQueryClient()
 
-  dataService.setUser(userData?.user!)
+  // dataService.setUser(userData?.user!)
 
   const { mutate: deleteUserFoodItem, isLoading } = useMutation(
     ({ userId, foodItemId }: { userId: string; foodItemId: string }) =>
@@ -72,7 +72,6 @@ export const FoodsMyFoodsView: React.FC = () => {
       <AddUserFoodItemDialog
         open={addFoodDialogOpen}
         user={userData!}
-        dataService={dataService}
         setAddFoodDialogOpen={setAddFoodDialogOpen}
       />
       <Box sx={[{ width: '100%', marginTop: '2rem' }]}>

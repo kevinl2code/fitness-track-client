@@ -10,7 +10,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useQueryClient, useMutation } from 'react-query'
 import { Cycle, DailyEntry, UserState } from '../../model/Model'
 import { AppLoadingPage } from '../../pages/AppLoadingPage'
-import { DataService } from '../../services/DataService'
+import { dataService } from '../../app/App'
 import { Calculate } from '../../utilities/Calculate'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -25,7 +25,6 @@ interface Props {
   daysRemaining: number
   user: UserState
   cycle: Cycle
-  dataService: DataService
   cycleEndDate: DateTime | null
   setPickerDate: React.Dispatch<React.SetStateAction<DateTime>>
 }
@@ -45,7 +44,6 @@ export const DailyEntryLastDay: React.FC<Props> = ({
   daysRemaining,
   user,
   cycle,
-  dataService,
   cycleEndDate,
   setPickerDate,
   // refetchEntries,

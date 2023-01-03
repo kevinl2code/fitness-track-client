@@ -16,7 +16,6 @@ import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { v4 } from 'uuid'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
-import { DataService } from '../../../services/DataService'
 import {
   QueryObserverResult,
   RefetchOptions,
@@ -24,6 +23,7 @@ import {
   useMutation,
   useQueryClient,
 } from 'react-query'
+import { dataService } from '../../../app/App'
 
 interface IFormInput {
   subCategoryName: string
@@ -31,7 +31,6 @@ interface IFormInput {
 
 interface Props {
   open: boolean
-  dataService: DataService
   categoryId: string
   fetchSubCategoryList: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
@@ -41,7 +40,6 @@ interface Props {
 
 export const AddFoodSubCategoryDialog: React.FC<Props> = ({
   open,
-  dataService,
   categoryId,
   fetchSubCategoryList,
   setAddFoodSubCategoryDialogOpen,

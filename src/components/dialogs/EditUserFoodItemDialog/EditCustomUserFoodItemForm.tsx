@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import * as yup from 'yup'
 import { FoodItemUnits, UserFoodItem } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
@@ -16,7 +16,6 @@ import {
 
 interface Props {
   foodItem: UserFoodItem | null
-  dataService: DataService
   setEditFoodDialogOpen: React.Dispatch<
     React.SetStateAction<{
       open: boolean
@@ -76,7 +75,6 @@ const validationSchema = yup.object({
 
 export const EditCustomUserFoodItemForm: React.FC<Props> = ({
   foodItem,
-  dataService,
   setEditFoodDialogOpen,
 }) => {
   const {

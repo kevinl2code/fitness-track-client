@@ -13,10 +13,10 @@ import React from 'react'
 import { Control, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { FoodCategory } from '../../../model/Model'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
+import { dataService } from '../../../app/App'
 import { v4 } from 'uuid'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
-import { DataService } from '../../../services/DataService'
 import { useMutation, useQueryClient } from 'react-query'
 
 interface IFormInput {
@@ -25,13 +25,11 @@ interface IFormInput {
 
 interface Props {
   open: boolean
-  dataService: DataService
   setAddFoodCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const AddFoodCategoryDialog: React.FC<Props> = ({
   open,
-  dataService,
   setAddFoodCategoryDialogOpen,
 }) => {
   const {

@@ -1,12 +1,11 @@
 import { SelectChangeEvent, Box, Grid } from '@mui/material'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-query'
 import {
   FoodCategory,
   FoodSubCategory,
   FitnessTrackFoodItem,
 } from '../../model/Model'
-import { DataService } from '../../services/DataService'
 import { useStore } from '../../store/useStore'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
 import { AddFoodCategoryDialog } from '../dialogs/AddFoodCategoryDialog'
@@ -15,6 +14,7 @@ import { AddFoodSubCategoryDialog } from '../dialogs/AddFoodSubCategoryDialog'
 import { ConfirmationDialog } from '../dialogs/ConfirmationDialog'
 import { FoodsCategorySelect } from '../FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../FoodsSubCategorySelect'
+import { dataService } from '../../app/App'
 import { FoodsTable } from '../FoodsTable'
 
 export const FoodsCatalogView: React.FC = () => {
@@ -41,9 +41,7 @@ export const FoodsCatalogView: React.FC = () => {
   const { userData } = useStore((state) => state.userSlice)
   const isAdmin = userData?.user.isAdmin!
 
-  const dataService = new DataService()
-
-  dataService.setUser(userData?.user!)
+  // dataService.setUser(userData?.user!)
 
   const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
     'categoryList',
@@ -121,18 +119,15 @@ export const FoodsCatalogView: React.FC = () => {
         open={addFoodDialogOpen}
         categoryId={selectedCategory}
         subCategoryId={selectedSubCategory}
-        dataService={dataService}
         fetchFoodItems={fetchFoodItems}
         setAddFoodDialogOpen={setAddFoodDialogOpen}
       />
       <AddFoodCategoryDialog
         open={addFoodCategoryDialogOpen}
         setAddFoodCategoryDialogOpen={setAddFoodCategoryDialogOpen}
-        dataService={dataService}
       />
       <AddFoodSubCategoryDialog
         open={addFoodSubCategoryDialogOpen}
-        dataService={dataService}
         fetchSubCategoryList={fetchSubCategoryList}
         setAddFoodSubCategoryDialogOpen={setAddFoodSubCategoryDialogOpen}
         categoryId={selectedCategory}

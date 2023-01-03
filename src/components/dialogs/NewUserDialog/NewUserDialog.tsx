@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { v4 } from 'uuid'
 import { Cycle, UserState, CycleType } from '../../../model/Model'
 import { ROUTES } from '../../../navigation'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { NewUserDialogForm } from './NewUserDialogForm'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -27,7 +27,6 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'
 interface Props {
   open: boolean
   user: UserState
-  dataService: DataService
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -69,7 +68,6 @@ const vh = Math.max(
 export const NewUserDialog: React.FC<Props> = ({
   open,
   user,
-  dataService,
   setDialogOpenState,
 }) => {
   const theme = useTheme()

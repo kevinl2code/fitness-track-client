@@ -17,8 +17,8 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import * as yup from 'yup'
 import { DailyEntry, UserState } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
 import { Calculate } from '../../../utilities/Calculate'
+import { dataService } from '../../../app/App'
 
 interface IFormInput {
   weight: string
@@ -29,7 +29,6 @@ interface Props {
   goalWeight: number
   daysRemaining: number
   user: UserState
-  dataService: DataService
   open: boolean
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -48,7 +47,6 @@ export const UpdateDailyEntryWeightDialog: React.FC<Props> = ({
   goalWeight,
   daysRemaining,
   user,
-  dataService,
   open,
   setDialogOpenState,
 }) => {

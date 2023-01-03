@@ -8,10 +8,11 @@ import { DateTime } from 'luxon'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { ActivityLevel, Cycle, DailyEntry } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
 import { ReturningUserDialogLongHiatusView } from './ReturningUserDialogLongHiatusView'
 import { ReturningUserDialogShortHiatusForm } from './ReturningUserDialogShortHiatusForm'
 import { useStore } from '../../../store/useStore'
+import { dataService } from '../../../app/App'
+
 interface IFormInput {
   weight: number
   activityLevel: ActivityLevel
@@ -19,7 +20,6 @@ interface IFormInput {
 
 interface Props {
   open: boolean
-  dataService: DataService
   cycle: Cycle | null
   entries: DailyEntry[]
   daysSinceLastActive: number
@@ -27,9 +27,9 @@ interface Props {
 }
 const today = DateTime.now().startOf('day')
 const yesterday = today.minus({ days: 1 })
+
 export const ReturningUserDialog: React.FC<Props> = ({
   open,
-  dataService,
   cycle,
   entries,
   daysSinceLastActive,
@@ -64,7 +64,6 @@ export const ReturningUserDialog: React.FC<Props> = ({
             entries={entries}
             cycle={cycle}
             user={userData}
-            dataService={dataService}
             control={control}
             register={register}
             handleSubmit={handleSubmit}
@@ -75,7 +74,6 @@ export const ReturningUserDialog: React.FC<Props> = ({
           <ReturningUserDialogLongHiatusView
             cycle={cycle}
             finalEntry={entries[0]}
-            dataService={dataService}
             setDialogOpenState={setDialogOpenState}
           />
         )}

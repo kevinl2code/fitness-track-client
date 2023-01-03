@@ -14,17 +14,15 @@ import { useMutation, useQueryClient } from 'react-query'
 import React from 'react'
 import { DailyEntry } from '../../model/Model'
 import { useMediaQueries } from '../../utilities/useMediaQueries'
-import { DataService } from '../../services/DataService'
+import { dataService } from '../../app/App'
 
 interface Props {
   entry: DailyEntry
-  dataService: DataService
   isEditable: boolean
 }
 
 export const DailyEntryConsumablesTable: React.FC<Props> = ({
   entry,
-  dataService,
   isEditable,
 }) => {
   const queryClient = useQueryClient()

@@ -7,17 +7,17 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material'
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import * as yup from 'yup'
 import { FitnessTrackFoodItem, FoodItemUnits } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { useStore } from '../../../store/useStore'
+import { dataService } from '../../../app/App'
 
 interface IFormInput {
   PK: string
@@ -108,10 +108,9 @@ export const EditFitnessTrackFoodItemDialog: React.FC<Props> = ({
     resolver: yupResolver(validationSchema),
   })
   const { userData } = useStore((state) => state.userSlice)
-  const dataService = new DataService()
   const queryClient = useQueryClient()
 
-  dataService.setUser(userData?.user!)
+  // dataService.setUser(userData?.user!)
   useEffect(() => {
     setValue('foodItemName', foodItem?.foodItemName)
     setValue('foodItemUnit', foodItem?.foodItemUnit)

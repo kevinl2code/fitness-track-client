@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { v4 } from 'uuid'
 import { Cycle, UserState, CycleType } from '../../../model/Model'
 import { ROUTES } from '../../../navigation'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { NewCycleDialogForm } from './NewCycleDialogForm'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -28,7 +28,6 @@ interface Props {
   open: boolean
   user: UserState
   isNewUser: boolean
-  dataService: DataService
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -71,7 +70,6 @@ export const NewCycleDialog: React.FC<Props> = ({
   open,
   user,
   isNewUser,
-  dataService,
   setDialogOpenState,
 }) => {
   const theme = useTheme()

@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 import React, { useState } from 'react'
 import { FoodItemUnits, UserState } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
 import { AddCustomUserFoodItemForm } from './AddCustomUserFoodItemForm'
 import { AddFoodBuilderUserFoodItemForm } from './AddFoodBuilderUserFoodItemForm'
 
@@ -26,7 +25,6 @@ interface IFormInput {
 interface Props {
   open: boolean
   user: UserState
-  dataService: DataService
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -35,7 +33,6 @@ type EntryMethod = 'BUILDER' | 'CUSTOM' | null
 export const AddUserFoodItemDialog: React.FC<Props> = ({
   open,
   user,
-  dataService,
   setAddFoodDialogOpen,
 }) => {
   const [entryMethod, setEntryMethod] = useState<EntryMethod>(null)
@@ -75,14 +72,12 @@ export const AddUserFoodItemDialog: React.FC<Props> = ({
         {entryMethod === 'CUSTOM' && (
           <AddCustomUserFoodItemForm
             user={user}
-            dataService={dataService}
             setAddFoodDialogOpen={setAddFoodDialogOpen}
           />
         )}
         {entryMethod === 'BUILDER' && (
           <AddFoodBuilderUserFoodItemForm
             user={user}
-            dataService={dataService}
             setAddFoodDialogOpen={setAddFoodDialogOpen}
           />
         )}

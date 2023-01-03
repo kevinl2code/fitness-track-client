@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { UpdateGoalWeightDialog } from '../../components/dialogs/UpdateGoalWeightDialog'
 import { PlanPageMainView } from '../../components/PlanPageMainView'
 import { Cycle, DailyEntry } from '../../model/Model'
-import { DataService } from '../../services/DataService'
+import { dataService } from '../../app/App'
 import { Calculate } from '../../utilities/Calculate'
 import { useMutation, useQueryClient } from 'react-query'
 import { useStore } from '../../store/useStore'
@@ -43,8 +43,8 @@ export const PlanPage: React.FC<Props> = () => {
     cycleList.filter((selectedCycle) => {
       return selectedCycle.isActive === true
     }).length > 0
-  const dataService = new DataService()
-  dataService.setUser(userData?.user!)
+
+  // dataService.setUser(userData?.user!)
   const queryClient = useQueryClient()
 
   const sort = new Sort()
@@ -176,7 +176,6 @@ export const PlanPage: React.FC<Props> = () => {
         open={openNewUserDialog}
         user={userData!}
         isNewUser={false}
-        dataService={dataService}
         setDialogOpenState={setOpenNewUserDialog}
       />
       <UpdateGoalWeightDialog
@@ -187,7 +186,6 @@ export const PlanPage: React.FC<Props> = () => {
         mutableCycleParams={mutableCycleParams}
         setMutableCycleParams={setMutableCycleParams}
         setDialogOpenState={setOpenUpdateGoalWeightDialog}
-        dataService={dataService}
       />
       <Grid item xs={12} container justifyContent="center">
         <DatePicker

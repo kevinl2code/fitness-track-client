@@ -11,7 +11,6 @@ import {
 } from '../../../model/Model'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { DataService } from '../../../services/DataService'
 import { ConsumablesList } from '../../ConsumablesList'
 import { FoodsCategorySelect } from '../../FoodsCategorySelect'
 import { FoodsSubCategorySelect } from '../../FoodsSubCategorySelect'
@@ -19,6 +18,7 @@ import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
 import { FormattedTextField } from '../../FormattedTextField/FormattedTextField'
 import { useStore } from '../../../store/useStore'
+import { dataService } from '../../../app/App'
 
 interface Props {
   entry: DailyEntry
@@ -91,9 +91,8 @@ export const AddFoodCatalogConsumableForm: React.FC<Props> = ({
   })
 
   const { userData } = useStore((state) => state.userSlice)
-  const dataService = new DataService()
 
-  dataService.setUser(userData?.user!)
+  // dataService.setUser(userData?.user!)
 
   const { isLoading: categoriesLoading, data: fetchedCategories } = useQuery(
     'categoryList',

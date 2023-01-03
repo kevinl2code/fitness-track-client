@@ -10,8 +10,10 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorPage } from '../pages/ErrorPage'
 import { useStore } from '../store/useStore'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
+import { DataService } from '../services/DataService'
 
 const authService = new AuthService()
+export const dataService = new DataService()
 
 function App() {
   const { removeUser } = useStore((state) => state.userSlice)

@@ -15,7 +15,7 @@ import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { ActivityLevel, DailyEntry } from '../../../model/Model'
 import { useMutation, useQueryClient } from 'react-query'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { Calculate } from '../../../utilities/Calculate'
 
@@ -27,7 +27,6 @@ interface Props {
   entry: DailyEntry
   deficitPerDay: number
   bmr: number
-  dataService: DataService
   open: boolean
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -36,7 +35,6 @@ export const UpdateDailyEntryActivityLevelDialog: React.FC<Props> = ({
   entry,
   deficitPerDay,
   bmr,
-  dataService,
   open,
   setDialogOpenState,
 }) => {

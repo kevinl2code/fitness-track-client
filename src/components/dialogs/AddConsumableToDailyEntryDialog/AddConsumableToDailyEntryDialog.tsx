@@ -9,7 +9,7 @@ import {
 import React, { useState } from 'react'
 import { useMutation, useQueryClient } from 'react-query'
 import { DailyEntry } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { AddCustomConsumableForm } from './AddCustomConsumableForm'
 import { AddFoodCatalogConsumableForm } from './AddFoodCatalogConsumableForm'
@@ -25,7 +25,6 @@ interface IFormInput {
 
 interface Props {
   entry: DailyEntry
-  dataService: DataService
   open: boolean
   setDialogOpenState: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -35,7 +34,6 @@ type EntryMethod = 'CATALOG' | 'MYFOODS' | 'CUSTOM' | null
 export const AddConsumableToDailyEntryDialog: React.FC<Props> = ({
   entry,
   open,
-  dataService,
   setDialogOpenState,
 }) => {
   const [entryMethod, setEntryMethod] = useState<EntryMethod>(null)

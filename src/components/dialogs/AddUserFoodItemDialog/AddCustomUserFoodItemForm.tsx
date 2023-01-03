@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { v4 } from 'uuid'
 import * as yup from 'yup'
 import { FoodItemUnits, UserFoodItem, UserState } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
@@ -17,7 +17,6 @@ import {
 
 interface Props {
   user: UserState
-  dataService: DataService
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -78,7 +77,6 @@ const validationSchema = yup.object({
 
 export const AddCustomUserFoodItemForm: React.FC<Props> = ({
   user,
-  dataService,
   setAddFoodDialogOpen,
 }) => {
   const {

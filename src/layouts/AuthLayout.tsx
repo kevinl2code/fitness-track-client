@@ -6,7 +6,8 @@ import { MainBottomNavigation } from '../components/MainBottomNavigation'
 import { Cycle, UserState } from '../model/Model'
 import { AppLoadingPage } from '../pages/AppLoadingPage'
 import { AuthService } from '../services/AuthService'
-import { DataService } from '../services/DataService'
+import { dataService } from '../app/App'
+// import { DataService } from '../services/DataService'
 import { useStore } from '../store/useStore'
 import { Sort } from '../utilities/Sort'
 
@@ -17,7 +18,7 @@ const vh = Math.max(
 const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 const authService = new AuthService()
 
-const dataService = new DataService()
+// const dataService = new DataService()
 
 export const AuthLayout: React.FC = ({ children }) => {
   const { credentials } = useStore((state) => state.credentialsSlice)

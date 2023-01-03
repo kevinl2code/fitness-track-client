@@ -11,7 +11,7 @@ import {
   UserFoodItem,
   UserState,
 } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FormSelectInput } from '../../form/FormSelectInput'
 import { FormSelectInputProps } from '../../form/FormSelectInput/FormSelectInput'
@@ -22,7 +22,6 @@ import { FoodBuilderSelectorDialog } from './FoodBuilderSelectorDialog'
 
 interface Props {
   user: UserState
-  dataService: DataService
   setAddFoodDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -83,7 +82,6 @@ const validationSchema = yup.object({
 
 export const AddFoodBuilderUserFoodItemForm: React.FC<Props> = ({
   user,
-  dataService,
   setAddFoodDialogOpen,
 }) => {
   const [foodSelectorOpen, setFoodSelectorOpen] = useState(false)

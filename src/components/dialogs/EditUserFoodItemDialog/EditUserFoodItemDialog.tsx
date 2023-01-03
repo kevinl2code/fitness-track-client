@@ -12,7 +12,7 @@ import {
   FoodItemUnits,
   UserFoodItem,
 } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
+import { dataService } from '../../../app/App'
 import { useStore } from '../../../store/useStore'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 import { FoodBuilderSelectorDialog } from '../AddUserFoodItemDialog/FoodBuilderSelectorDialog'
@@ -49,9 +49,7 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
   const [ingredients, setIngredients] = useState<FoodBuilderIngredient[]>([])
   const { userData } = useStore((state) => state.userSlice)
 
-  const dataService = new DataService()
-
-  dataService.setUser(userData?.user!)
+  // dataService.setUser(userData?.user!)
 
   const handleCancel = () => {
     setEditFoodDialogOpen({
@@ -80,13 +78,11 @@ export const EditUserFoodItemDialog: React.FC<Props> = ({
           {isFoodBuilderFoodItem ? (
             <EditFoodBuilderUserFoodItemForm
               foodItem={foodItem}
-              dataService={dataService}
               setEditFoodDialogOpen={setEditFoodDialogOpen}
             />
           ) : (
             <EditCustomUserFoodItemForm
               foodItem={foodItem}
-              dataService={dataService}
               setEditFoodDialogOpen={setEditFoodDialogOpen}
             />
           )}

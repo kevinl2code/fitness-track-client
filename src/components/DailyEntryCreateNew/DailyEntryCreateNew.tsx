@@ -13,7 +13,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { ActivityLevel, Cycle, DailyEntry, UserState } from '../../model/Model'
 import { AppLoadingPage } from '../../pages/AppLoadingPage'
-import { DataService } from '../../services/DataService'
+import { dataService } from '../../app/App'
 import { Calculate } from '../../utilities/Calculate'
 
 interface IFormInput {
@@ -26,7 +26,6 @@ interface Props {
   daysRemaining: number
   user: UserState
   cycle: Cycle
-  dataService: DataService
 }
 //https://undraw.co/search
 const indoorBike = `${process.env.PUBLIC_URL}/indoorbike.svg`
@@ -40,7 +39,6 @@ export const DailyEntryCreateNew: React.FC<Props> = ({
   daysRemaining,
   user,
   cycle,
-  dataService,
   // refetchEntries,
 }) => {
   const [imageIndex, setImageIndex] = useState(Math.floor(Math.random() * 4))

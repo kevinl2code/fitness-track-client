@@ -25,8 +25,8 @@ import {
   EntryConsumable,
   UserState,
 } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
 import { Calculate } from '../../../utilities/Calculate'
+import { dataService } from '../../../app/App'
 import { useMediaQueries } from '../../../utilities/useMediaQueries'
 
 interface IFormInput {
@@ -38,7 +38,6 @@ interface Props {
   entries: DailyEntry[]
   cycle: Cycle
   user: UserState
-  dataService: DataService
   control: Control<FieldValues, object>
   register: UseFormRegister<FieldValues>
   handleSubmit: UseFormHandleSubmit<FieldValues>
@@ -52,7 +51,6 @@ export const ReturningUserDialogShortHiatusForm: React.FC<Props> = ({
   entries,
   cycle,
   user,
-  dataService,
   control,
   register,
   handleSubmit,

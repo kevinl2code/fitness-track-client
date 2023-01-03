@@ -13,11 +13,11 @@ import { DateTime } from 'luxon'
 import { useMutation, useQueryClient } from 'react-query'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Cycle, DailyEntry, UserState } from '../../../model/Model'
-import { DataService } from '../../../services/DataService'
 import { Calculate } from '../../../utilities/Calculate'
 import * as yup from 'yup'
 import { FormTextInput } from '../../form/FormTextInput'
 import { FormTextInputProps } from '../../form/FormTextInput/FormTextInput'
+import { dataService } from '../../../app/App'
 import { useEffect } from 'react'
 
 interface IFormInput {
@@ -28,7 +28,6 @@ interface Props {
   entry: DailyEntry | null
   cycle: Cycle
   user: UserState
-  dataService: DataService
   open: boolean
   mutableCycleParams: {
     endingDate: string
@@ -48,7 +47,6 @@ export const UpdateGoalWeightDialog: React.FC<Props> = ({
   cycle,
   mutableCycleParams,
   user,
-  dataService,
   open,
   setDialogOpenState,
   setMutableCycleParams,
